@@ -67,7 +67,7 @@
    position: relative;
    border: none;
    overflow: hidden;
-   transition: transform 0.3s, box-shadow 0.3s;
+   transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
    cursor: pointer;
    border-radius: 15px;
    height: 200px;
@@ -79,6 +79,13 @@
   .advent-card.active:hover {
    transform: scale(1.05);
    box-shadow: 0 0 15px gold;
+  }
+
+  /* New style for click effect */
+  .advent-card.active:active {
+    transform: scale(0.98);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+    transition: transform 0.1s ease-out, box-shadow 0.1s ease-out; /* Quick feedback */
   }
 
   .advent-card.disabled {
@@ -96,6 +103,11 @@
    text-align: center;
    height: 100%;
    border-radius: 15px;
+   transition: background-color 0.3s ease; /* Smooth transition for overlay */
+  }
+
+  .advent-card.active:hover .card-img-overlay {
+    background-color: rgba(0, 0, 0, 0.6); /* Darker overlay on hover */
   }
 
   .card-title {
@@ -121,6 +133,8 @@
   <source src="audio/musica-natalizia.mp3" type="audio/mpeg">
  </audio>
 
+ <audio id="pop-sound" src="audio/pop-39222.mp3" preload="auto"></audio>
+
  <div class="title-section">
   <h1>🎄 Il lab dell’avvento 🎅</h1>
   <p>Scopri ogni giorno una sorpresa natalizia dal laboratorio!</p>
@@ -136,21 +150,22 @@
 
  <script>
   const today = new Date();
-  // Corretto l'indice del mese: 11 = dicembre
+
   const isDecember = today.getMonth() === 9;
   const currentDay = isDecember ? today.getDate() : 0;
 
   const container = document.getElementById('calendar');
-  const audio = document.getElementById('bg-audio');
+  const bgAudio = document.getElementById('bg-audio');
+  const popSound = document.getElementById('pop-sound');
 
-  // Gestione dell'audio per l'autoplay: tenta di suonare, altrimenti aspetta un click
-  audio.play().catch(() => {
+  // Autoplay background audio, or play on first click
+  bgAudio.play().catch(() => {
    document.body.addEventListener('click', () => {
-    audio.play().catch(e => console.error("Errore nella riproduzione audio:", e));
+    bgAudio.play().catch(e => console.error("Errore nella riproduzione audio di sottofondo:", e));
    }, { once: true });
   });
 
-  // Genera 24 card
+  // Generate 24 cards
   for (let i = 1; i <= 24; i++) {
    const isActive = currentDay >= i && isDecember;
    const card = document.createElement('div');
@@ -166,10 +181,21 @@
     </div>`;
 
    if (isActive) {
-    card.querySelector('.advent-card').addEventListener('click', () => {
-     const day = String(i).padStart(2, '0'); // giorno01, giorno02, ecc.
-     window.location.href = `giorno${day}.html`;
-    });
+    const adventCardElement = card.querySelector('.advent-card');
+    adventCardElement.addEventListener('click', () => {
+  
+ if (popSound) {
+    popSound.currentTime = 0;
+    popSound.play().catch(e => console.error("Errore nella riproduzione del suono pop:", e));
+ }
+
+ const day = String(i).padStart(2, '0');
+ 
+ setTimeout(() => {
+   window.location.href = `giorno${day}.html`;
+ }, 300);
+});
+
    }
 
    container.appendChild(card);
