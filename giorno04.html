@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Giorno 4 - Snake Game</title>
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+ <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+ <style>
+  * {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+  }
+  
+  body {
+   font-family: 'Mountains of Christmas', cursive;
+   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+   color: #fff;
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   padding: 2rem;
+   position: relative;
+  }
+  
+  body::before {
+   content: '';
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   background-image: 
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 60% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent),
+    radial-gradient(2px 2px at 90% 60%, white, transparent),
+    radial-gradient(1px 1px at 33% 80%, white, transparent),
+    radial-gradient(1px 1px at 75% 40%, white, transparent);
+   background-size: 200% 200%;
+   animation: float 20s ease-in-out infinite;
+   opacity: 0.3;
+  }
+  
+  @keyframes float {
+   0%, 100% { transform: translateY(0); }
+   50% { transform: translateY(-20px); }
+  }
+
+  .game-container {
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   width: 100%;
+   max-width: 800px; /* Adjust as needed */
+   z-index: 1;
+   padding: 2rem;
+   background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+   border: 5px solid;
+   border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
+   border-radius: 25px;
+   box-shadow: 
+    0 0 30px rgba(255, 215, 0, 0.3),
+    0 0 60px rgba(255, 215, 0, 0.2),
+    inset 0 0 50px rgba(0, 0, 0, 0.5);
+   animation: glow-pulse 3s ease-in-out infinite;
+  }
+  
+  @keyframes glow-pulse {
+   0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+   50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+  }
+
+  .game-header {
+   text-align: center;
+   margin-bottom: 2rem;
+  }
+
+  .game-header h1 {
+   color: gold;
+   font-size: 2.8rem;
+   text-shadow: 
+    2px 2px 4px black,
+    0 0 20px rgba(255, 215, 0, 0.5),
+    0 0 30px rgba(255, 215, 0, 0.3);
+   margin-bottom: 1rem;
+   animation: title-glow 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes title-glow {
+   from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
+   to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
+  }
+
+  canvas {
+   background-color: #000;
+   border: 3px solid gold;
+   border-radius: 10px;
+   box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+   margin-bottom: 1.5rem;
+  }
+
+  .score-display {
+   font-size: 1.5rem;
+   color: gold;
+   margin-bottom: 1.5rem;
+   text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  }
+
+  .start-message {
+    font-size: 1.2rem;
+    color: #ccc;
+    margin-bottom: 1rem;
+  }
+
+  /* Game Over/Win Modal */
+  .game-modal {
+   display: none; /* Hidden by default */
+   position: fixed; /* Stay in place */
+   z-index: 100; /* Sit on top */
+   left: 0;
+   top: 0;
+   width: 100%; /* Full width */
+   height: 100%; /* Full height */
+   overflow: auto; /* Enable scroll if needed */
+   background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+  }
+
+  .game-modal-content {
+   background-color: #0a0a0a;
+   margin: auto;
+   padding: 20px;
+   border: 5px solid gold;
+   border-radius: 20px;
+   width: 80%;
+   max-width: 600px;
+   text-align: center;
+   box-shadow: 0 0 40px rgba(255, 215, 0, 0.7);
+  }
+
+  .game-modal-content h2 {
+   color: gold;
+   font-size: 2.5rem;
+   margin-bottom: 1rem;
+   text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5);
+  }
+
+  .game-modal-content p {
+   font-size: 1.3rem;
+   color: #fff;
+   margin-bottom: 1.5rem;
+  }
+
+  .game-button {
+   padding: 1rem 2rem;
+   font-size: 1.2rem;
+   font-family: 'Mountains of Christmas', cursive;
+   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+   color: darkred;
+   border: 2px solid rgba(139, 0, 0, 0.5);
+   border-radius: 50px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   font-weight: bold;
+   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+   margin: 0.5rem;
+  }
+
+  .game-button:hover {
+   transform: translateY(-3px) scale(1.05);
+   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+   .game-header h1 {
+    font-size: 2rem;
+   }
+   .score-display {
+    font-size: 1.2rem;
+   }
+   .game-modal-content h2 {
+    font-size: 1.8rem;
+   }
+   .game-modal-content p {
+    font-size: 1rem;
+   }
+   .game-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+   }
+  }
+
+  @media (max-width: 480px) {
+   .game-header h1 {
+    font-size: 1.5rem;
+   }
+   canvas {
+    width: 90%;
+    height: auto;
+   }
+  }
+ </style>
+</head>
+
+<body>
+
+ <div class="game-container">
+  <div class="game-header">
+   <h1>
+    <span class="emoji-sparkle">🐍</span>
+    Snake Inter Edition
+    <span class="emoji-sparkle">⚽</span>
+   </h1>
+  </div>
+
+  <div class="score-display">
+   Palloni Inter mangiati: <span id="score">0</span> / 20
+  </div>
+  <div class="start-message" id="start-message">Premi una freccia o WASD per iniziare!</div>
+
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
+ </div>
+
+ <!-- Game Over/Win Modal -->
+ <div id="gameOverModal" class="game-modal">
+  <div class="game-modal-content">
+   <h2 id="modalTitle"></h2>
+   <p id="modalMessage"></p>
+   <button class="game-button" onclick="resetGame()">Rigioca</button>
+   <button class="game-button" onclick="window.location.href='index.html'">
+     🎄 Torna al Calendario
+   </button>
+  </div>
+ </div>
+
+ <script>
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const scoreDisplay = document.getElementById('score');
+  const startMessage = document.getElementById('start-message');
+  const gameOverModal = document.getElementById('gameOverModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalMessage = document.getElementById('modalMessage');
+
+  const gridSize = 20;
+  let snake = [{ x: 10 * gridSize, y: 10 * gridSize }];
+  let food = {};
+  let dx = 0;
+  let dy = 0;
+  let score = 0;
+  let gameStarted = false;
+  let changingDirection = false;
+  let gameInterval;
+  const requiredBalls = 20;
+  const gameSpeed = 150; // Milliseconds per frame
+
+  function drawSnakePart(snakePart) {
+   ctx.fillStyle = 'lime';
+   ctx.strokeStyle = 'darkgreen';
+   ctx.fillRect(snakePart.x, snakePart.y, gridSize, gridSize);
+   ctx.strokeRect(snakePart.x, snakePart.y, gridSize, gridSize);
+  }
+
+  function drawSnake() {
+   snake.forEach(drawSnakePart);
+  }
+
+  function drawFood() {
+   // Drawing an "Inter ball" - a blue and black circle
+   ctx.beginPath();
+   ctx.arc(food.x + gridSize / 2, food.y + gridSize / 2, gridSize / 2, 0, Math.PI * 2);
+   
+   // Create a linear gradient for the Inter colors
+   const gradient = ctx.createLinearGradient(food.x, food.y, food.x + gridSize, food.y + gridSize);
+   gradient.addColorStop(0, '#000080'); // Dark blue
+   gradient.addColorStop(0.5, '#000000'); // Black
+   gradient.addColorStop(1, '#000080'); // Dark blue
+   
+   ctx.fillStyle = gradient;
+   ctx.fill();
+   ctx.strokeStyle = '#FFD700'; // Gold border for visibility
+   ctx.lineWidth = 2;
+   ctx.stroke();
+   ctx.closePath();
+   
+   // Note: For a more accurate "Inter ball", you would load an image here.
+   // E.g., const interBallImage = new Image(); interBallImage.src = 'path/to/inter_ball.png';
+   // ctx.drawImage(interBallImage, food.x, food.y, gridSize, gridSize);
+  }
+
+  function clearCanvas() {
+   ctx.fillStyle = 'black';
+   ctx.strokeStyle = 'black';
+   ctx.fillRect(0, 0, canvas.width, canvas.height);
+   ctx.strokeRect(0, 0, canvas.width, canvas.height);
+  }
+
+  function generateFood() {
+   let newFoodX, newFoodY;
+   let collisionWithSnake;
+
+   do {
+    newFoodX = Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize;
+    newFoodY = Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize;
+    collisionWithSnake = false;
+    for (let i = 0; i < snake.length; i++) {
+     if (snake[i].x === newFoodX && snake[i].y === newFoodY) {
+      collisionWithSnake = true;
+      break;
+     }
+    }
+   } while (collisionWithSnake);
+
+   food = { x: newFoodX, y: newFoodY };
+  }
+
+  function moveSnake() {
+   if (!gameStarted) return;
+
+   const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+   snake.unshift(head); // Add new head
+
+   const didEatFood = head.x === food.x && head.y === food.y;
+   if (didEatFood) {
+    score++;
+    scoreDisplay.textContent = score;
+    if (score >= requiredBalls) {
+     endGame(true); // Win condition
+    } else {
+     generateFood();
+    }
+   } else {
+    snake.pop(); // Remove tail if no food eaten
+   }
+
+   changingDirection = false; // Allow direction change again
+  }
+
+  function checkCollision() {
+   // Check wall collision
+   const hitLeftWall = snake[0].x < 0;
+   const hitRightWall = snake[0].x >= canvas.width;
+   const hitTopWall = snake[0].y < 0;
+   const hitBottomWall = snake[0].y >= canvas.height;
+
+   if (hitLeftWall || hitRightWall || hitTopWall || hitBottomWall) {
+    return true;
+   }
+
+   // Check self collision (start from 4th segment to avoid head-neck collision)
+   for (let i = 4; i < snake.length; i++) {
+    if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
+     return true;
+    }
+   }
+   return false;
+  }
+
+  function mainLoop() {
+   if (checkCollision()) {
+    endGame(false); // Lose condition
+    return;
+   }
+
+   clearCanvas();
+   drawFood();
+   moveSnake();
+   drawSnake();
+  }
+
+  function changeDirection(event) {
+   if (changingDirection && gameStarted) return; // Prevent multiple direction changes per frame
+
+   const keyPressed = event.key;
+   const goingUp = dy === -gridSize;
+   const goingDown = dy === gridSize;
+   const goingLeft = dx === -gridSize;
+   const goingRight = dx === gridSize;
+
+   // Start the game on the first valid key press
+   if (!gameStarted && (keyPressed === 'ArrowUp' || keyPressed === 'w' ||
+                        keyPressed === 'ArrowDown' || keyPressed === 's' ||
+                        keyPressed === 'ArrowLeft' || keyPressed === 'a' ||
+                        keyPressed === 'ArrowRight' || keyPressed === 'd')) {
+    gameStarted = true;
+    startMessage.style.display = 'none';
+    gameInterval = setInterval(mainLoop, gameSpeed);
+   }
+
+   if (!gameStarted) return; // Don't allow direction changes before game starts
+
+   changingDirection = true;
+
+   if ((keyPressed === 'ArrowLeft' || keyPressed === 'a') && !goingRight) {
+    dx = -gridSize;
+    dy = 0;
+   } else if ((keyPressed === 'ArrowUp' || keyPressed === 'w') && !goingDown) {
+    dx = 0;
+    dy = -gridSize;
+   } else if ((keyPressed === 'ArrowRight' || keyPressed === 'd') && !goingLeft) {
+    dx = gridSize;
+    dy = 0;
+   } else if ((keyPressed === 'ArrowDown' || keyPressed === 's') && !goingUp) {
+    dx = 0;
+    dy = gridSize;
+   }
+  }
+
+  function endGame(win) {
+   clearInterval(gameInterval);
+   gameOverModal.style.display = 'flex';
+   if (win) {
+    modalTitle.innerHTML = '<span class="emoji-sparkle">🏆</span> HAI VINTO! <span class="emoji-sparkle">🏆</span>';
+    modalMessage.textContent = `Complimenti! Hai mangiato tutti i ${requiredBalls} palloni dell'Inter!`;
+   } else {
+    modalTitle.innerHTML = '<span class="emoji-sparkle">Game Over</span>';
+    modalMessage.textContent = `Hai mangiato ${score} palloni dell'Inter. Hai perso! Riprova!`;
+   }
+  }
+
+  function resetGame() {
+   clearInterval(gameInterval);
+   snake = [{ x: 10 * gridSize, y: 10 * gridSize }];
+   dx = 0;
+   dy = 0;
+   score = 0;
+   gameStarted = false;
+   changingDirection = false;
+   scoreDisplay.textContent = score;
+   startMessage.style.display = 'block';
+   gameOverModal.style.display = 'none';
+   clearCanvas();
+   generateFood(); // Generate food for the new game
+   drawSnake();
+   drawFood();
+  }
+
+  document.addEventListener('keydown', changeDirection);
+
+  // Initial setup when the page loads
+  document.addEventListener('DOMContentLoaded', () => {
+   clearCanvas();
+   generateFood();
+   drawSnake();
+   drawFood();
+  });
+ </script>
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
