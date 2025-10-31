@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>Giorno 3 - Memory Video Play</title>
+
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+ <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+ <style>
+  * {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+  }
+  
+  body {
+   font-family: 'Mountains of Christmas', cursive;
+   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+   color: #fff;
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   padding: 2rem;
+   position: relative;
+  }
+  
+  body::before {
+   content: '';
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   background-image: 
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 60% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent),
+    radial-gradient(2px 2px at 90% 60%, white, transparent),
+    radial-gradient(1px 1px at 33% 80%, white, transparent),
+    radial-gradient(1px 1px at 75% 40%, white, transparent);
+   background-size: 200% 200%;
+   animation: float 20s ease-in-out infinite;
+   opacity: 0.3;
+  }
+  
+  @keyframes float {
+   0%, 100% { transform: translateY(0); }
+   50% { transform: translateY(-20px); }
+  }
+
+  .memory-game-container {
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   width: 100%;
+   max-width: 1000px; /* Adjust as needed */
+   z-index: 1;
+   padding: 2rem;
+   background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+   border: 5px solid;
+   border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
+   border-radius: 25px;
+   box-shadow: 
+    0 0 30px rgba(255, 215, 0, 0.3),
+    0 0 60px rgba(255, 215, 0, 0.2),
+    inset 0 0 50px rgba(0, 0, 0, 0.5);
+   animation: glow-pulse 3s ease-in-out infinite;
+  }
+  
+  @keyframes glow-pulse {
+   0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+   50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+  }
+
+  .game-header {
+   text-align: center;
+   margin-bottom: 2rem;
+  }
+
+  .game-header h1 {
+   color: gold;
+   font-size: 2.8rem;
+   text-shadow: 
+    2px 2px 4px black,
+    0 0 20px rgba(255, 215, 0, 0.5),
+    0 0 30px rgba(255, 215, 0, 0.3);
+   margin-bottom: 1rem;
+   animation: title-glow 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes title-glow {
+   from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
+   to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
+  }
+
+  .memory-grid {
+   display: grid;
+   grid-template-columns: repeat(4, 1fr);
+   gap: 1rem;
+   width: 100%;
+   justify-content: center;
+   perspective: 1000px; /* For 3D flip effect */
+  }
+
+  .memory-card {
+   width: 100%;
+   height: 180px; /* Fixed height for cards */
+   position: relative;
+   cursor: pointer;
+   transform-style: preserve-3d;
+   transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  }
+
+  .memory-card.flipped {
+   transform: rotateY(180deg);
+  }
+
+  .memory-card.matched {
+    cursor: default;
+  }
+
+  .flip-card-inner {
+   position: relative;
+   width: 100%;
+   height: 100%;
+   text-align: center;
+   transform-style: preserve-3d;
+  }
+
+  .flip-card-front, .flip-card-back {
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   -webkit-backface-visibility: hidden;
+   backface-visibility: hidden;
+   border-radius: 15px;
+   overflow: hidden;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   border: 3px solid gold;
+   box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+  }
+
+  .flip-card-front {
+   background: linear-gradient(135deg, darkred 0%, #8b0000 100%);
+   font-size: 3rem;
+   color: white;
+  }
+
+  .flip-card-back {
+   background-color: #000;
+   transform: rotateY(180deg);
+   color: white;
+   padding: 0.5rem;
+   position: relative;
+   display: flex;
+   flex-direction: column;
+   justify-content: center; /* Center content vertically */
+   align-items: center; /* Center content horizontally */
+  }
+
+  .play-button-overlay {
+   font-size: 3rem;
+   color: rgba(255, 255, 255, 0.8);
+   pointer-events: none; /* Not clickable directly */
+   z-index: 10;
+  }
+
+  .card-title {
+   font-size: 0.9rem;
+   margin-top: 0.5rem;
+   text-align: center;
+   color: gold;
+   /* Adjusted to fit below the play icon */
+   padding-bottom: 0.5rem; 
+  }
+
+  /* Bonus Video Modal */
+  .bonus-video-modal {
+   display: none; /* Hidden by default */
+   position: fixed; /* Stay in place */
+   z-index: 100; /* Sit on top */
+   left: 0;
+   top: 0;
+   width: 100%; /* Full width */
+   height: 100%; /* Full height */
+   overflow: auto; /* Enable scroll if needed */
+   background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+  }
+
+  .bonus-video-content {
+   background-color: #0a0a0a;
+   margin: auto;
+   padding: 20px;
+   border: 5px solid gold;
+   border-radius: 20px;
+   width: 80%;
+   max-width: 800px;
+   text-align: center;
+   box-shadow: 0 0 40px rgba(255, 215, 0, 0.7);
+  }
+
+  .bonus-video-content h2 {
+   color: gold;
+   font-size: 2.5rem;
+   margin-bottom: 1rem;
+   text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5);
+  }
+
+  .bonus-video-content video {
+   width: 100%;
+   max-height: 500px;
+   border-radius: 10px;
+   margin-bottom: 1rem;
+  }
+
+  .close-button, .home-btn {
+   padding: 1rem 2rem;
+   font-size: 1.2rem;
+   font-family: 'Mountains of Christmas', cursive;
+   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+   color: darkred;
+   border: 2px solid rgba(139, 0, 0, 0.5);
+   border-radius: 50px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   font-weight: bold;
+   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+   margin-top: 1rem;
+  }
+
+  .close-button:hover, .home-btn:hover {
+   transform: translateY(-3px) scale(1.05);
+   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+   .memory-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 cards per row on smaller screens */
+   }
+   .memory-card {
+    height: 150px;
+   }
+   .game-header h1 {
+    font-size: 2rem;
+   }
+   .card-title {
+    font-size: 0.8rem;
+   }
+   .bonus-video-content {
+    width: 95%;
+    padding: 15px;
+   }
+   .bonus-video-content h2 {
+    font-size: 1.8rem;
+   }
+   .close-button, .home-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+   }
+  }
+
+  @media (max-width: 480px) {
+   .memory-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 cards per row on very small screens */
+   }
+   .memory-card {
+    height: 120px;
+   }
+   .game-header h1 {
+    font-size: 1.5rem;
+   }
+   .card-title {
+    font-size: 0.7rem;
+   }
+  }
+
+ </style>
+</head>
+
+<body>
+
+ <div class="memory-game-container">
+  <div class="game-header">
+   <h1>
+    <span class="emoji-sparkle">🧠</span>
+    Memory Video Play
+    <span class="emoji-sparkle">🎬</span>
+   </h1>
+  </div>
+
+  <div class="memory-grid" id="memory-grid">
+   <!-- Memory cards will be dynamically inserted here by JavaScript -->
+  </div>
+ </div>
+
+ <!-- Bonus Video Modal -->
+ <div id="bonusVideoModal" class="bonus-video-modal">
+  <div class="bonus-video-content">
+   <h2>🎉 Complimenti! Hai completato il gioco! 🎉</h2>
+   <video id="bonusVideoPlayer" controls autoplay loop>
+    <source src="video-memory/video9.mp4" type="video/mp4">
+    Il tuo browser non supporta il tag video.
+   </video>
+   <button class="home-btn" onclick="window.location.href='index.html'">
+     🎄 Torna al Calendario
+   </button>
+  </div>
+ </div>
+
+ <script>
+  const videoData = [
+   { id: 1, title: 'Burger Dance 🍔', src: 'video-memory/video1.mp4', thumbnail: 'video-memory/thumbnail1.jpg' },
+   { id: 2, title: 'PTN ❤️🐧', src: 'video-memory/video2.mp4', thumbnail: 'video-memory/thumbnail2.jpg' },
+   { id: 3, title: 'Kiss Before Disaster 🫀⛸️', src: 'video-memory/video3.mp4', thumbnail: 'video-memory/thumbnail3.jpg' },
+   { id: 4, title: 'Lezioni di 🎾', src: 'video-memory/video4.mp4', thumbnail: 'video-memory/thumbnail4.jpg' },
+   { id: 5, title: 'Suocera Time 🍻', src: 'video-memory/video5.mp4', thumbnail: 'video-memory/thumbnail5.jpg' },
+   { id: 6, title: 'Once Upon A Time 🏞️', src: 'video-memory/video6.mp4', thumbnail: 'video-memory/thumbnail6.jpg' },
+   { id: 7, title: 'Alba ☀️', src: 'video-memory/video7.mp4', thumbnail: 'video-memory/thumbnail7.jpg' },
+   { id: 8, title: 'Belli Addormentati 💤', src: 'video-memory/video8.mp4', thumbnail: 'video-memory/thumbnail8.jpg' },
+  ];
+
+  let cards = [];
+  let flippedCards = [];
+  let matchedPairs = 0;
+  let lockBoard = false;
+
+  const memoryGrid = document.getElementById('memory-grid');
+  const bonusVideoModal = document.getElementById('bonusVideoModal');
+  const bonusVideoPlayer = document.getElementById('bonusVideoPlayer');
+
+  function initializeGame() {
+   // Duplicate video data for pairs and shuffle
+   cards = [...videoData, ...videoData].sort(() => 0.5 - Math.random());
+   createBoard();
+  }
+
+  function createBoard() {
+   memoryGrid.innerHTML = ''; // Clear existing cards
+   cards.forEach((cardData, index) => {
+    const card = document.createElement('div');
+    card.classList.add('memory-card');
+    card.dataset.id = cardData.id;
+    card.dataset.index = index; // Keep track of original position for video play
+    card.innerHTML = `
+     <div class="flip-card-inner">
+      <div class="flip-card-front">?</div>
+      <div class="flip-card-back">
+       <i class="fas fa-play play-button-overlay"></i>
+       <div class="card-title">${cardData.title}</div>
+      </div>
+     </div>
+    `;
+    card.addEventListener('click', flipCard);
+    memoryGrid.appendChild(card);
+   });
+  }
+
+  function flipCard() {
+   if (lockBoard) return;
+   if (this === flippedCards[0]) return; // Prevent double clicking the same card
+
+   this.classList.add('flipped');
+   flippedCards.push(this);
+
+   if (flippedCards.length === 2) {
+    lockBoard = true;
+    setTimeout(checkForMatch, 1000);
+   }
+  }
+
+  function checkForMatch() {
+   const [card1, card2] = flippedCards;
+   const isMatch = card1.dataset.id === card2.dataset.id;
+
+   isMatch ? disableCards() : unflipCards();
+  }
+
+  function disableCards() {
+   const [card1, card2] = flippedCards;
+
+   card1.classList.add('matched');
+   card2.classList.add('matched');
+
+   // Play the video for the matched pair
+   playMatchedVideo(card1.dataset.id);
+
+   matchedPairs++;
+   resetBoard();
+
+   if (matchedPairs === videoData.length) { // All 8 pairs matched
+    setTimeout(showBonusVideo, 1500);
+   }
+  }
+
+  function unflipCards() {
+   const [card1, card2] = flippedCards;
+   setTimeout(() => {
+    card1.classList.remove('flipped');
+    card2.classList.remove('flipped');
+    resetBoard();
+   }, 1500); // Give a bit more time to see the cards
+  }
+
+  function resetBoard() {
+   [flippedCards, lockBoard] = [[], false];
+  }
+
+  function playMatchedVideo(videoId) {
+    // Find the video details from videoData
+    const videoInfo = videoData.find(video => video.id == videoId);
+    if (!videoInfo) return;
+
+    // Create a temporary video element or use a modal to play the video
+    // For simplicity, let's create a temporary modal-like overlay to play the video.
+    // In a real scenario, you might have a dedicated video player modal.
+    const videoPlayerOverlay = document.createElement('div');
+    videoPlayerOverlay.style.position = 'fixed';
+    videoPlayerOverlay.style.top = '0';
+    videoPlayerOverlay.style.left = '0';
+    videoPlayerOverlay.style.width = '100%';
+    videoPlayerOverlay.style.height = '100%';
+    videoPlayerOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+    videoPlayerOverlay.style.display = 'flex';
+    videoPlayerOverlay.style.justifyContent = 'center';
+    videoPlayerOverlay.style.alignItems = 'center';
+    videoPlayerOverlay.style.zIndex = '1000';
+    videoPlayerOverlay.style.flexDirection = 'column';
+
+    const videoElement = document.createElement('video');
+    videoElement.src = videoInfo.src;
+    videoElement.controls = true;
+    videoElement.autoplay = true;
+    videoElement.style.maxWidth = '80%';
+    videoElement.style.maxHeight = '80%';
+    videoElement.style.borderRadius = '10px';
+    videoElement.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.7)';
+    
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'Chiudi Video';
+    closeButton.classList.add('close-button');
+    closeButton.style.marginTop = '20px';
+    closeButton.onclick = () => {
+        videoElement.pause();
+        videoPlayerOverlay.remove();
+    };
+
+    videoPlayerOverlay.appendChild(videoElement);
+    videoPlayerOverlay.appendChild(closeButton);
+    document.body.appendChild(videoPlayerOverlay);
+
+    videoElement.addEventListener('ended', () => {
+        videoPlayerOverlay.remove();
+    });
+  }
+
+  function showBonusVideo() {
+   bonusVideoModal.style.display = 'flex'; // Show the modal
+   bonusVideoPlayer.play().catch(e => console.error("Error playing bonus video:", e));
+  }
+
+  // Initialize the game when the page loads
+  document.addEventListener('DOMContentLoaded', initializeGame);
+
+ </script>
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
