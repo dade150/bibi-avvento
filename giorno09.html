@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>Giorno 9 - Caccia alle Foto Modificate</title>
+
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+ <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
+
+ <style>
+  /* Stili globali basati su giorno01.html e giorno08.html */
+  * {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+  }
+  
+  body {
+   font-family: 'Mountains of Christmas', cursive;
+   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+   color: #fff;
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   padding: 2rem;
+   position: relative;
+  }
+  
+  /* Particelle fluttuanti di sfondo */
+  body::before {
+   content: '';
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   background-image: 
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 60% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent),
+    radial-gradient(2px 2px at 90% 60%, white, transparent),
+    radial-gradient(1px 1px at 33% 80%, white, transparent),
+    radial-gradient(1px 1px at 75% 40%, white, transparent);
+   background-size: 200% 200%;
+   animation: float 20s ease-in-out infinite;
+   opacity: 0.3;
+  }
+  
+  @keyframes float {
+   0%, 100% { transform: translateY(0); }
+   50% { transform: translateY(-20px); }
+  }
+  
+  .content-box {
+   background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+   border: 5px solid;
+   border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
+   border-radius: 25px;
+   padding: 3rem;
+   max-width: 900px;
+   text-align: center;
+   box-shadow: 
+    0 0 30px rgba(255, 215, 0, 0.3),
+    0 0 60px rgba(255, 215, 0, 0.2),
+    inset 0 0 50px rgba(0, 0, 0, 0.5);
+   position: relative;
+   z-index: 1;
+   animation: glow-pulse 3s ease-in-out infinite;
+  }
+  
+  @keyframes glow-pulse {
+   0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+   50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+  }
+  
+  h1 {
+   color: gold;
+   text-shadow: 
+    2px 2px 4px black,
+    0 0 20px rgba(255, 215, 0, 0.5),
+    0 0 30px rgba(255, 215, 0, 0.3);
+   font-size: 2.8rem;
+   margin-bottom: 2rem;
+   animation: title-glow 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes title-glow {
+   from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
+   to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
+  }
+  
+  .message-container {
+   background: rgba(0, 0, 0, 0.4);
+   border-radius: 15px;
+   padding: 2rem;
+   margin: 1.5rem 0;
+   border: 2px solid rgba(255, 215, 0, 0.3);
+  }
+  
+  p {
+   font-size: 1.4rem;
+   line-height: 1.8;
+   min-height: 100px;
+  }
+  
+  .back-button, .btn-game { 
+   margin: 0.5rem;
+   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+   color: darkred;
+   border: 2px solid rgba(139, 0, 0, 0.5);
+   font-weight: bold;
+   font-size: 1.2rem;
+   padding: 0.7rem 2rem;
+   border-radius: 50px;
+   transition: all 0.3s ease;
+   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+   cursor: pointer;
+  }
+  
+  .back-button:hover, .btn-game:hover { 
+   transform: translateY(-3px) scale(1.05);
+   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+  }
+  
+  .btn-game:active { 
+   transform: translateY(-1px);
+  }
+  
+  #result-area {
+   margin-top: 2rem;
+   min-height: 100px;
+  }
+  
+  .emoji-sparkle {
+   display: inline-block;
+   animation: sparkle 1.5s ease-in-out infinite;
+  }
+  
+  @keyframes sparkle {
+   0%, 100% { transform: scale(1) rotate(0deg); }
+   50% { transform: scale(1.2) rotate(180deg); }
+  }
+  
+  .result-message {
+   font-size: 1.6rem;
+   padding: 1.5rem;
+   border-radius: 15px;
+   margin-top: 1rem;
+   animation: fadeInUp 0.5s ease-out;
+  }
+  
+  @keyframes fadeInUp {
+   from { opacity: 0; transform: translateY(20px); }
+   to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .success-message {
+   color: #90EE90;
+   text-shadow: 0 0 10px rgba(144, 238, 144, 0.5);
+  }
+  
+  .lab-icon {
+   font-size: 2rem;
+   margin: 0 0.3rem;
+   display: inline-block;
+   animation: float-icon 3s ease-in-out infinite;
+  }
+  
+  @keyframes float-icon {
+   0%, 100% { transform: translateY(0); }
+   50% { transform: translateY(-10px); }
+  }
+
+  /* Specific styles for the "Find the Photos" game */
+  .game-area {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      height: 500px;
+      margin: 2rem auto;
+      border: 3px solid gold;
+      border-radius: 15px;
+      overflow: hidden; 
+      display: none;
+      background-image: url('images/foto-nostre/foto0.png');
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewport="0 0 100 100" style="fill:white;font-size:18px;"><text y="50%">🔍</text></svg>') 15 15, auto;
+  }
+
+  .clickable-spot {
+      position: absolute;
+      background-color: transparent;
+      border: 2px solid transparent;
+      transition: border 0.3s ease, background-color 0.3s ease;
+      z-index: 10;
+  }
+
+  .clickable-spot:hover {
+      background-color: rgba(255, 215, 0, 0.1);
+  }
+
+  .clickable-spot.found {
+      border: 2px solid #90EE90;
+      background-color: rgba(144, 238, 144, 0.2);
+      pointer-events: none;
+  }
+
+  .photos-found-counter {
+      color: gold;
+      font-size: 1.5rem;
+      margin-top: 1rem;
+      display: none;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  }
+
+  /* Modal overlay per la foto grande */
+  .photo-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      animation: fadeInModal 0.3s ease-out;
+      flex-direction: column; /* Added to stack image and button */
+  }
+
+  @keyframes fadeInModal {
+      from { opacity: 0; }
+      to { opacity: 1; }
+  }
+
+  .photo-modal-overlay.active {
+      display: flex;
+  }
+
+  .modal-photo {
+      max-width: 90vw;
+      max-height: 80vh; /* Adjusted to make space for button */
+      border: 5px solid gold;
+      border-radius: 20px;
+      box-shadow: 0 0 40px rgba(255, 215, 0, 0.8);
+      animation: popInPhoto 0.4s ease-out;
+      margin-bottom: 20px; /* Space between image and button */
+  }
+
+  @keyframes popInPhoto {
+      from {
+          opacity: 0;
+          transform: scale(0.3) rotate(-5deg);
+      }
+      to {
+          opacity: 1;
+          transform: scale(1) rotate(0deg);
+      }
+  }
+
+  /* Carousel finale */
+  .carousel-container {
+      display: none;
+      text-align: center;
+  }
+
+  .carousel-container.active {
+      display: block;
+  }
+
+  #finalCarousel {
+      max-width: 600px;
+      margin: 2rem auto;
+  }
+
+  .carousel-item img {
+      max-height: 400px;
+      object-fit: contain;
+      border: 3px solid gold;
+      border-radius: 15px;
+  }
+
+  .carousel-caption {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 1rem;
+      border-radius: 10px;
+  }
+
+  .carousel-caption h5 {
+      color: gold;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+  }
+
+  .carousel-caption p {
+      color: #fff;
+      font-size: 1.4rem;
+  }
+
+  .carousel-control-prev, .carousel-control-next {
+      width: 5%;
+  }
+
+  .carousel-control-prev-icon, .carousel-control-next-icon {
+      filter: invert(1);
+  }
+ </style>
+</head>
+
+<body>
+ <audio id="sound-track" loop>
+  <source src="audio/sound-track0.mp3" type="audio/mpeg"> 
+ </audio>
+ 
+ <audio id="sound-win">
+  <source src="audio/soundwin.mp3" type="audio/mpeg">
+ </audio>
+
+ <div class="photo-modal-overlay" id="photoModal">
+  <img id="modalPhoto" class="modal-photo" src="" alt="Foto rivelata">
+  <button class="btn btn-game" id="closePhotoModalButton">Continua la Caccia</button> <!-- Added close button -->
+ </div>
+
+ <div class="content-box">
+  <h1>
+   <span class="emoji-sparkle">🕵️‍♀️</span> 
+   Caccia al Dettaglio! 
+   <span class="emoji-sparkle">📸</span>
+  </h1>
+  
+  <div class="message-container" id="intro-message">
+   <p>
+    Ciao Davide! Ho preparato un'immagine speciale... ma qualcosa non torna! 
+    Sembra che ci siano delle modifiche, dei dettagli nascosti che hanno a che fare con delle foto.
+    Riesci a scovarli tutti e a rivelare le sorprese che ti aspettano?
+    Clicca su "Inizia la Caccia" e buona fortuna! ❤️
+   </p>
+  </div>
+
+  <button class="btn btn-game" id="startGameButton">Inizia la Caccia ✨</button>
+
+  <div class="game-area" id="gameArea">
+   <!-- Clickable spots will be dynamically added here by JavaScript -->
+  </div>
+
+  <div class="photos-found-counter" id="foundCounter">
+   Dettagli trovati: <span id="currentFound">0</span> / <span id="totalPhotos">5</span>
+  </div>
+
+  <div class="carousel-container" id="carouselContainer">
+   <h1 style="color: gold; margin-bottom: 1.5rem;">
+    <span class="emoji-sparkle">💖</span> Ci vediamo domani! <span class="emoji-sparkle">💖</span>
+   </h1>
+   <div id="finalCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner" id="carouselInner">
+     <!-- Carousel items will be added here by JavaScript -->
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#finalCarousel" data-bs-slide="prev">
+     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#finalCarousel" data-bs-slide="next">
+     <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    </button>
+   </div>
+  </div>
+
+  <div id="result-area"></div>
+
+  <a href="index.html" class="btn back-button" id="back-to-calendar" style="display: none;">
+   🎄 Torna al Calendario
+  </a>
+ </div>
+
+ <script>
+  const soundtrack = document.getElementById('sound-track');
+  const soundwin = document.getElementById('sound-win');
+  const startGameButton = document.getElementById('startGameButton');
+  const gameArea = document.getElementById('gameArea');
+  const introMessage = document.getElementById('intro-message');
+  const foundCounter = document.getElementById('foundCounter');
+  const currentFoundSpan = document.getElementById('currentFound');
+  const totalPhotosSpan = document.getElementById('totalPhotos');
+  const resultArea = document.getElementById('result-area');
+  const backButton = document.getElementById('back-to-calendar');
+  const photoModal = document.getElementById('photoModal');
+  const modalPhoto = document.getElementById('modalPhoto');
+  const closePhotoModalButton = document.getElementById('closePhotoModalButton'); // Get the new button
+  const carouselContainer = document.getElementById('carouselContainer');
+  const carouselInner = document.getElementById('carouselInner');
+
+  const hiddenItemsData = [
+    { 
+      id: 'spot1', 
+      x: 100, y: 50, width: 80, height: 80,
+      revealedPhotoSrc: 'images/foto-nostre/foto1.png', 
+      found: false 
+    },
+    { 
+      id: 'spot2', 
+      x: 300, y: 150, width: 70, height: 70,
+      revealedPhotoSrc: 'images/foto-nostre/foto2.png', 
+      found: false 
+    },
+    { 
+      id: 'spot3', 
+      x: 50, y: 300, width: 90, height: 90,
+      revealedPhotoSrc: 'images/foto-nostre/foto3.png', 
+      found: false 
+    },
+    { 
+      id: 'spot4', 
+      x: 450, y: 20, width: 60, height: 60,
+      revealedPhotoSrc: 'images/foto-nostre/foto4.png', 
+      found: false 
+    },
+    { 
+      id: 'spot5', 
+      x: 200, y: 400, width: 100, height: 100,
+      revealedPhotoSrc: 'images/foto-nostre/foto5.png', 
+      found: false 
+    }
+  ];
+
+  let currentHiddenItems = [];
+  let foundCount = 0;
+  let gameActive = false;
+  let revealedPhotos = [];
+
+  totalPhotosSpan.textContent = hiddenItemsData.length;
+
+  function initializeGame() {
+    currentHiddenItems = JSON.parse(JSON.stringify(hiddenItemsData));
+    foundCount = 0;
+    gameActive = false;
+    revealedPhotos = [];
+
+    currentFoundSpan.textContent = foundCount;
+    resultArea.innerHTML = '';
+    backButton.style.display = 'none';
+    carouselContainer.classList.remove('active');
+
+    gameArea.innerHTML = '';
+    gameArea.style.display = 'none';
+    foundCounter.style.display = 'none';
+    introMessage.style.display = 'block';
+    startGameButton.style.display = 'block';
+
+    currentHiddenItems.forEach(item => {
+      const spotDiv = document.createElement('div');
+      spotDiv.classList.add('clickable-spot');
+      spotDiv.id = `spot-${item.id}`;
+      spotDiv.style.left = `${(item.x / 800) * 100}%`;
+      spotDiv.style.top = `${(item.y / 500) * 100}%`;
+      spotDiv.style.width = `${(item.width / 800) * 100}%`;
+      spotDiv.style.height = `${(item.height / 500) * 100}%`;
+      
+      spotDiv.addEventListener('click', () => handleSpotClick(item, spotDiv));
+      gameArea.appendChild(spotDiv);
+    });
+  }
+
+  function startGame() {
+    gameActive = true;
+    introMessage.style.display = 'none';
+    startGameButton.style.display = 'none';
+    gameArea.style.display = 'block';
+    foundCounter.style.display = 'block';
+    soundtrack.volume = 0.5;
+    soundtrack.play().catch(e => console.log("Audio play prevented:", e));
+  }
+
+  function handleSpotClick(item, spotDiv) {
+    if (!gameActive || item.found) return;
+
+    item.found = true;
+    foundCount++;
+    currentFoundSpan.textContent = foundCount;
+    spotDiv.classList.add('found');
+
+    // Salva la foto per il carosello finale
+    revealedPhotos.push(item.revealedPhotoSrc);
+
+    // Mostra la foto in modal
+    showPhotoModal(item.revealedPhotoSrc);
+  }
+
+  function showPhotoModal(photoSrc) {
+    gameActive = false; // Disabilita il gioco mentre la foto è visibile
+    modalPhoto.src = photoSrc;
+    photoModal.classList.add('active');
+  }
+
+  function closePhotoModal() {
+    photoModal.classList.remove('active');
+    gameActive = true; // Riabilita il gioco
+    if (foundCount === currentHiddenItems.length) {
+      endGame();
+    }
+  }
+
+  function createCarousel() {
+    carouselInner.innerHTML = '';
+    revealedPhotos.forEach((photoSrc, index) => {
+      const carouselItem = document.createElement('div');
+      carouselItem.classList.add('carousel-item');
+      if (index === 0) {
+        carouselItem.classList.add('active');
+      }
+      
+      const img = document.createElement('img');
+      img.src = photoSrc;
+      img.alt = `Foto ${index + 1}`;
+      
+      carouselItem.appendChild(img);
+      carouselInner.appendChild(carouselItem);
+    });
+  }
+
+  function endGame() {
+    gameActive = false;
+    soundtrack.pause();
+    soundtrack.currentTime = 0;
+    soundwin.volume = 0.7;
+    soundwin.play().catch(e => console.log("Win audio play prevented:", e));
+    
+    gameArea.style.display = 'none';
+    foundCounter.style.display = 'none';
+    
+    // Crea e mostra il carosello
+    createCarousel();
+    carouselContainer.classList.add('active');
+    
+    // Mostra il pulsante per tornare
+    backButton.style.display = 'inline-block';
+    
+    // Disabilita ulteriori clic
+    document.querySelectorAll('.clickable-spot').forEach(spot => spot.style.pointerEvents = 'none');
+  }
+
+  document.addEventListener('DOMContentLoaded', initializeGame);
+  startGameButton.addEventListener('click', startGame);
+  closePhotoModalButton.addEventListener('click', closePhotoModal); // Add event listener for the new button
+
+  document.body.addEventListener('click', () => {
+    if (soundtrack.paused && gameActive) {
+      soundtrack.play().catch(e => console.log("Audio play prevented:", e));
+    }
+  }, { once: true });
+
+ </script>
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

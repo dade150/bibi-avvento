@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>Giorno 10 - Scalata verso il Rifugio</title>
+
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+ <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+ <style>
+  /* Stili globali basati su giorno01.html e giorno08.html */
+  * {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+  }
+  
+  body {
+   font-family: 'Mountains of Christmas', cursive;
+   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+   color: #fff;
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   padding: 2rem;
+   position: relative;
+  }
+  
+  /* Particelle fluttuanti di sfondo */
+  body::before {
+   content: '';
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   background-image: 
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 60% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent),
+    radial-gradient(2px 2px at 90% 60%, white, transparent),
+    radial-gradient(1px 1px at 33% 80%, white, transparent),
+    radial-gradient(1px 1px at 75% 40%, white, transparent);
+   background-size: 200% 200%;
+   animation: float 20s ease-in-out infinite;
+   opacity: 0.3;
+  }
+  
+  @keyframes float {
+   0%, 100% { transform: translateY(0); }
+   50% { transform: translateY(-20px); }
+  }
+  
+  .content-box {
+   background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+   border: 5px solid;
+   border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
+   border-radius: 25px;
+   padding: 3rem;
+   max-width: 900px;
+   text-align: center;
+   box-shadow: 
+    0 0 30px rgba(255, 215, 0, 0.3),
+    0 0 60px rgba(255, 215, 0, 0.2),
+    inset 0 0 50px rgba(0, 0, 0, 0.5);
+   position: relative;
+   z-index: 1;
+   animation: glow-pulse 3s ease-in-out infinite;
+  }
+  
+  @keyframes glow-pulse {
+   0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+   50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+  }
+  
+  h1 {
+   color: gold;
+   text-shadow: 
+    2px 2px 4px black,
+    0 0 20px rgba(255, 215, 0, 0.5),
+    0 0 30px rgba(255, 215, 0, 0.3);
+   font-size: 2.8rem;
+   margin-bottom: 2rem;
+   animation: title-glow 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes title-glow {
+   from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
+   to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
+  }
+  
+  .message-container {
+   background: rgba(0, 0, 0, 0.4);
+   border-radius: 15px;
+   padding: 2rem;
+   margin: 1.5rem 0;
+   border: 2px solid rgba(255, 215, 0, 0.3);
+  }
+  
+  p {
+   font-size: 1.4rem;
+   line-height: 1.8;
+   min-height: 100px;
+  }
+  
+  .back-button, .btn-game { 
+   margin: 0.5rem;
+   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+   color: darkred;
+   border: 2px solid rgba(139, 0, 0, 0.5);
+   font-weight: bold;
+   font-size: 1.2rem;
+   padding: 0.7rem 2rem;
+   border-radius: 50px;
+   transition: all 0.3s ease;
+   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+   cursor: pointer;
+  }
+  
+  .back-button:hover, .btn-game:hover { 
+   transform: translateY(-3px) scale(1.05);
+   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+  }
+  
+  .btn-game:active { 
+   transform: translateY(-1px);
+  }
+  
+  #result-area {
+   margin-top: 2rem;
+   min-height: 100px;
+  }
+  
+  .emoji-sparkle {
+   display: inline-block;
+   animation: sparkle 1.5s ease-in-out infinite;
+  }
+  
+  @keyframes sparkle {
+   0%, 100% { transform: scale(1) rotate(0deg); }
+   50% { transform: scale(1.2) rotate(180deg); }
+  }
+  
+  .result-message {
+   font-size: 1.6rem;
+   padding: 1.5rem;
+   border-radius: 15px;
+   margin-top: 1rem;
+   animation: fadeInUp 0.5s ease-out;
+  }
+  
+  @keyframes fadeInUp {
+   from { opacity: 0; transform: translateY(20px); }
+   to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .success-message {
+   color: #90EE90;
+   text-shadow: 0 0 10px rgba(144, 238, 144, 0.5);
+  }
+  
+  .lab-icon {
+   font-size: 2rem;
+   margin: 0 0.3rem;
+   display: inline-block;
+   animation: float-icon 3s ease-in-out infinite;
+  }
+  
+  @keyframes float-icon {
+   0%, 100% { transform: translateY(0); }
+   50% { transform: translateY(-10px); }
+  }
+
+  /* Stili specifici per il gioco "Scalata verso il Rifugio" */
+  #gameCanvas {
+    background: linear-gradient(to bottom, #87CEEB 0%, #B0E0E6 50%, #ADD8E6 100%); /* Sky to snowy mountain */
+    border: 4px solid #fff;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    image-rendering: pixelated; /* Essential for pixel art */
+    display: none; /* Hidden until game starts */
+    margin: 2rem auto;
+  }
+
+  .game-message {
+    font-family: 'Press Start 2P', cursive;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 1rem 2rem;
+    border: 2px solid gold;
+    border-radius: 10px;
+    margin-top: 1rem;
+    display: none;
+    font-size: 1.5rem;
+    text-shadow: 2px 2px 0px #000;
+  }
+
+  #gameScore, #gameTimer {
+    font-family: 'Press Start 2P', cursive;
+    color: gold;
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    display: none;
+    text-shadow: 2px 2px 0px #000;
+  }
+
+  #gameControls {
+    margin-top: 1.5rem;
+    font-family: 'Press Start 2P', cursive;
+    color: #eee;
+    font-size: 0.9rem;
+    display: none;
+  }
+ </style>
+</head>
+
+<body>
+ <audio id="game-music" loop>
+  <source src="audio/game_loop.mp3" type="audio/mpeg"> 
+ </audio>
+ 
+ <audio id="hit-sound">
+  <source src="audio/hit.mp3" type="audio/mpeg">
+ </audio>
+
+ <audio id="win-sound">
+  <source src="audio/win.mp3" type="audio/mpeg">
+ </audio>
+
+ <div class="content-box">
+  <h1>
+   <span class="emoji-sparkle">🧗‍♂️</span> 
+   Scalata verso il Rifugio! 
+   <span class="emoji-sparkle">🏔️</span>
+  </h1>
+  
+  <div class="message-container" id="intro-message">
+   <p>
+    Ciao Davide! Preparati per una scalata epica sulle Alpi Trentine!
+    Il tuo obiettivo è raggiungere la cima della montagna, evitando i massi che cadono.
+    Riuscirai a raggiungere il Rifugio Lago di Tovel?
+    Usa le frecce ← → (o A/D) per muoverti.
+   </p>
+  </div>
+
+  <button class="btn btn-game" id="startGameButton">Inizia la Scalata ✨</button>
+
+  <canvas id="gameCanvas" width="600" height="400"></canvas>
+
+  <div id="gameScore" class="game-info">Punti: <span id="currentScore">0</span></div>
+  <div id="gameTimer" class="game-info">Tempo: <span id="currentTime">0</span>s</div>
+
+  <div id="gameOverMessage" class="game-message">
+    Oh no! Riprova!
+    <button class="btn btn-game" id="retryButton">Riprova</button>
+  </div>
+  
+  <div id="gameWinMessage" class="game-message">
+    Ce l'hai fatta! Hai raggiunto il Rifugio Lago di Tovel ❤️
+    <img src="images/lago_tovel_pixel.png" alt="Lago di Tovel" style="max-width: 100%; height: auto; margin-top: 1rem; image-rendering: pixelated; border: 2px solid gold;">
+    <p style="font-family: 'Mountains of Christmas', cursive; font-size: 1.2rem; margin-top: 1rem;">
+      Qui ti aspetta una cioccolata calda e un abbraccio ❤️
+    </p>
+    <button class="btn btn-game" id="playAgainButton">Gioca Ancora</button>
+  </div>
+
+  <div id="gameControls">
+    Sposta: ← → o A/D
+  </div>
+
+  <a href="index.html" class="btn back-button" id="back-to-calendar" style="display: none; margin-top: 2rem;">
+   🎄 Torna al Calendario
+  </a>
+ </div>
+
+ <script>
+  // Audio elements
+  const gameMusic = document.getElementById('game-music');
+  const hitSound = document.getElementById('hit-sound');
+  const winSound = document.getElementById('win-sound');
+
+  // Game UI elements
+  const startGameButton = document.getElementById('startGameButton');
+  const introMessage = document.getElementById('intro-message');
+  const gameCanvas = document.getElementById('gameCanvas');
+  const ctx = gameCanvas.getContext('2d');
+  const gameOverMessage = document.getElementById('gameOverMessage');
+  const gameWinMessage = document.getElementById('gameWinMessage');
+  const retryButton = document.getElementById('retryButton');
+  const playAgainButton = document.getElementById('playAgainButton');
+  const backButton = document.getElementById('back-to-calendar');
+  const gameScoreDisplay = document.getElementById('gameScore');
+  const currentScoreSpan = document.getElementById('currentScore');
+  const gameTimerDisplay = document.getElementById('gameTimer');
+  const currentTimeSpan = document.getElementById('currentTime');
+  const gameControls = document.getElementById('gameControls');
+
+  // Game variables
+  let player;
+  let rocks = [];
+  let gameInterval;
+  let rockSpawnInterval;
+  let gameActive = false;
+  let score = 0;
+  let gameStartTime;
+  const WIN_TIME = 30; // seconds to win
+  let gameSpeed = 1; // Initial speed multiplier
+
+  // Player properties
+  const PLAYER_WIDTH = 20;
+  const PLAYER_HEIGHT = 20;
+  const PLAYER_SPEED = 5;
+
+  // Rock properties
+  const ROCK_WIDTH = 15;
+  const ROCK_HEIGHT = 15;
+  const INITIAL_ROCK_SPEED = 2;
+  const MAX_ROCKS = 10; // Max rocks on screen at once
+
+  // Assets (simple colors for pixel art style)
+  const PLAYER_COLOR = '#FF0000'; // Red
+  const ROCK_COLOR = '#A9A9A9'; // Dark Gray
+  const SNOW_COLOR = '#F0F8FF'; // AliceBlue for snow
+  const PINE_COLOR = '#228B22'; // ForestGreen for pines
+  const SKY_COLOR_TOP = '#87CEEB'; // Light sky blue
+  const SKY_COLOR_BOTTOM = '#B0E0E6'; // Slightly darker sky blue
+
+  // Game initialization
+  function initGame() {
+    // Hide all game-related messages and show intro
+    introMessage.style.display = 'block';
+    startGameButton.style.display = 'block';
+    gameCanvas.style.display = 'none';
+    gameOverMessage.style.display = 'none';
+    gameWinMessage.style.display = 'none';
+    backButton.style.display = 'none';
+    gameScoreDisplay.style.display = 'none';
+    gameTimerDisplay.style.display = 'none';
+    gameControls.style.display = 'none';
+
+    player = {
+      x: gameCanvas.width / 2 - PLAYER_WIDTH / 2,
+      y: gameCanvas.height - PLAYER_HEIGHT - 10,
+      width: PLAYER_WIDTH,
+      height: PLAYER_HEIGHT,
+      dx: 0
+    };
+    rocks = [];
+    score = 0;
+    gameSpeed = 1;
+    gameActive = false;
+    currentScoreSpan.textContent = score;
+    currentTimeSpan.textContent = 0;
+
+    gameMusic.pause();
+    gameMusic.currentTime = 0;
+  }
+
+  // Start the game
+  function startGame() {
+    introMessage.style.display = 'none';
+    startGameButton.style.display = 'none';
+    gameCanvas.style.display = 'block';
+    gameScoreDisplay.style.display = 'block';
+    gameTimerDisplay.style.display = 'block';
+    gameControls.style.display = 'block';
+    gameActive = true;
+    gameStartTime = Date.now();
+
+    gameMusic.volume = 0.3;
+    gameMusic.play().catch(e => console.log("Audio play prevented:", e));
+
+    gameInterval = requestAnimationFrame(gameLoop);
+    rockSpawnInterval = setInterval(spawnRock, 700 / gameSpeed); // Adjust spawn rate with speed
+  }
+
+  // Game loop
+  function gameLoop() {
+    if (!gameActive) return;
+
+    update();
+    draw();
+
+    gameInterval = requestAnimationFrame(gameLoop);
+  }
+
+  // Update game state
+  function update() {
+    // Update player position
+    player.x += player.dx;
+    if (player.x < 0) player.x = 0;
+    if (player.x + player.width > gameCanvas.width) player.x = gameCanvas.width - player.width;
+
+    // Update rocks
+    for (let i = 0; i < rocks.length; i++) {
+      rocks[i].y += rocks[i].speed * gameSpeed;
+
+      // Check for collision
+      if (
+        player.x < rocks[i].x + rocks[i].width &&
+        player.x + player.width > rocks[i].x &&
+        player.y < rocks[i].y + rocks[i].height &&
+        player.y + player.height > rocks[i].y
+      ) {
+        endGame(false); // Game Over
+        return;
+      }
+
+      // Remove rocks that go off-screen
+      if (rocks[i].y > gameCanvas.height) {
+        rocks.splice(i, 1);
+        i--;
+        score++; // Increment score for each rock dodged
+        currentScoreSpan.textContent = score;
+      }
+    }
+
+    // Update timer and check win condition
+    const elapsedTime = Math.floor((Date.now() - gameStartTime) / 1000);
+    currentTimeSpan.textContent = elapsedTime;
+
+    if (elapsedTime >= WIN_TIME) {
+      endGame(true); // Game Won
+      return;
+    }
+
+    // Increase game speed over time
+    gameSpeed = 1 + (elapsedTime / 60); // Speed increases gradually every minute
+  }
+
+  // Draw game elements
+  function draw() {
+    // Background (mountain landscape - pixel art style)
+    ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+    // Sky gradient
+    const skyGradient = ctx.createLinearGradient(0, 0, 0, gameCanvas.height / 2);
+    skyGradient.addColorStop(0, SKY_COLOR_TOP);
+    skyGradient.addColorStop(1, SKY_COLOR_BOTTOM);
+    ctx.fillStyle = skyGradient;
+    ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+    // Snowy mountains (simple triangles/rectangles)
+    ctx.fillStyle = SNOW_COLOR;
+    ctx.beginPath();
+    ctx.moveTo(0, gameCanvas.height / 2);
+    ctx.lineTo(gameCanvas.width / 4, gameCanvas.height / 4);
+    ctx.lineTo(gameCanvas.width / 2, gameCanvas.height / 2);
+    ctx.lineTo(gameCanvas.width * 3 / 4, gameCanvas.height / 4 + 50);
+    ctx.lineTo(gameCanvas.width, gameCanvas.height / 2);
+    ctx.lineTo(gameCanvas.width, gameCanvas.height);
+    ctx.lineTo(0, gameCanvas.height);
+    ctx.closePath();
+    ctx.fill();
+
+    // Player (simple square)
+    ctx.fillStyle = PLAYER_COLOR;
+    ctx.fillRect(player.x, player.y, player.width, player.height);
+
+    // Rocks (simple squares)
+    ctx.fillStyle = ROCK_COLOR;
+    rocks.forEach(rock => {
+      ctx.fillRect(rock.x, rock.y, rock.width, rock.height);
+    });
+  }
+
+  // Spawn a new rock
+  function spawnRock() {
+    if (!gameActive || rocks.length >= MAX_ROCKS) return;
+
+    const x = Math.floor(Math.random() * (gameCanvas.width - ROCK_WIDTH));
+    const speed = INITIAL_ROCK_SPEED + Math.random() * 2; // Slightly varied speed
+    rocks.push({
+      x: x,
+      y: -ROCK_HEIGHT, // Start above canvas
+      width: ROCK_WIDTH,
+      height: ROCK_HEIGHT,
+      speed: speed
+    });
+  }
+
+  // End the game
+  function endGame(win) {
+    gameActive = false;
+    cancelAnimationFrame(gameInterval);
+    clearInterval(rockSpawnInterval);
+
+    gameMusic.pause();
+    gameMusic.currentTime = 0;
+
+    gameCanvas.style.display = 'none';
+    gameScoreDisplay.style.display = 'none';
+    gameTimerDisplay.style.display = 'none';
+    gameControls.style.display = 'none';
+
+    if (win) {
+      winSound.volume = 0.7;
+      winSound.play().catch(e => console.log("Win audio play prevented:", e));
+      gameWinMessage.style.display = 'block';
+    } else {
+      hitSound.volume = 0.7;
+      hitSound.play().catch(e => console.log("Hit audio play prevented:", e));
+      gameOverMessage.style.display = 'block';
+    }
+    backButton.style.display = 'inline-block';
+  }
+
+  // Event Listeners
+  startGameButton.addEventListener('click', startGame);
+  retryButton.addEventListener('click', initGame); // Retry button resets game
+  playAgainButton.addEventListener('click', initGame); // Play again button resets game
+
+  document.addEventListener('keydown', (e) => {
+    if (!gameActive) return;
+    if (e.key === 'ArrowLeft' || e.key === 'a') {
+      player.dx = -PLAYER_SPEED;
+    } else if (e.key === 'ArrowRight' || e.key === 'd') {
+      player.dx = PLAYER_SPEED;
+    }
+  });
+
+  document.addEventListener('keyup', (e) => {
+    if (!gameActive) return;
+    if ((e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'ArrowRight' || e.key === 'd') && player.dx !== 0) {
+      player.dx = 0;
+    }
+  });
+  
+  // Ensure audio plays on first user interaction
+  document.body.addEventListener('click', () => {
+    if (gameMusic.paused && gameActive) {
+      gameMusic.play().catch(e => console.log("Audio play prevented:", e));
+    }
+  }, { once: true });
+
+
+  // Initialize the game when the page loads
+  document.addEventListener('DOMContentLoaded', initGame);
+ </script>
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

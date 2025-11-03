@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giorno 6 - Gioco delle Canzoni Natalizie</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Mountains of Christmas', cursive;
+            background: linear-gradient(100deg, #000000 0%, #f83030 50%, #000000 100%);
+            color: gold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .game-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 5px solid gold;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            max-width: 700px;
+            width: 100%;
+            position: relative;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+        .clue-section {
+            margin-bottom: 25px;
+        }
+        .btn-primary {
+            background-color: gold;
+            border-color: gold;
+            color: #333;
+            font-size: 1.3rem;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #ffd700;
+            border-color: #ffd700;
+            color: #000;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.9);
+        }
+        .btn-outline-light {
+            color: #fff;
+            border-color: #fff;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin: 5px;
+            width: 100%;
+        }
+        .btn-outline-light:hover:not(:disabled) {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: #fff;
+            color: #fff;
+        }
+        #feedback {
+            font-size: 1.3rem;
+            margin-top: 20px;
+            font-weight: bold;
+            min-height: 1.5em; /* Reserve space for feedback */
+        }
+        .dedication-section {
+            margin-top: 40px;
+            border-top: 2px dashed rgba(255, 215, 0, 0.5);
+            padding-top: 30px;
+            display: none; /* Hidden by default */
+        }
+        .dedication-section h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        #dedicationMessage {
+            font-size: 1.5rem;
+            margin-top: 25px;
+            color: #fff;
+        }
+        .btn-secondary {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: #fff;
+            font-size: 1.3rem;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-left: 15px;
+        }
+        .btn-secondary:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(220, 53, 69, 0.7);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid gold;
+            color: #fff;
+            font-size: 1.2rem;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: inset 0 0 5px rgba(255, 215, 0, 0.3);
+        }
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .form-control:focus {
+            background-color: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            color: #fff;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: #fff;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: #fff;
+        }
+        .round-info {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        /* Round Progress Bar Styles */
+        #roundProgressBar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            height: 20px; /* Height of the bar */
+            width: 80%; /* Width relative to game-container */
+            margin-left: auto;
+            margin-right: auto;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 215, 0, 0.5);
+        }
+        .round-step {
+            flex-grow: 1;
+            height: 100%;
+            background-color: transparent;
+            border-left: 1px solid rgba(255, 215, 0, 0.3); /* Separator */
+            transition: all 0.5s ease; /* Smooth transition for color and pulse */
+            transform: scale(1); /* Base scale for animation */
+            opacity: 1; /* Base opacity for animation */
+        }
+        .round-step:first-child {
+            border-left: none; /* No border on the very first step */
+        }
+
+        /* Colors for active/completed steps */
+        .round-step.active-step.round-1 { background-color: #28a745; } /* Green */
+        .round-step.active-step.round-2 { background-color: #ffc107; } /* Yellow */
+        .round-step.active-step.round-3 { background-color: #dc3545; } /* Red */
+        .round-step.active-step.round-4 { background-color: #8A2BE2; } /* BlueViolet (Purple) */
+
+        /* Pulsing animation */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .round-step.pulsing {
+            animation-name: pulse;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+        }
+
+        /* Animation speeds */
+        .round-step.pulsing.speed-1 { animation-duration: 2s; }
+        .round-step.pulsing.speed-2 { animation-duration: 1.5s; }
+        .round-step.pulsing.speed-3 { animation-duration: 1s; }
+        .round-step.pulsing.speed-4 { animation-duration: 0.7s; }
+
+        #scoreMessage {
+            font-size: 1.4rem;
+            margin-top: 15px;
+            color: #fff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>🎶 Indovina la Canzone Natalizia! 🎶</h1>
+        <p id="roundInfo" class="round-info">Round 0 di 4</p>
+
+        <div id="roundProgressBar" class="mb-3">
+            <!-- Round steps will be inserted here by JavaScript -->
+        </div>
+<br><br>
+        <div class="clue-section">
+            <button id="playSnippetButton" class="btn btn-primary mb-3">Ascolta
+            </button>
+            <audio id="audioPlayer" src="" preload="auto"></audio>
+        </div>
+
+        <div id="optionsContainer" class="d-grid gap-2 col-10 mx-auto mb-4">
+            <!-- Option buttons will be inserted here by JavaScript -->
+        </div>
+        
+        <button id="skipButton" class="btn btn-secondary">Salta / Rivela</button>
+
+        <p id="feedback"></p>
+
+        <div id="dedicationSection" class="dedication-section">
+            <h3>Il tuo punteggio finale: <span id="finalScore">0</span> / 4</h3>
+            <p id="scoreMessage"></p> <!-- Message based on score -->
+            <h3>Dedica una Canzone Speciale!</h3>
+            <div class="form-group">
+                <input type="text" id="dedicateSongInput" class="form-control" placeholder="Nome della canzone da dedicare">
+            </div>
+            <div class="form-group">
+                <input type="text" id="dedicateRecipientInput" class="form-control" placeholder="A chi la dedichi?">
+            </div>
+            <button id="dedicateButton" class="btn btn-primary">Dedica</button>
+            <p id="dedicationMessage"></p>
+            <button id="playAgainButton" class="btn btn-primary mt-3">Gioca di nuovo</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const allSongs = [
+                { id: 1, title: "All I Want for Christmas Is You", artist: "Mariah Carey", track: "audio/all_i_want.mp3" },
+                { id: 2, title: "Jingle Bells", artist: "Tradizionale", track: "audio/jingle_bells.mp3" },
+                { id: 3, title: "Last Christmas", artist: "Wham!", track: "audio/last_christmas.mp3" },
+                { id: 4, title: "Santa Claus Is Comin' to Town", artist: "Tradizionale", track: "audio/santa_claus.mp3" },
+                { id: 5, title: "White Christmas", artist: "Bing Crosby", track: "audio/white_christmas.mp3" },
+                { id: 6, title: "Feliz Navidad", artist: "José Feliciano", track: "audio/feliz_navidad.mp3" },
+                { id: 7, title: "Driving Home for Christmas", artist: "Chris Rea", track: "audio/driving_home.mp3" },
+                { id: 8, title: "Do They Know It's Christmas?", artist: "Band Aid", track: "audio/do_they_know.mp3" }
+            ];
+
+            let gameSongs = [];
+            let currentRound = 0;
+            let score = 0;
+            let currentSong = null;
+            let gameActive = false;
+            const totalRounds = 4;
+            const snippetDuration = 5; // seconds
+
+            const audioPlayer = document.getElementById('audioPlayer');
+            const playSnippetButton = document.getElementById('playSnippetButton');
+            const optionsContainer = document.getElementById('optionsContainer');
+            const skipButton = document.getElementById('skipButton');
+            const feedback = document.getElementById('feedback');
+            const dedicationSection = document.getElementById('dedicationSection');
+            const dedicateSongInput = document.getElementById('dedicateSongInput');
+            const dedicateRecipientInput = document.getElementById('dedicateRecipientInput');
+            const dedicateButton = document.getElementById('dedicateButton');
+            const dedicationMessage = document.getElementById('dedicationMessage');
+            const roundInfo = document.getElementById('roundInfo');
+            const finalScoreDisplay = document.getElementById('finalScore');
+            const playAgainButton = document.getElementById('playAgainButton');
+            const roundProgressBar = document.getElementById('roundProgressBar');
+            const scoreMessage = document.getElementById('scoreMessage');
+
+            let audioTimeout;
+
+            function getRandomSongs(excludeId, count) {
+                const availableSongs = allSongs.filter(song => song.id !== excludeId);
+                const shuffled = availableSongs.sort(() => 0.5 - Math.random());
+                return shuffled.slice(0, count);
+            }
+
+            function updateRoundProgressBar() {
+                roundProgressBar.innerHTML = ''; // Clear existing steps
+                for (let i = 1; i <= totalRounds; i++) {
+                    const step = document.createElement('div');
+                    step.classList.add('round-step');
+                    
+                    if (i <= currentRound) {
+                        step.classList.add('active-step');
+                        step.classList.add(`round-${i}`); // Add specific color class
+                        // If it's the current round being played, make it pulse
+                        if (i === currentRound && gameActive) {
+                            step.classList.add('pulsing', `speed-${i}`);
+                        }
+                    }
+                    roundProgressBar.appendChild(step);
+                }
+            }
+
+            function initializeGame() {
+                const shuffledAllSongs = allSongs.sort(() => 0.5 - Math.random());
+                gameSongs = shuffledAllSongs.slice(0, totalRounds);
+
+                currentRound = 0;
+                score = 0;
+                gameActive = true;
+
+                dedicationSection.style.display = 'none';
+                playAgainButton.style.display = 'none';
+                scoreMessage.textContent = '';
+                updateRoundProgressBar(); // Initialize progress bar
+                startRound();
+            }
+
+            function startRound() {
+                audioPlayer.pause();
+                clearTimeout(audioTimeout);
+                
+                if (currentRound >= totalRounds) {
+                    endGame();
+                    return;
+                }
+
+                currentRound++;
+                roundInfo.textContent = `Round ${currentRound} di ${totalRounds}`;
+                feedback.textContent = '';
+                optionsContainer.innerHTML = '';
+                updateRoundProgressBar(); // Update progress bar for the new round
+                
+                currentSong = gameSongs[currentRound - 1];
+                audioPlayer.src = currentSong.track;
+                audioPlayer.load();
+                
+                playSnippetButton.style.display = 'inline-block';
+                playSnippetButton.textContent = 'Ascolta un frammento';
+                playSnippetButton.disabled = false;
+                skipButton.textContent = 'Salta / Rivela';
+                skipButton.style.display = 'inline-block';
+
+                let options = [currentSong.title];
+                const incorrectSongs = getRandomSongs(currentSong.id, 3);
+                incorrectSongs.forEach(song => options.push(song.title));
+
+                options = options.sort(() => 0.5 - Math.random());
+
+                options.forEach(optionText => {
+                    const button = document.createElement('button');
+                    button.classList.add('btn', 'btn-outline-light', 'btn-lg', 'mb-2');
+                    button.textContent = optionText;
+                    button.setAttribute('data-title', optionText);
+                    button.addEventListener('click', () => checkAnswer(optionText, button));
+                    optionsContainer.appendChild(button);
+                });
+            }
+
+            function playSnippet() {
+                if (!gameActive) return;
+
+                audioPlayer.currentTime = 0;
+                audioPlayer.play();
+                playSnippetButton.textContent = 'Riproduzione...';
+                playSnippetButton.disabled = true;
+
+                audioTimeout = setTimeout(() => {
+                    audioPlayer.pause();
+                    playSnippetButton.textContent = 'Ascolta di nuovo';
+                    playSnippetButton.disabled = false;
+                }, snippetDuration * 1000);
+            }
+
+            function checkAnswer(selectedTitle, clickedButton) {
+                if (!gameActive) return;
+
+                audioPlayer.pause();
+                clearTimeout(audioTimeout);
+                
+                disableOptionButtons(selectedTitle, clickedButton);
+
+                if (selectedTitle === currentSong.title) {
+                    feedback.textContent = `Corretto! La canzone è "${currentSong.title}" di ${currentSong.artist}.`;
+                    feedback.style.color = 'lightgreen';
+                    score++;
+                } else {
+                    feedback.textContent = `Sbagliato! La risposta corretta era: "${currentSong.title}" di ${currentSong.artist}.`;
+                    feedback.style.color = 'red';
+                }
+
+                gameActive = false;
+                playSnippetButton.style.display = 'none';
+                skipButton.style.display = 'none';
+
+                setTimeout(() => {
+                    gameActive = true;
+                    startRound();
+                }, 3000);
+            }
+
+            function disableOptionButtons(selectedTitle = null, clickedButton = null) {
+                const buttons = optionsContainer.querySelectorAll('button');
+                buttons.forEach(button => {
+                    button.disabled = true;
+                    if (button.getAttribute('data-title') === currentSong.title) {
+                        button.classList.remove('btn-outline-light', 'btn-danger');
+                        button.classList.add('btn-success');
+                    } else if (button === clickedButton && selectedTitle !== currentSong.title) {
+                        button.classList.remove('btn-outline-light');
+                        button.classList.add('btn-danger');
+                    } else {
+                        button.classList.remove('btn-outline-light');
+                        button.classList.add('btn-secondary');
+                    }
+                });
+            }
+
+            function revealAnswer() {
+                if (!gameActive) return;
+
+                audioPlayer.pause();
+                clearTimeout(audioTimeout);
+
+                feedback.textContent = `La risposta corretta era: "${currentSong.title}" di ${currentSong.artist}.`;
+                feedback.style.color = 'yellow';
+                
+                disableOptionButtons();
+
+                gameActive = false;
+                playSnippetButton.style.display = 'none';
+                skipButton.style.display = 'none';
+
+                setTimeout(() => {
+                    gameActive = true;
+                    startRound();
+                }, 3000);
+            }
+
+            function endGame() {
+                gameActive = false;
+                audioPlayer.pause();
+                clearTimeout(audioTimeout);
+
+                roundInfo.textContent = 'Gioco Terminato!';
+                feedback.textContent = '';
+                optionsContainer.innerHTML = '';
+                playSnippetButton.style.display = 'none';
+                skipButton.style.display = 'none';
+
+                finalScoreDisplay.textContent = score;
+                dedicationSection.style.display = 'block';
+                playAgainButton.style.display = 'inline-block';
+                updateRoundProgressBar(); // Final update to ensure all steps are colored (not pulsing)
+
+                if (score === totalRounds) {
+                    scoreMessage.textContent = "Fantastico! Hai indovinato tutte le canzoni! Sei un vero esperto di Natale!";
+                    scoreMessage.style.color = 'lightgreen';
+                } else if (score >= totalRounds / 2) {
+                    scoreMessage.textContent = "Ottimo lavoro! Hai una buona conoscenza delle canzoni natalizie.";
+                    scoreMessage.style.color = 'yellow';
+                } else {
+                    scoreMessage.textContent = "Non male! Continua ad ascoltare e diventerai un maestro delle canzoni di Natale!";
+                    scoreMessage.style.color = 'red';
+                }
+            }
+
+            function dedicateSong() {
+                const songToDedicate = dedicateSongInput.value.trim();
+                const recipient = dedicateRecipientInput.value.trim();
+
+                if (songToDedicate && recipient) {
+                    dedicationMessage.textContent = `Hai dedicato "${songToDedicate}" a ${recipient}! Che bel pensiero natalizio! ❤️`;
+                    dedicationMessage.style.color = 'lightgreen';
+                } else {
+                    dedicationMessage.textContent = "Per favore, inserisci sia la canzone che il destinatario per la dedica.";
+                    dedicationMessage.style.color = 'red';
+                }
+            }
+
+            playSnippetButton.addEventListener('click', playSnippet);
+            skipButton.addEventListener('click', revealAnswer);
+            dedicateButton.addEventListener('click', dedicateSong);
+            playAgainButton.addEventListener('click', initializeGame);
+
+            initializeGame();
+        });
+    </script>
+</body>
+</html>
