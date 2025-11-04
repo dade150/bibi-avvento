@@ -331,7 +331,7 @@
 
  <audio id="correct-sound" src="audio/correct.mp3" preload="auto"></audio>
  <audio id="wrong-sound" src="audio/wrong.mp3" preload="auto"></audio>
- <audio id="victory-sound" src="audio/mario.mp3" preload="auto"></audio>
+ <audio id="victory-sound" src="audio/win.mp3" preload="auto"></audio>
 
  <div class="quiz-container">
   <div class="quiz-card">
@@ -388,28 +388,43 @@
  <script>
   const questions = [
    {
-    question: "Cosa si usa per fissare i tessuti biologici e preservarli nel tempo?",
-    answers: ["Alcol etilico", "Formalina", "Acqua distillata"],
-    correct: 1
-   },
-   {
-    question: "Qual è il colorante più comune usato per colorare i nuclei cellulari?",
-    answers: ["Eosina", "Ematossilina", "Giemsa"],
-    correct: 1
-   },
-   {
-    question: "A cosa serve il microtomo in laboratorio?",
-    answers: ["Tagliare sezioni sottili di tessuto", "Osservare batteri", "Centrifugare campioni"],
+    question: "Quale temperatura e tempo sono standard per il recupero antigenico in tampone citrato pH 6.0?",
+    answers: ["95-98°C per 20-40 minuti", "60°C per 2 ore", "121°C per 15 minuti in autoclave"],
     correct: 0
    },
    {
-    question: "Quale DPI è fondamentale indossare quando si maneggia la formalina?",
-    answers: ["Solo guanti", "Guanti, camice e occhiali protettivi", "Solo il camice"],
+    question: "Nel processamento istologico, quale soluzione viene usata come agente chiarificante tra disidratazione e inclusione?",
+    answers: ["Acetone", "Xilene o suoi sostituti", "Etanolo assoluto"],
     correct: 1
    },
    {
-    question: "Cosa significa l'acronimo EE in istologia?",
-    answers: ["Etanolo-Eosina", "Ematossilina-Eosina", "Esame-Esterno"],
+    question: "Qual è il metodo di colorazione specifico per identificare il Mycobacterium tuberculosis?",
+    answers: ["Gram", "Ziehl-Neelsen", "PAS"],
+    correct: 1
+   },
+   {
+    question: "In immunoistochimica, cosa indica un controllo negativo positivo?",
+    answers: ["La tecnica è corretta", "C'è reattività aspecifica/background", "L'anticorpo funziona bene"],
+    correct: 1
+   },   
+   {
+    question: "Nel sistema di classificazione dei rifiuti sanitari, a quale categoria appartiene un vetrino con tessuto fissato in formalina?",
+    answers: ["Rifiuto urbano normale", "Rifiuto speciale pericoloso a rischio infettivo", "Rifiuto speciale pericoloso non a rischio infettivo"],
+    correct: 2
+   },
+   {
+    question: "Cosa indica un valore di pH del fissativo troppo acido durante la fissazione?",
+    answers: ["Migliore preservazione", "Possibile formazione di precipitati di formalina", "Nessun effetto"],
+    correct: 1
+   },
+   {
+    question: "Quale tecnica molecolare amplifica specifiche sequenze di DNA?",
+    answers: ["Western blot", "PCR", "ELISA"],
+    correct: 1
+   },
+   {
+    question: "In citologia, quale fissativo viene preferito per lo striscio cervico-vaginale (Pap-test)?",
+    answers: ["Formalina tamponata al 10%", "Alcol etilico al 95% o spray fissativo", "Glutaraldeide"],
     correct: 1
    }
   ];

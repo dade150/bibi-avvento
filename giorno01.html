@@ -26,12 +26,35 @@
    align-items: center;
    padding: 2rem;
    position: relative;
+   overflow-x: hidden;
+   overflow-y: auto;
+  }
+  
+  /* Neve animata */
+  .snowflake {
+   position: fixed;
+   top: -10px;
+   color: white;
+   font-size: 1em;
+   font-family: Arial, sans-serif;
+   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+   z-index: 0;
+   user-select: none;
+   pointer-events: none;
+   animation: fall linear infinite;
+  }
+  
+  @keyframes fall {
+   to {
+    transform: translateY(100vh) translateX(100px);
+    opacity: 0;
+   }
   }
   
   /* Particelle fluttuanti di sfondo */
   body::before {
    content: '';
-   position: absolute;
+   position: fixed;
    width: 100%;
    height: 100%;
    background-image: 
@@ -45,6 +68,7 @@
    background-size: 200% 200%;
    animation: float 20s ease-in-out infinite;
    opacity: 0.3;
+   z-index: 0;
   }
   
   @keyframes float {
@@ -90,14 +114,6 @@
    to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
   }
   
-  .message-container {
-   background: rgba(0, 0, 0, 0.4);
-   border-radius: 15px;
-   padding: 2rem;
-   margin: 1.5rem 0;
-   border: 2px solid rgba(255, 215, 0, 0.3);
-  }
-  
   p {
    font-size: 1.4rem;
    line-height: 1.8;
@@ -138,6 +154,8 @@
    margin-bottom: 1.5rem;
    color: gold;
    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+   word-wrap: break-word;
+   overflow-wrap: break-word;
   }
   
   #result-area {
@@ -145,7 +163,6 @@
    min-height: 100px;
   }
   
-  /* Stile migliorato per l'immagine */
   .car-container {
    position: relative;
    display: inline-block;
@@ -165,7 +182,6 @@
    50% { transform: translateY(-15px) rotate(2deg); }
   }
   
-  /* Effetto bagliore attorno all'immagine */
   .car-container::before {
    content: '';
    position: absolute;
@@ -185,7 +201,6 @@
    100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); opacity: 0.5; }
   }
   
-  /* Cursore lampeggiante */
   .typing-cursor {
    display: inline-block;
    width: 3px;
@@ -201,18 +216,6 @@
    50%, 100% { opacity: 0; }
   }
   
-  /* Emoji animate */
-  .emoji-sparkle {
-   display: inline-block;
-   animation: sparkle 1.5s ease-in-out infinite;
-  }
-  
-  @keyframes sparkle {
-   0%, 100% { transform: scale(1) rotate(0deg); }
-   50% { transform: scale(1.2) rotate(180deg); }
-  }
-  
-  /* Stili per i messaggi di risultato */
   .result-message {
    font-size: 1.6rem;
    padding: 1.5rem;
@@ -236,7 +239,6 @@
    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
   }
   
-  /* Decorazioni tematiche lab */
   .lab-icon {
    font-size: 2rem;
    margin: 0 0.3rem;
@@ -266,24 +268,22 @@
 
  <div class="content-box">
   <h1>
-   <span class="emoji-sparkle">🧪</span> 
-   Giorno 1: Un Inizio Scintillante! 
-   <span class="emoji-sparkle">🔬</span>
+   <span class="lab-icon">🧪</span> 
+   Giorno 1 : First Reaction - Shock! 
   </h1>
   
   <div class="message-container">
    <p>
-    <strong style="color: gold;">Messaggio del giorno:</strong><br><br>
     <span id="message-text"></span>
     <span id="cursor" class="typing-cursor"></span>
    </p>
+   <button id="startButton" class="btn btn-choice" onclick="startInitialTyping()">Inizia l'Esperimento! ✨</button>
   </div>
 
   <div id="choice-buttons">
    <p>
-    <span class="lab-icon">⚗️</span>
-    Sei pronta per iniziare questa reazione chimica d'amore?
-    <span class="lab-icon">💝</span>
+    <span id="choice-message-text"></span>
+    <span id="choice-cursor" class="typing-cursor"></span>
    </p>
    <button class="btn btn-choice" onclick="handleChoice(true)">Sì, iniziamo! ✨</button>
    <button class="btn btn-choice" onclick="handleChoice(false)">No, aspetta... 🤔</button>
@@ -297,23 +297,65 @@
  </div>
 
  <script>
-  const initialMessage = "Benvenuta nel Lab dell'Avvento! Per questo primo giorno ho preparato una formula speciale: mescola insieme allegria (C₁₂H₂₂O₁₁), un pizzico di magia delle feste e tanto amore. Il risultato? Una reazione perfetta per iniziare questo viaggio natalizio insieme! 🎄❤️";
-  
+  const initialMessage = "Benvenuta nel Lab dell'Avvento! Per questo primo giorno ho preparato una formula speciale: mescola insieme C₁₀H₁₂N₂O e un pizzico di magia del Natale. Il risultato sarà una reazione perfetta per iniziare questo viaggio natalizio insieme! 🎄❤️";
+  const choiceQuestionText = "Sei pronta per iniziare questa reazione chimica d'amore?";
+
   const textElement = document.getElementById('message-text');
   const cursor = document.getElementById('cursor');
   const sound = document.getElementById('sound-effect');
   const punchSound = document.getElementById('punch-sound');
   const successSound = document.getElementById('success-sound');
   const choiceButtons = document.getElementById('choice-buttons');
+  const choiceMessageTextElement = document.getElementById('choice-message-text');
+  const choiceCursor = document.getElementById('choice-cursor');
   const resultArea = document.getElementById('result-area');
   const backButton = document.getElementById('back-to-calendar');
+  const startButton = document.getElementById('startButton');
   
   let i = 0;
   let soundStarted = false;
+  let choiceMessageSoundStarted = false;
+  let typedChoiceMessageHtml = "";
+  let choiceCurrentCharIndex = 0;
+
+  const choiceHtmlInsertions = {
+    0: '<span class="lab-icon">⚗️</span>', 
+  };
+
+  let punchMessageSoundStarted = false; 
+  let typedPunchMessageHtml = ""; 
+  let punchCurrentCharIndex = 0;
+
+  const punchTextPart1 = "Attenzione! Reazione inaspettata rilevata!"; 
+  const punchTextPart2 = "Ti sei guadagnata un pugnetto affettuoso! 👊🏻💛 "; 
+  const fullPunchPlainText = punchTextPart1 + punchTextPart2; 
+
+  const punchHtmlInsertions = {
+    0: '<span class="lab-icon">⚠️</span>', 
+    [punchTextPart1.length]: '<br>', 
+    [fullPunchPlainText.length]: '<span class="lab-icon">😄</span>' 
+  };
+
+  // Funzione per creare fiocchi di neve
+  function createSnowflake() {
+    const snowflake = document.createElement('div');
+    snowflake.classList.add('snowflake');
+    snowflake.textContent = '❄';
+    snowflake.style.left = Math.random() * 100 + '%';
+    snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+    snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+    snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+    document.body.appendChild(snowflake);
+    
+    setTimeout(() => snowflake.remove(), 8000);
+  }
+
+  // Inizia la neve ogni 300ms
+  setInterval(createSnowflake, 300);
   
-  function startSound() {
+  function startSoundPlayback() {
    if (!soundStarted) {
-    sound.volume = 1.0;
+    sound.volume = 0.5;
     const playPromise = sound.play();
     if (playPromise !== undefined) {
      playPromise.then(() => {
@@ -322,10 +364,9 @@
     }
    }
   }
-  
+
   function typeWriter() {
-   // Tenta di avviare l'audio immediatamente
-   startSound();
+   startSoundPlayback(); 
    
    function type() {
     if (i < initialMessage.length) {
@@ -337,17 +378,97 @@
      sound.pause();
      sound.currentTime = 0;
      cursor.style.display = 'none'; 
-     choiceButtons.style.display = 'block';
+     typeChoiceMessage();
     }
    }
    type();
   }
 
+  function typeChoiceMessage() {
+    if (!choiceMessageSoundStarted) {
+      sound.volume = 0.5;
+      const playPromise = sound.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          choiceMessageSoundStarted = true;
+        }).catch(() => {});
+      }
+    }
+
+    function typeNextChar() {
+      if (choiceHtmlInsertions[choiceCurrentCharIndex] !== undefined) {
+        typedChoiceMessageHtml += choiceHtmlInsertions[choiceCurrentCharIndex];
+        choiceMessageTextElement.innerHTML = typedChoiceMessageHtml;
+      }
+
+      if (choiceCurrentCharIndex < choiceQuestionText.length) {
+        typedChoiceMessageHtml += choiceQuestionText.charAt(choiceCurrentCharIndex);
+        choiceMessageTextElement.innerHTML = typedChoiceMessageHtml;
+        choiceCurrentCharIndex++;
+        const delay = (choiceQuestionText.charAt(choiceCurrentCharIndex - 1) === '?' || choiceQuestionText.charAt(choiceCurrentCharIndex - 1) === ',') ? 150 : 60;
+        setTimeout(typeNextChar, delay);
+      } else {
+        if (choiceHtmlInsertions[choiceQuestionText.length] !== undefined) {
+          typedChoiceMessageHtml += choiceHtmlInsertions[choiceQuestionText.length];
+          choiceMessageTextElement.innerHTML = typedChoiceMessageHtml;
+        }
+        sound.pause();
+        sound.currentTime = 0;
+        choiceCursor.style.display = 'none';
+        choiceButtons.style.display = 'block';
+      }
+    }
+    typeNextChar();
+  }
+
+  function typePunchMessage() {
+    if (!punchMessageSoundStarted) {
+      sound.volume = 0.5;
+      const playPromise = sound.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          punchMessageSoundStarted = true;
+        }).catch(() => {});
+      }
+    }
+
+    const punchTextContainer = document.getElementById('punch-message-text');
+    const punchCursor = document.getElementById('punch-cursor');
+
+    function typeNextChar() {
+      if (punchHtmlInsertions[punchCurrentCharIndex] !== undefined) {
+        typedPunchMessageHtml += punchHtmlInsertions[punchCurrentCharIndex];
+        punchTextContainer.innerHTML = typedPunchMessageHtml; 
+      }
+
+      if (punchCurrentCharIndex < fullPunchPlainText.length) {
+        typedPunchMessageHtml += fullPunchPlainText.charAt(punchCurrentCharIndex);
+        punchTextContainer.innerHTML = typedPunchMessageHtml;
+        punchCurrentCharIndex++;
+        const delay = (fullPunchPlainText.charAt(punchCurrentCharIndex - 1) === '.' || fullPunchPlainText.charAt(punchCurrentCharIndex - 1) === ',' || fullPunchPlainText.charAt(punchCurrentCharIndex - 1) === '!') ? 150 : 60;
+        setTimeout(typeNextChar, delay);
+      } else {
+        if (punchHtmlInsertions[fullPunchPlainText.length] !== undefined) {
+          typedPunchMessageHtml += punchHtmlInsertions[fullPunchPlainText.length];
+          punchTextContainer.innerHTML = typedPunchMessageHtml;
+        }
+        sound.pause();
+        sound.currentTime = 0;
+        punchCursor.style.display = 'none';
+        backButton.style.display = 'inline-block';
+      }
+    }
+    typeNextChar();
+  }
+
   function handleChoice(isReady) {
    resultArea.innerHTML = '';
    
+   typedPunchMessageHtml = "";
+   punchCurrentCharIndex = 0;
+   punchMessageSoundStarted = false;
+   
    if (isReady) {
-    // Riproduci il suono di successo (Mario)
     successSound.currentTime = 0;
     successSound.play().catch(() => {});
     
@@ -361,7 +482,6 @@
     `;
     backButton.style.display = 'inline-block';
    } else {
-    // Riproduci il suono dell'incidente
     punchSound.currentTime = 0;
     punchSound.play().catch(() => {});
     
@@ -370,21 +490,20 @@
       <img src="images/macchina-gialla.png" alt="Macchina gialla">
      </div>
      <div class="result-message punch-message">
-      <span class="lab-icon">⚠️</span>
-      Attenzione! Reazione inaspettata rilevata!<br>
-      Ti sei guadagnata un pugnetto affettuoso! 👊🏻💛
-      <span class="lab-icon">😄</span>
+      <span id="punch-message-text"></span>
+      <span id="punch-cursor" class="typing-cursor"></span>
      </div>
     `;
-    backButton.style.display = 'inline-block';
+    typePunchMessage(); 
    }
   }
   
-  // Avvio al caricamento della pagina
-  document.addEventListener('DOMContentLoaded', typeWriter);
-  
-  // Fallback: prova ad avviare l'audio al primo click dell'utente
-  document.body.addEventListener('click', startSound, { once: true });
+  function startInitialTyping() {
+    startButton.style.display = 'none'; 
+    typeWriter(); 
+  }
+
+  document.body.addEventListener('click', startSoundPlayback, { once: true });
  </script>
 
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

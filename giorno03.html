@@ -342,6 +342,10 @@
   const bonusVideoModal = document.getElementById('bonusVideoModal');
   const bonusVideoPlayer = document.getElementById('bonusVideoPlayer');
 
+  // Audio elements
+  const audioUp = new Audio('audio/up.mp3');
+  const audioDown = new Audio('audio/down.mp3');
+
   function initializeGame() {
    // Duplicate video data for pairs and shuffle
    cards = [...videoData, ...videoData].sort(() => 0.5 - Math.random());
@@ -395,19 +399,24 @@
    card1.classList.add('matched');
    card2.classList.add('matched');
 
-   // Play the video for the matched pair
-   playMatchedVideo(card1.dataset.id);
+   audioUp.play(); // Play up.mp3 when a match is found
 
-   matchedPairs++;
-   resetBoard();
+   setTimeout(() => { // Add 1-second delay before playing the video
+     // Play the video for the matched pair
+     playMatchedVideo(card1.dataset.id);
 
-   if (matchedPairs === videoData.length) { // All 8 pairs matched
-    setTimeout(showBonusVideo, 1500);
-   }
+     matchedPairs++;
+     resetBoard();
+
+     if (matchedPairs === videoData.length) { // All 8 pairs matched
+      setTimeout(showBonusVideo, 1500);
+     }
+   }, 1000); // 1 second delay
   }
 
   function unflipCards() {
    const [card1, card2] = flippedCards;
+   audioDown.play(); // Play down.mp3 when cards don't match
    setTimeout(() => {
     card1.classList.remove('flipped');
     card2.classList.remove('flipped');

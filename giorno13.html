@@ -1,1 +1,375 @@
 <!--Indovina il film natalizio con emoji-->
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giorno 13 - Indovina il Film Natalizio dall'Emoji 🎄</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Mountains of Christmas", cursive;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+      text-align: center;
+      padding: 40px;
+      color: #fff;
+    }
+
+    .content-box {
+      background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+      border: 5px solid;
+      border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
+      border-radius: 25px;
+      padding: 3rem;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+      box-shadow: 
+        0 0 30px rgba(255, 215, 0, 0.3),
+        0 0 60px rgba(255, 215, 0, 0.2),
+        inset 0 0 50px rgba(0, 0, 0, 0.5);
+      position: relative;
+      z-index: 1;
+      animation: glow-pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+      50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+    }
+
+    h1 {
+      color: gold;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3);
+      margin-bottom: 10px;
+      font-size: 2.8rem;
+    }
+
+    p {
+      margin-bottom: 30px;
+      font-size: 1.4rem;
+    }
+
+    #gameArea {
+      display: none; /* Hidden until game starts */
+      margin-top: 2rem;
+    }
+
+    #emojiClue {
+      font-size: 5rem; /* Large emoji */
+      margin-bottom: 2rem;
+      animation: bounce 2s infinite ease-in-out;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    #guessInput {
+      width: 80%;
+      max-width: 400px;
+      padding: 15px;
+      font-size: 1.4rem;
+      border: 2px solid gold;
+      border-radius: 10px;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-family: 'Mountains of Christmas', cursive;
+    }
+
+    #feedbackMessage {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-top: 1.5rem;
+      min-height: 50px; /* Reserve space */
+      color: gold;
+      text-shadow: 2px 2px 4px black;
+    }
+
+    .btn-game { 
+      margin: 0.5rem;
+      background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+      color: darkred;
+      border: 2px solid rgba(139, 0, 0, 0.5);
+      font-weight: bold;
+      font-size: 1.2rem;
+      padding: 0.7rem 2rem;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+      cursor: pointer;
+    }
+    
+    .btn-game:hover { 
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+      background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+    }
+
+    .game-win-message {
+      font-family: 'Mountains of Christmas', cursive;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 2rem;
+      border: 2px solid gold;
+      border-radius: 15px;
+      margin-top: 2rem;
+      display: none;
+      font-size: 1.8rem;
+      text-shadow: 2px 2px 0px #000;
+    }
+
+    .game-win-message h2 {
+      font-family: 'Mountains of Christmas', cursive;
+      color: gold;
+      text-shadow: 
+       2px 2px 4px black,
+       0 0 20px rgba(255, 215, 0, 0.5),
+       0 0 30px rgba(255, 215, 0, 0.3);
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .back-button {
+      margin-top: 2rem;
+      background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+      color: darkred;
+      border: 2px solid rgba(139, 0, 0, 0.5);
+      font-weight: bold;
+      font-size: 1.2rem;
+      padding: 0.7rem 2rem;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+      cursor: pointer;
+    }
+    .back-button:hover { 
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+      background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(2px 2px at 20% 30%, white, transparent),
+        radial-gradient(2px 2px at 60% 70%, white, transparent),
+        radial-gradient(1px 1px at 50% 50%, white, transparent),
+        radial-gradient(1px 1px at 80% 10%, white, transparent),
+        radial-gradient(2px 2px at 90% 60%, white, transparent),
+        radial-gradient(1px 1px at 33% 80%, white, transparent),
+        radial-gradient(1px 1px at 75% 40%, white, transparent);
+      background-size: 200% 200%;
+      animation: float 20s ease-in-out infinite;
+      opacity: 0.3;
+      z-index: 0;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+  </style>
+</head>
+<body>
+  <audio id="game-music" loop>
+    <source src="audio/game_music.mp3" type="audio/mpeg"> 
+  </audio>
+  <audio id="correct-sound">
+    <source src="audio/correct.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="incorrect-sound">
+    <source src="audio/incorrect.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="win-sound">
+    <source src="audio/win.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="content-box">
+    <h1>🎄 Indovina il Film Natalizio! 🎬</h1>
+    <p>Riuscirai a indovinare il titolo del film di Natale dalle emoji?</p>
+
+    <div id="introMessage">
+      <p>Clicca su "Inizia il Gioco" per iniziare a indovinare i tuoi film natalizi preferiti!</p>
+      <button class="btn-game" id="startGameButton">Inizia il Gioco ✨</button>
+    </div>
+
+    <div id="gameArea">
+      <div id="emojiClue"></div>
+      <input type="text" id="guessInput" placeholder="Il tuo indovinello..." autocomplete="off">
+      <button class="btn-game" id="checkGuessButton">Controlla</button>
+      <button class="btn-game" id="nextMovieButton" style="display: none;">Prossimo Film →</button>
+      <div id="feedbackMessage"></div>
+    </div>
+
+    <div class="game-win-message" id="gameWinMessage">
+      <h2>🎉 Complimenti! Hai indovinato tutti i film!</h2>
+      <p>Sei un vero esperto di film natalizi! 🎅</p>
+      <button class="btn-game" id="playAgainButton">Gioca Ancora</button>
+    </div>
+
+    <a href="index.html" class="btn back-button" id="back-to-calendar" style="display: none;">
+     🎄 Torna al Calendario
+    </a>
+  </div>
+
+  <script>
+    // Audio elements
+    const gameMusic = document.getElementById('game-music');
+    const correctSound = document.getElementById('correct-sound');
+    const incorrectSound = document.getElementById('incorrect-sound');
+    const winSound = document.getElementById('win-sound');
+
+    // UI elements
+    const introMessage = document.getElementById('introMessage');
+    const startGameButton = document.getElementById('startGameButton');
+    const gameArea = document.getElementById('gameArea');
+    const emojiClue = document.getElementById('emojiClue');
+    const guessInput = document.getElementById('guessInput');
+    const checkGuessButton = document.getElementById('checkGuessButton');
+    const nextMovieButton = document.getElementById('nextMovieButton');
+    const feedbackMessage = document.getElementById('feedbackMessage');
+    const gameWinMessage = document.getElementById('gameWinMessage');
+    const playAgainButton = document.getElementById('playAgainButton');
+    const backButton = document.getElementById('back-to-calendar');
+
+    // Game data
+    const christmasMovies = [
+      { emoji: "🎄🏠👦🛫​", answer: "Mamma ho perso l'aereo" },
+      { emoji: "🎅🎁🌟​🦌", answer: "Miracolo nella 34 strada" },
+      { emoji: "💚😠🎅", answer: "Il Grinch" },
+    ];
+
+    let shuffledMovies = [];
+    let currentMovieIndex = 0;
+    let gameActive = false;
+
+    // --- Game Initialization ---
+    function initGame() {
+      gameActive = false; // Game starts inactive, waiting for user to click "Start"
+      shuffledMovies = [...christmasMovies].sort(() => Math.random() - 0.5); // Shuffle movies
+      currentMovieIndex = 0;
+
+      // Reset UI elements
+      introMessage.style.display = 'block';
+      startGameButton.style.display = 'block';
+      gameArea.style.display = 'none';
+      gameWinMessage.style.display = 'none';
+      backButton.style.display = 'none';
+      guessInput.value = '';
+      feedbackMessage.textContent = '';
+      checkGuessButton.style.display = 'inline-block';
+      nextMovieButton.style.display = 'none';
+      guessInput.disabled = false;
+
+      gameMusic.pause();
+      gameMusic.currentTime = 0;
+    }
+
+    // --- Start Game ---
+    function startGame() {
+      gameActive = true;
+      introMessage.style.display = 'none';
+      gameArea.style.display = 'block';
+      displayCurrentMovie();
+
+      gameMusic.volume = 0.3;
+      gameMusic.play().catch(e => console.log("Audio play prevented:", e));
+    }
+
+    // --- Display Current Movie Clue ---
+    function displayCurrentMovie() {
+      if (currentMovieIndex < shuffledMovies.length) {
+        emojiClue.textContent = shuffledMovies[currentMovieIndex].emoji;
+        guessInput.value = '';
+        feedbackMessage.textContent = '';
+        checkGuessButton.style.display = 'inline-block';
+        nextMovieButton.style.display = 'none';
+        guessInput.disabled = false;
+        guessInput.focus();
+      } else {
+        endGame(true); // All movies guessed
+      }
+    }
+
+    // --- Check User's Guess ---
+    function checkGuess() {
+      if (!gameActive) return;
+
+      const userGuess = guessInput.value.trim().toLowerCase();
+      const correctAnswer = shuffledMovies[currentMovieIndex].answer.toLowerCase();
+
+      if (userGuess === correctAnswer) {
+        correctSound.play().catch(e => console.log("Audio play prevented:", e));
+        feedbackMessage.textContent = "🎉 Corretto! Bravissimo!";
+        feedbackMessage.style.color = '#90EE90'; // Light green
+        guessInput.disabled = true;
+        checkGuessButton.style.display = 'none';
+        nextMovieButton.style.display = 'inline-block';
+      } else {
+        incorrectSound.play().catch(e => console.log("Audio play prevented:", e));
+        feedbackMessage.textContent = "😅 Sbagliato. Riprova!";
+        feedbackMessage.style.color = '#FF6347'; // Tomato red
+        guessInput.value = ''; // Clear input for another try
+        guessInput.focus();
+      }
+    }
+
+    // --- Move to Next Movie ---
+    function nextMovie() {
+      if (!gameActive) return;
+
+      currentMovieIndex++;
+      displayCurrentMovie();
+    }
+
+    // --- End Game ---
+    function endGame(win) {
+      gameActive = false;
+      gameMusic.pause();
+      gameMusic.currentTime = 0;
+
+      gameArea.style.display = 'none';
+      if (win) {
+        winSound.volume = 0.7;
+        winSound.play().catch(e => console.log("Win audio play prevented:", e));
+        gameWinMessage.style.display = 'block';
+      }
+      backButton.style.display = 'inline-block';
+    }
+
+    // --- Event Listeners ---
+    startGameButton.addEventListener('click', startGame);
+    checkGuessButton.addEventListener('click', checkGuess);
+    nextMovieButton.addEventListener('click', nextMovie);
+    playAgainButton.addEventListener('click', initGame);
+
+    // Allow pressing Enter to check guess
+    guessInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !guessInput.disabled) {
+        checkGuess();
+      } else if (e.key === 'Enter' && guessInput.disabled && nextMovieButton.style.display === 'inline-block') {
+        nextMovie();
+      }
+    });
+
+    // Ensure audio plays on first user interaction
+    document.body.addEventListener('click', () => {
+      if (gameMusic.paused && gameActive) {
+        gameMusic.play().catch(e => console.log("Audio play prevented:", e));
+      }
+    }, { once: true });
+
+    // Initialize game on page load
+    document.addEventListener('DOMContentLoaded', initGame);
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

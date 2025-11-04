@@ -1,1 +1,591 @@
-<!--componi corpo umano-->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>Giorno 11 - Componi il Corpo Umano</title>
+
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+ <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+ <style>
+  /* Stili globali basati su giorno01.html e giorno08.html */
+  * {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+  }
+  
+  body {
+   font-family: 'Mountains of Christmas', cursive;
+   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+   color: #fff;
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   padding: 2rem;
+   position: relative;
+  }
+  
+  /* Particelle fluttuanti di sfondo */
+  body::before {
+   content: '';
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   background-image: 
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 60% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent),
+    radial-gradient(2px 2px at 90% 60%, white, transparent),
+    radial-gradient(1px 1px at 33% 80%, white, transparent),
+    radial-gradient(1px 1px at 75% 40%, white, transparent);
+   background-size: 200% 200%;
+   animation: float 20s ease-in-out infinite;
+   opacity: 0.3;
+  }
+  
+  @keyframes float {
+   0%, 100% { transform: translateY(0); }
+   50% { transform: translateY(-20px); }
+  }
+  
+  .content-box {
+   background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+   border: 5px solid;
+   border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
+   border-radius: 25px;
+   padding: 3rem;
+   max-width: 900px;
+   text-align: center;
+   box-shadow: 
+    0 0 30px rgba(255, 215, 0, 0.3),
+    0 0 60px rgba(255, 215, 0, 0.2),
+    inset 0 0 50px rgba(0, 0, 0, 0.5);
+   position: relative;
+   z-index: 1;
+   animation: glow-pulse 3s ease-in-out infinite;
+  }
+  
+  @keyframes glow-pulse {
+   0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+   50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+  }
+  
+  h1 {
+   color: gold;
+   text-shadow: 
+    2px 2px 4px black,
+    0 0 20px rgba(255, 215, 0, 0.5),
+    0 0 30px rgba(255, 215, 0, 0.3);
+   font-size: 2.8rem;
+   margin-bottom: 2rem;
+   animation: title-glow 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes title-glow {
+   from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
+   to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
+  }
+  
+  .message-container {
+   background: rgba(0, 0, 0, 0.4);
+   border-radius: 15px;
+   padding: 2rem;
+   margin: 1.5rem 0;
+   border: 2px solid rgba(255, 215, 0, 0.3);
+  }
+  
+  p {
+   font-size: 1.4rem;
+   line-height: 1.8;
+   min-height: 100px;
+  }
+  
+  .back-button, .btn-game { 
+   margin: 0.5rem;
+   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+   color: darkred;
+   border: 2px solid rgba(139, 0, 0, 0.5);
+   font-weight: bold;
+   font-size: 1.2rem;
+   padding: 0.7rem 2rem;
+   border-radius: 50px;
+   transition: all 0.3s ease;
+   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+   cursor: pointer;
+  }
+  
+  .back-button:hover, .btn-game:hover { 
+   transform: translateY(-3px) scale(1.05);
+   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+  }
+  
+  .btn-game:active { 
+   transform: translateY(-1px);
+  }
+  
+  #result-area {
+   margin-top: 2rem;
+   min-height: 100px;
+  }
+  
+  .emoji-sparkle {
+   display: inline-block;
+   animation: sparkle 1.5s ease-in-out infinite;
+  }
+  
+  @keyframes sparkle {
+   0%, 100% { transform: scale(1) rotate(0deg); }
+   50% { transform: scale(1.2) rotate(180deg); }
+  }
+  
+  .result-message {
+   font-size: 1.6rem;
+   padding: 1.5rem;
+   border-radius: 15px;
+   margin-top: 1rem;
+   animation: fadeInUp 0.5s ease-out;
+  }
+  
+  @keyframes fadeInUp {
+   from { opacity: 0; transform: translateY(20px); }
+   to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .success-message {
+   color: #90EE90;
+   text-shadow: 0 0 10px rgba(144, 238, 144, 0.5);
+  }
+  
+  .lab-icon {
+   font-size: 2rem;
+   margin: 0 0.3rem;
+   display: inline-block;
+   animation: float-icon 3s ease-in-out infinite;
+  }
+  
+  @keyframes float-icon {
+   0%, 100% { transform: translateY(0); }
+   50% { transform: translateY(-10px); }
+  }
+
+  /* Stili specifici per il gioco "Componi il Corpo Umano" */
+  #gameArea {
+    position: relative;
+    width: 400px; /* Base image width */
+    height: 600px; /* Base image height */
+    margin: 2rem auto;
+    border: 4px solid #fff;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    background-image: url('images/corpo.png'); /* Base body image */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    image-rendering: pixelated;
+    display: none; /* Hidden until game starts */
+  }
+
+  .drop-target {
+    position: absolute;
+    background: transparent; /* Changed: No visible background */
+    border: none; /* Changed: No visible border */
+    transition: all 0.2s ease-in-out;
+    z-index: 10;
+  }
+
+  .drop-target.hover {
+    background: rgba(255, 215, 0, 0.3); /* Gold tint on hover */
+    border: 1px dashed gold;
+  }
+
+  .drop-target.correct {
+    background: rgba(144, 238, 144, 0.3); /* Light green when correct */
+    border: 1px solid #90EE90;
+    pointer-events: none; /* Disable further drops on this target */
+  }
+
+  #organTray {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+    min-height: 100px; /* To prevent layout shift */
+  }
+
+  .draggable-organ {
+    cursor: grab;
+    width: 60px; /* Example size for organs */
+    height: 60px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    image-rendering: pixelated;
+    transition: all 0.1s ease-out;
+    background-color: rgba(0, 0, 0, 0.5); /* Background for visibility if image is transparent */
+    padding: 5px;
+  }
+
+  .draggable-organ.dragged {
+    opacity: 0.5;
+    border: 2px dashed gold;
+  }
+
+  .placed-organ {
+    position: absolute;
+    image-rendering: pixelated;
+    z-index: 11; /* Above targets */
+    pointer-events: none; /* Cannot be dragged again once placed */
+  }
+
+  .game-message {
+    font-family: 'Press Start 2P', cursive;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 1rem 2rem;
+    border: 2px solid gold;
+    border-radius: 10px;
+    margin-top: 1rem;
+    display: none;
+    font-size: 1.5rem;
+    text-shadow: 2px 2px 0px #000;
+  }
+
+  /* Style for the win message title */
+  #gameWinMessage h2 { /* Changed h1 to h2 for semantic structure within content-box */
+    font-family: 'Mountains of Christmas', cursive; /* Applied requested font */
+    color: gold;
+    text-shadow: 
+     2px 2px 4px black,
+     0 0 20px rgba(255, 215, 0, 0.5),
+     0 0 30px rgba(255, 215, 0, 0.3);
+    font-size: 2.2rem; /* Adjusted size for consistency */
+    margin-bottom: 1rem;
+  }
+ </style>
+</head>
+
+<body>
+ <audio id="game-music" loop>
+  <source src="audio/puzzle_music.mp3" type="audio/mpeg"> 
+ </audio>
+ 
+ <audio id="correct-sound">
+  <source src="audio/correct.mp3" type="audio/mpeg">
+ </audio>
+
+ <audio id="incorrect-sound">
+  <source src="audio/incorrect.mp3" type="audio/mpeg">
+ </audio>
+
+ <audio id="win-sound">
+  <source src="audio/win.mp3" type="audio/mpeg">
+ </audio>
+
+ <div class="content-box">
+  <h1>
+   <span class="emoji-sparkle">🧠</span> 
+   Componi il Corpo Umano! 
+   <span class="emoji-sparkle">❤️</span>
+  </h1>
+  
+  <div class="message-container" id="intro-message">
+   <p>
+    Ciao Davide! È ora di mettere insieme i pezzi!
+    Trascina gli organi al loro posto corretto sul corpo umano.
+    Riuscirai a completare l'anatomia?
+   </p>
+  </div>
+
+  <button class="btn btn-game" id="startGameButton">Inizia il Puzzle ✨</button>
+
+  <div id="gameArea">
+    <!-- Drop targets will be dynamically added here -->
+  </div>
+
+  <div id="organTray" style="display: none;">
+    <!-- Draggable organs will be dynamically added here -->
+  </div>
+
+  <div id="gameWinMessage" class="game-message">
+    <h2>Congratulazioni! Hai composto il corpo umano perfettamente!</h2> <!-- Changed h1 to h2 and added class -->
+    <p style="font-family: 'Mountains of Christmas', cursive; font-size: 1.2rem; margin-top: 1rem;">
+      Sei un vero anatomista! 🎉
+    </p>
+    <button class="btn btn-game" id="playAgainButton">Gioca Ancora</button>
+  </div>
+
+  <div id="gameOverMessage" class="game-message">
+    Ops! Qualcosa non è al suo posto. Riprova!
+    <button class="btn btn-game" id="retryButton">Riprova</button>
+  </div>
+
+  <a href="index.html" class="btn back-button" id="back-to-calendar" style="display: none; margin-top: 2rem;">
+   🎄 Torna al Calendario
+  </a>
+ </div>
+
+ <script>
+  // Audio elements
+  const gameMusic = document.getElementById('game-music');
+  const correctSound = document.getElementById('correct-sound');
+  const incorrectSound = document.getElementById('incorrect-sound');
+  const winSound = document.getElementById('win-sound');
+
+  // Game UI elements
+  const startGameButton = document.getElementById('startGameButton');
+  const introMessage = document.getElementById('intro-message');
+  const gameArea = document.getElementById('gameArea');
+  const organTray = document.getElementById('organTray');
+  const gameWinMessage = document.getElementById('gameWinMessage');
+  const gameOverMessage = document.getElementById('gameOverMessage'); // Using for incorrect placement feedback
+  const retryButton = document.getElementById('retryButton');
+  const playAgainButton = document.getElementById('playAgainButton');
+  const backButton = document.getElementById('back-to-calendar');
+
+  // Game state
+  let gameActive = false;
+  let placedOrgansCount = 0;
+  let draggedOrganId = null;
+
+  // Organ data: id, image source, and target area properties (x, y, width, height relative to gameArea)
+  // NOTE: Adjust 'left', 'top', 'width', 'height' values based on your 'corpo.png' image for accurate placement.
+  const organsData = [
+    { 
+      id: 'cervello', 
+      src: 'images/organo1.png', // e.g., images/cervello.png
+      target: { left: 140, top: 20, width: 120, height: 80 },
+      isPlaced: false 
+    },
+    { 
+      id: 'cuore', 
+      src: 'images/organo2.png', // e.g., images/cuore.png
+      target: { left: 180, top: 200, width: 70, height: 70 },
+      isPlaced: false 
+    },
+    { 
+      id: 'stomaco', 
+      src: 'images/organo3.png', // e.g., images/stomaco.png
+      target: { left: 150, top: 300, width: 100, height: 80 },
+      isPlaced: false 
+    },
+    { 
+      id: 'polmoni', 
+      src: 'images/organo4.png', // e.g., images/polmoni.png
+      target: { left: 120, top: 150, width: 160, height: 120 },
+      isPlaced: false 
+    },
+    { 
+      id: 'fegato', 
+      src: 'images/organo5.png', // e.g., images/fegato.png
+      target: { left: 160, top: 260, width: 100, height: 80 },
+      isPlaced: false 
+    }
+  ];
+
+  // Initialize the game
+  function initGame() {
+    // Reset game state
+    gameActive = false;
+    placedOrgansCount = 0;
+    draggedOrganId = null;
+    organsData.forEach(organ => organ.isPlaced = false);
+
+    // Hide all game elements and show intro
+    introMessage.style.display = 'block';
+    startGameButton.style.display = 'block';
+    gameArea.style.display = 'none';
+    organTray.style.display = 'none';
+    gameWinMessage.style.display = 'none';
+    gameOverMessage.style.display = 'none';
+    backButton.style.display = 'none';
+
+    // Clear game area and organ tray
+    gameArea.innerHTML = '';
+    organTray.innerHTML = '';
+
+    gameMusic.pause();
+    gameMusic.currentTime = 0;
+  }
+
+  // Start the game
+  function startGame() {
+    introMessage.style.display = 'none';
+    startGameButton.style.display = 'none';
+    gameArea.style.display = 'block';
+    organTray.style.display = 'flex'; // Show organ tray
+    gameActive = true;
+
+    gameMusic.volume = 0.3;
+    gameMusic.play().catch(e => console.log("Audio play prevented:", e));
+
+    createDropTargets();
+    createDraggableOrgans();
+  }
+
+  // Create drop targets on the game area
+  function createDropTargets() {
+    organsData.forEach(organ => {
+      const targetDiv = document.createElement('div');
+      targetDiv.classList.add('drop-target');
+      targetDiv.id = `target-${organ.id}`;
+      targetDiv.style.left = `${organ.target.left}px`;
+      targetDiv.style.top = `${organ.target.top}px`;
+      targetDiv.style.width = `${organ.target.width}px`;
+      targetDiv.style.height = `${organ.target.height}px`;
+
+      targetDiv.addEventListener('dragover', handleDragOver);
+      targetDiv.addEventListener('dragenter', handleDragEnter);
+      targetDiv.addEventListener('dragleave', handleDragLeave);
+      targetDiv.addEventListener('drop', handleDrop);
+
+      gameArea.appendChild(targetDiv);
+    });
+  }
+
+  // Create draggable organ images in the tray
+  function createDraggableOrgans() {
+    // Shuffle organs for varied starting positions if desired
+    const shuffledOrgans = [...organsData].sort(() => Math.random() - 0.5);
+
+    shuffledOrgans.forEach(organ => {
+      const organImg = document.createElement('img');
+      organImg.src = organ.src;
+      organImg.alt = organ.id;
+      organImg.id = `organ-${organ.id}`;
+      organImg.classList.add('draggable-organ');
+      organImg.draggable = true;
+
+      organImg.addEventListener('dragstart', handleDragStart);
+      organImg.addEventListener('dragend', handleDragEnd);
+
+      organTray.appendChild(organImg);
+    });
+  }
+
+  // Drag event handlers
+  function handleDragStart(e) {
+    if (!gameActive) {
+      e.preventDefault();
+      return;
+    }
+    draggedOrganId = e.target.id.replace('organ-', '');
+    e.dataTransfer.setData('text/plain', draggedOrganId);
+    e.target.classList.add('dragged');
+    gameOverMessage.style.display = 'none'; // Hide any previous error messages
+  }
+
+  function handleDragEnd(e) {
+    e.target.classList.remove('dragged');
+    draggedOrganId = null;
+  }
+
+  // Drop target event handlers
+  function handleDragOver(e) {
+    e.preventDefault(); // Allow drop
+  }
+
+  function handleDragEnter(e) {
+    e.preventDefault();
+    e.target.classList.add('hover');
+  }
+
+  function handleDragLeave(e) {
+    e.target.classList.remove('hover');
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    e.target.classList.remove('hover');
+
+    const droppedOrganId = e.dataTransfer.getData('text/plain');
+    const targetDivId = e.target.id.replace('target-', '');
+
+    const organBeingDropped = organsData.find(o => o.id === droppedOrganId);
+    const targetForOrgan = organsData.find(o => o.id === targetDivId);
+
+    if (organBeingDropped && targetForOrgan && droppedOrganId === targetDivId && !organBeingDropped.isPlaced) {
+      // Correct placement
+      correctSound.play().catch(err => console.log("Correct audio play prevented:", err));
+      organBeingDropped.isPlaced = true;
+      placedOrgansCount++;
+
+      const organImg = document.getElementById(`organ-${droppedOrganId}`);
+      organImg.classList.remove('draggable-organ');
+      organImg.classList.add('placed-organ');
+      organImg.draggable = false; // Cannot drag again
+
+      // Position the organ image precisely over the target
+      organImg.style.position = 'absolute';
+      organImg.style.left = `${targetForOrgan.target.left}px`;
+      organImg.style.top = `${targetForOrgan.target.top}px`;
+      organImg.style.width = `${targetForOrgan.target.width}px`;
+      organImg.style.height = `${targetForOrgan.target.height}px`;
+
+      e.target.classList.add('correct'); // Visual feedback for correct target
+      e.target.appendChild(organImg); // Append the organ to the target div
+
+      checkWinCondition();
+    } else {
+      // Incorrect placement
+      incorrectSound.play().catch(err => console.log("Incorrect audio play prevented:", err));
+      gameOverMessage.style.display = 'block'; // Show a temporary error message
+      setTimeout(() => {
+        gameOverMessage.style.display = 'none';
+      }, 1500); // Hide after 1.5 seconds
+      // The dragged organ will return to its original position in the tray automatically via handleDragEnd
+    }
+  }
+
+  // Check if all organs are placed correctly
+  function checkWinCondition() {
+    if (placedOrgansCount === organsData.length) {
+      endGame(true);
+    }
+  }
+
+  // End the game (win or general reset)
+  function endGame(win) {
+    gameActive = false;
+    gameMusic.pause();
+    gameMusic.currentTime = 0;
+
+    gameArea.style.display = 'none';
+    organTray.style.display = 'none';
+
+    if (win) {
+      winSound.volume = 0.7;
+      winSound.play().catch(e => console.log("Win audio play prevented:", e));
+      gameWinMessage.style.display = 'block';
+    } else {
+      // This path might be less used if we only have win condition
+      // but good for general error/reset logic.
+      gameOverMessage.style.display = 'block';
+    }
+    backButton.style.display = 'inline-block';
+  }
+
+  // Event Listeners for buttons
+  startGameButton.addEventListener('click', startGame);
+  retryButton.addEventListener('click', initGame); // Retry button resets game
+  playAgainButton.addEventListener('click', initGame); // Play again button resets game
+
+  // Ensure audio plays on first user interaction
+  document.body.addEventListener('click', () => {
+    if (gameMusic.paused && gameActive) {
+      gameMusic.play().catch(e => console.log("Audio play prevented:", e));
+    }
+  }, { once: true });
+
+  // Initialize the game when the page loads
+  document.addEventListener('DOMContentLoaded', initGame);
+ </script>
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
