@@ -7,6 +7,52 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
     <style>
+        /* Existing floating particles background */
+        body::before {
+            content: '';
+            position: fixed; /* Changed to fixed to cover the whole viewport */
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(2px 2px at 60% 70%, white, transparent),
+                radial-gradient(1px 1px at 50% 50%, white, transparent),
+                radial-gradient(1px 1px at 80% 10%, white, transparent),
+                radial-gradient(2px 2px at 90% 60%, white, transparent),
+                radial-gradient(1px 1px at 33% 80%, white, transparent),
+                radial-gradient(1px 1px at 75% 40%, white, transparent);
+            background-size: 200% 200%;
+            animation: float 20s ease-in-out infinite;
+            opacity: 0.3;
+            z-index: 0; /* Ensures it stays behind game content */
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* New: Animated snowflakes CSS */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: white;
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            z-index: 0; /* Stays behind game content */
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
         body {
             font-family: 'Mountains of Christmas', cursive;
             background: linear-gradient(100deg, #000000 0%, #f83030 50%, #000000 100%);
@@ -18,6 +64,9 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
+            position: relative; /* Needed for snowflakes */
+            overflow-x: hidden; /* Prevent horizontal scroll from snowflakes */
+            overflow-y: auto;
         }
         .game-container {
             background-color: rgba(0, 0, 0, 0.7);
@@ -29,6 +78,7 @@
             max-width: 700px;
             width: 100%;
             position: relative;
+            z-index: 1; /* Ensure game content is above snow */
         }
         h1 {
             font-size: 3rem;
@@ -205,6 +255,10 @@
     </style>
 </head>
 <body>
+    <!-- Background Music -->
+    <audio id="backgroundMusic" src="audio/tranqui.mp3" loop preload="auto"></audio>
+    <!-- End Game Music (User's favorite song) -->
+    <audio id="endGameMusic" src="audio/canzoni-natale/canzone5.mp3" preload="auto"></audio>
 
     <div class="game-container">
         <h1>🎶 Indovina la Canzone Natalizia! 🎶</h1>
@@ -231,15 +285,24 @@
         <div id="dedicationSection" class="dedication-section">
             <h3>Il tuo punteggio finale: <span id="finalScore">0</span> / 4</h3>
             <p id="scoreMessage"></p> <!-- Message based on score -->
-            <h3>Dedica una Canzone Speciale!</h3>
+            <h3>Manda una Dedica Speciale!</h3>
             <div class="form-group">
                 <input type="text" id="dedicateSongInput" class="form-control" placeholder="Nome della canzone da dedicare">
             </div>
             <div class="form-group">
-                <input type="text" id="dedicateRecipientInput" class="form-control" placeholder="A chi la dedichi?">
+                <input type="text" id="dedicateRecipientInput" class="form-control" placeholder="A chi la dedichi? (Nome)">
             </div>
-            <button id="dedicateButton" class="btn btn-primary">Dedica</button>
-            <p id="dedicationMessage"></p>
+            <div class="form-group">
+                <textarea id="personalMessageInput" class="form-control" rows="3" placeholder="Aggiungi un messaggio personale (opzionale)"></textarea>
+            </div>
+            <button id="generateShareMessageButton" class="btn btn-primary">Genera Messaggio per Condividere</button>
+            
+            <div id="shareOutput" style="margin-top: 20px; display: none;">
+                <textarea id="generatedMessageTextarea" class="form-control mb-2" rows="5" readonly></textarea>
+                <button id="copyMessageButton" class="btn btn-info me-2">Copia Messaggio</button>
+                <button id="shareWhatsappButton" class="btn btn-success">Condividi su WhatsApp</button>
+            </div>
+            <p id="dedicationMessage" class="mt-3"></p> <!-- For feedback after sharing attempt -->
             <button id="playAgainButton" class="btn btn-primary mt-3">Gioca di nuovo</button>
         </div>
     </div>
@@ -248,14 +311,17 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const allSongs = [
-                { id: 1, title: "All I Want for Christmas Is You", artist: "Mariah Carey", track: "audio/all_i_want.mp3" },
-                { id: 2, title: "Jingle Bells", artist: "Tradizionale", track: "audio/jingle_bells.mp3" },
-                { id: 3, title: "Last Christmas", artist: "Wham!", track: "audio/last_christmas.mp3" },
-                { id: 4, title: "Santa Claus Is Comin' to Town", artist: "Tradizionale", track: "audio/santa_claus.mp3" },
-                { id: 5, title: "White Christmas", artist: "Bing Crosby", track: "audio/white_christmas.mp3" },
-                { id: 6, title: "Feliz Navidad", artist: "José Feliciano", track: "audio/feliz_navidad.mp3" },
-                { id: 7, title: "Driving Home for Christmas", artist: "Chris Rea", track: "audio/driving_home.mp3" },
-                { id: 8, title: "Do They Know It's Christmas?", artist: "Band Aid", track: "audio/do_they_know.mp3" }
+                { id: 1, title: "All I Want for Christmas Is You", artist: "Mariah Carey", track: "audio/canzoni-natale/canzone1.mp3" },
+                { id: 2, title: "Feliz Navidad", artist: "José Feliciano", track: "audio/canzoni-natale/canzone2.mp3" },
+                { id: 3, title: "Last Christmas", artist: "Wham!", track: "audio/canzoni-natale/canzone3.mp3" },
+                { id: 4, title: "White Christmas", artist: "Bing Crosby", track: "audio/canzoni-natale/canzone4.mp3" },
+                // Adding more songs for incorrect options to ensure variety
+                { id: 5, title: "Jingle Bell Rock", artist: "Bobby Helms", track: "audio/canzoni-natale/canzone5.mp3" }, // Using canzone5.mp3 as a regular song option for incorrect choices
+                { id: 6, title: "Let It Snow! Let It Snow! Let It Snow!", artist: "Dean Martin", track: "audio/jingle_bell_rock.mp3" },
+                { id: 7, title: "Driving Home for Christmas", artist: "Chris Rea", track: "audio/let_it_snow.mp3" },
+                { id: 8, title: "It's the Most Wonderful Time of the Year", artist: "Andy Williams", track: "audio/driving_home.mp3" },
+                { id: 9, title: "Do They Know It's Christmas?", artist: "Band Aid", track: "audio/do_they_know.mp3" },
+                { id: 10, title: "Have Yourself a Merry Little Christmas", artist: "Frank Sinatra", track: "audio/have_yourself.mp3" },
             ];
 
             let gameSongs = [];
@@ -264,7 +330,7 @@
             let currentSong = null;
             let gameActive = false;
             const totalRounds = 4;
-            const snippetDuration = 5; // seconds
+            // Removed const snippetDuration as requested
 
             const audioPlayer = document.getElementById('audioPlayer');
             const playSnippetButton = document.getElementById('playSnippetButton');
@@ -274,7 +340,12 @@
             const dedicationSection = document.getElementById('dedicationSection');
             const dedicateSongInput = document.getElementById('dedicateSongInput');
             const dedicateRecipientInput = document.getElementById('dedicateRecipientInput');
-            const dedicateButton = document.getElementById('dedicateButton');
+            const personalMessageInput = document.getElementById('personalMessageInput'); // New input
+            const generateShareMessageButton = document.getElementById('generateShareMessageButton'); // New button
+            const shareOutput = document.getElementById('shareOutput'); // New div
+            const generatedMessageTextarea = document.getElementById('generatedMessageTextarea'); // New textarea
+            const copyMessageButton = document.getElementById('copyMessageButton'); // New button
+            const shareWhatsappButton = document.getElementById('shareWhatsappButton'); // New button
             const dedicationMessage = document.getElementById('dedicationMessage');
             const roundInfo = document.getElementById('roundInfo');
             const finalScoreDisplay = document.getElementById('finalScore');
@@ -282,7 +353,26 @@
             const roundProgressBar = document.getElementById('roundProgressBar');
             const scoreMessage = document.getElementById('scoreMessage');
 
-            let audioTimeout;
+            // Audio elements for background and end game
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            const endGameMusic = document.getElementById('endGameMusic');
+
+
+            // Removed audioTimeout variable as it's no longer needed
+
+            // Function to create snowflakes (copied from giorno01)
+            function createSnowflake() {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.textContent = '❄';
+                snowflake.style.left = Math.random() * 100 + '%';
+                snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+                snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                document.body.appendChild(snowflake);
+                
+                setTimeout(() => snowflake.remove(), 8000);
+            }
 
             function getRandomSongs(excludeId, count) {
                 const availableSongs = allSongs.filter(song => song.id !== excludeId);
@@ -309,8 +399,13 @@
             }
 
             function initializeGame() {
-                const shuffledAllSongs = allSongs.sort(() => 0.5 - Math.random());
-                gameSongs = shuffledAllSongs.slice(0, totalRounds);
+                // Set the specific songs for the rounds as requested
+                gameSongs = [
+                    allSongs.find(s => s.title === "All I Want for Christmas Is You"), 
+                    allSongs.find(s => s.title === "Feliz Navidad"), 
+                    allSongs.find(s => s.title === "Last Christmas"),
+                    allSongs.find(s => s.title === "White Christmas")
+                ];
 
                 currentRound = 0;
                 score = 0;
@@ -319,13 +414,23 @@
                 dedicationSection.style.display = 'none';
                 playAgainButton.style.display = 'none';
                 scoreMessage.textContent = '';
-                updateRoundProgressBar(); // Initialize progress bar
+                shareOutput.style.display = 'none'; // Hide share output on reset
+                dedicationMessage.textContent = ''; // Clear dedication message
+                dedicateSongInput.value = ''; // Clear inputs
+                dedicateRecipientInput.value = '';
+                personalMessageInput.value = '';
+
+                updateRoundProgressBar(); 
+                
+                backgroundMusic.volume = 0.3; // Set volume
+                backgroundMusic.play().catch(e => console.error("Autoplay of background music prevented:", e));
+
                 startRound();
             }
 
             function startRound() {
                 audioPlayer.pause();
-                clearTimeout(audioTimeout);
+                // Removed clearTimeout(audioTimeout);
                 
                 if (currentRound >= totalRounds) {
                     endGame();
@@ -343,13 +448,15 @@
                 audioPlayer.load();
                 
                 playSnippetButton.style.display = 'inline-block';
-                playSnippetButton.textContent = 'Ascolta un frammento';
+                playSnippetButton.textContent = 'Ascolta';
                 playSnippetButton.disabled = false;
                 skipButton.textContent = 'Salta / Rivela';
                 skipButton.style.display = 'inline-block';
 
                 let options = [currentSong.title];
-                const incorrectSongs = getRandomSongs(currentSong.id, 3);
+                // Ensure incorrect options are different from the current song and the other correct answers
+                const allOtherSongs = allSongs.filter(s => s.title !== currentSong.title && !gameSongs.some(gs => gs.title === s.title));
+                const incorrectSongs = allOtherSongs.sort(() => 0.5 - Math.random()).slice(0, 3);
                 incorrectSongs.forEach(song => options.push(song.title));
 
                 options = options.sort(() => 0.5 - Math.random());
@@ -362,6 +469,14 @@
                     button.addEventListener('click', () => checkAnswer(optionText, button));
                     optionsContainer.appendChild(button);
                 });
+
+                // Add onended event listener for the audioPlayer
+                audioPlayer.onended = function() {
+                    if (gameActive) { // Only reset if game is still active (not ended or answered)
+                        playSnippetButton.textContent = 'Ascolta di nuovo';
+                        playSnippetButton.disabled = false;
+                    }
+                };
             }
 
             function playSnippet() {
@@ -369,21 +484,17 @@
 
                 audioPlayer.currentTime = 0;
                 audioPlayer.play();
-                playSnippetButton.textContent = 'Riproduzione...';
+                playSnippetButton.textContent = 'Riproduzione in corso...'; // More descriptive
                 playSnippetButton.disabled = true;
 
-                audioTimeout = setTimeout(() => {
-                    audioPlayer.pause();
-                    playSnippetButton.textContent = 'Ascolta di nuovo';
-                    playSnippetButton.disabled = false;
-                }, snippetDuration * 1000);
+                // Removed setTimeout to pause after a snippet duration, song will play fully
             }
 
             function checkAnswer(selectedTitle, clickedButton) {
                 if (!gameActive) return;
 
                 audioPlayer.pause();
-                clearTimeout(audioTimeout);
+                // Removed clearTimeout(audioTimeout);
                 
                 disableOptionButtons(selectedTitle, clickedButton);
 
@@ -427,7 +538,7 @@
                 if (!gameActive) return;
 
                 audioPlayer.pause();
-                clearTimeout(audioTimeout);
+                // Removed clearTimeout(audioTimeout);
 
                 feedback.textContent = `La risposta corretta era: "${currentSong.title}" di ${currentSong.artist}.`;
                 feedback.style.color = 'yellow';
@@ -447,7 +558,14 @@
             function endGame() {
                 gameActive = false;
                 audioPlayer.pause();
-                clearTimeout(audioTimeout);
+                // Removed clearTimeout(audioTimeout);
+
+                // Stop background music
+                backgroundMusic.pause();
+                backgroundMusic.currentTime = 0;
+
+                // Play end game music (canzone5.mp3)
+                endGameMusic.play().catch(e => console.error("Error playing end game music:", e));
 
                 roundInfo.textContent = 'Gioco Terminato!';
                 feedback.textContent = '';
@@ -458,39 +576,69 @@
                 finalScoreDisplay.textContent = score;
                 dedicationSection.style.display = 'block';
                 playAgainButton.style.display = 'inline-block';
-                updateRoundProgressBar(); // Final update to ensure all steps are colored (not pulsing)
+                updateRoundProgressBar(); 
 
                 if (score === totalRounds) {
-                    scoreMessage.textContent = "Fantastico! Hai indovinato tutte le canzoni! Sei un vero esperto di Natale!";
+                    scoreMessage.textContent = "Fantastico! Hai indovinato tutte le canzoni! Sei una vera esperta di Natale!";
                     scoreMessage.style.color = 'lightgreen';
                 } else if (score >= totalRounds / 2) {
                     scoreMessage.textContent = "Ottimo lavoro! Hai una buona conoscenza delle canzoni natalizie.";
                     scoreMessage.style.color = 'yellow';
                 } else {
-                    scoreMessage.textContent = "Non male! Continua ad ascoltare e diventerai un maestro delle canzoni di Natale!";
+                    scoreMessage.textContent = "Non male! Continua ad ascoltare e diventerai una maestra delle canzoni di Natale!";
                     scoreMessage.style.color = 'red';
                 }
             }
 
-            function dedicateSong() {
+            // New function to generate and display the shareable message
+            function generateShareMessage() {
                 const songToDedicate = dedicateSongInput.value.trim();
                 const recipient = dedicateRecipientInput.value.trim();
+                const personalMessage = personalMessageInput.value.trim();
 
-                if (songToDedicate && recipient) {
-                    dedicationMessage.textContent = `Hai dedicato "${songToDedicate}" a ${recipient}! Che bel pensiero natalizio! ❤️`;
-                    dedicationMessage.style.color = 'lightgreen';
-                } else {
-                    dedicationMessage.textContent = "Per favore, inserisci sia la canzone che il destinatario per la dedica.";
-                    dedicationMessage.style.color = 'red';
+                let message = `Ciao ${recipient || 'amico/a'}! Ho appena giocato al Quiz delle Canzoni Natalizie e ho pensato a te!`;
+                
+                if (songToDedicate) {
+                    message += ` Ti dedico la canzone "${songToDedicate}"! 🎶`;
                 }
+
+                if (personalMessage) {
+                    message += `\n\nMessaggio personale: "${personalMessage}"`;
+                }
+
+                message += `\n\nSpero ti piaccia! Buon Natale! 🎄`;
+
+                generatedMessageTextarea.value = message;
+                shareOutput.style.display = 'block';
+                dedicationMessage.textContent = ''; // Clear previous dedication message
             }
+
+            // Function to copy the generated message
+            function copyMessage() {
+                generatedMessageTextarea.select();
+                document.execCommand('copy');
+                dedicationMessage.textContent = 'Messaggio copiato negli appunti!';
+                dedicationMessage.style.color = 'lightgreen';
+            }
+
+            // Function to share via WhatsApp
+            function shareViaWhatsapp() {
+                const message = encodeURIComponent(generatedMessageTextarea.value);
+                window.open(`whatsapp://send?text=${message}`, '_blank');
+                dedicationMessage.textContent = 'Tentativo di condivisione su WhatsApp avviato!';
+                dedicationMessage.style.color = 'lightgreen';
+            }
+
 
             playSnippetButton.addEventListener('click', playSnippet);
             skipButton.addEventListener('click', revealAnswer);
-            dedicateButton.addEventListener('click', dedicateSong);
+            generateShareMessageButton.addEventListener('click', generateShareMessage);
+            copyMessageButton.addEventListener('click', copyMessage);
+            shareWhatsappButton.addEventListener('click', shareViaWhatsapp);
             playAgainButton.addEventListener('click', initializeGame);
 
             initializeGame();
+            setInterval(createSnowflake, 300);
         });
     </script>
 </body>

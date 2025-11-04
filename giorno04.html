@@ -25,11 +25,14 @@
    align-items: center;
    padding: 2rem;
    position: relative;
+   overflow-x: hidden; /* Added to prevent horizontal scroll from snowflakes */
+   overflow-y: auto;
   }
   
+  /* Existing snow effect (floating particles) - as requested, keeping it */
   body::before {
    content: '';
-   position: absolute;
+   position: fixed; /* Changed to fixed to cover the whole viewport */
    width: 100%;
    height: 100%;
    background-image: 
@@ -43,11 +46,33 @@
    background-size: 200% 200%;
    animation: float 20s ease-in-out infinite;
    opacity: 0.3;
+   z-index: 0; /* Ensures it stays behind game content */
   }
   
   @keyframes float {
    0%, 100% { transform: translateY(0); }
    50% { transform: translateY(-20px); }
+  }
+
+  /* New: Animated snowflakes CSS from giorno01 */
+  .snowflake {
+   position: fixed;
+   top: -10px;
+   color: white;
+   font-size: 1em;
+   font-family: Arial, sans-serif;
+   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+   z-index: 0; /* Stays behind game content */
+   user-select: none;
+   pointer-events: none;
+   animation: fall linear infinite;
+  }
+  
+  @keyframes fall {
+   to {
+    transform: translateY(100vh) translateX(100px);
+    opacity: 0;
+   }
   }
 
   .game-container {
@@ -58,7 +83,7 @@
    justify-content: center;
    width: 100%;
    max-width: 800px; /* Adjust as needed */
-   z-index: 1;
+   z-index: 1; /* Ensures game content is above snow */
    padding: 2rem;
    background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
    border: 5px solid;
@@ -98,7 +123,7 @@
   }
 
   canvas {
-   background-color: #000;
+   background-color: #000; /* Will be overridden by JS drawing campo.jpg */
    border: 3px solid gold;
    border-radius: 10px;
    box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
@@ -213,6 +238,12 @@
 </head>
 
 <body>
+ <!-- Background music -->
+ <audio id="backgroundMusic" src="audio/tranqui.mp3" loop autoplay></audio>
+ <!-- Win sound -->
+ <audio id="winSound" src="audio/inter1.mp3"></audio>
+ <!-- Lose sound -->
+ <audio id="loseSound" src="audio/juve.mp3"></audio>
 
  <div class="game-container">
   <div class="game-header">
@@ -251,6 +282,9 @@
   const gameOverModal = document.getElementById('gameOverModal');
   const modalTitle = document.getElementById('modalTitle');
   const modalMessage = document.getElementById('modalMessage');
+  const backgroundMusic = document.getElementById('backgroundMusic');
+  const winSound = document.getElementById('winSound');
+  const loseSound = document.getElementById('loseSound');
 
   const gridSize = 20;
   let snake = [{ x: 10 * gridSize, y: 10 * gridSize }];
@@ -264,9 +298,48 @@
   const requiredBalls = 20;
   const gameSpeed = 150; // Milliseconds per frame
 
+  // Load images
+  const interBallImage = new Image();
+  interBallImage.src = 'images/palla-inter.png';
+  const campoImage = new Image();
+  campoImage.src = 'images/campo.png';
+
+  // Function to draw an image covering the target area while maintaining aspect ratio
+  function drawCover(ctx, img, x, y, w, h) {
+      if (!img.complete || img.naturalWidth === 0) {
+          // Fallback if image not loaded or invalid
+          ctx.fillStyle = 'black';
+          ctx.fillRect(x, y, w, h);
+          return;
+      }
+      var imageAspect = img.width / img.height;
+      var canvasAspect = w / h;
+      var sx, sy, sWidth, sHeight;
+
+      if (imageAspect > canvasAspect) {
+          // Image is wider than canvas, crop left/right
+          sHeight = img.height;
+          sWidth = sHeight * canvasAspect;
+          sx = (img.width - sWidth) / 2;
+          sy = 0;
+      } else {
+          // Image is taller than canvas, crop top/bottom
+          sWidth = img.width;
+          sHeight = sWidth / canvasAspect;
+          sy = (img.height - sHeight) / 2;
+          sx = 0;
+      }
+      ctx.drawImage(img, sx, sy, sWidth, sHeight, x, y, w, h);
+  }
+
   function drawSnakePart(snakePart) {
-   ctx.fillStyle = 'lime';
-   ctx.strokeStyle = 'darkgreen';
+   // Gradient for a more dynamic "nero azzurro" look
+   const gradient = ctx.createLinearGradient(snakePart.x, snakePart.y, snakePart.x + gridSize, snakePart.y + gridSize);
+   gradient.addColorStop(0, '#000000'); // Black
+   gradient.addColorStop(1, '#000080'); // Inter Blue
+   ctx.fillStyle = gradient;
+   ctx.strokeStyle = '#FFD700'; // Gold border for contrast
+   ctx.lineWidth = 1; // Thinner border for a cleaner look
    ctx.fillRect(snakePart.x, snakePart.y, gridSize, gridSize);
    ctx.strokeRect(snakePart.x, snakePart.y, gridSize, gridSize);
   }
@@ -276,32 +349,28 @@
   }
 
   function drawFood() {
-   // Drawing an "Inter ball" - a blue and black circle
-   ctx.beginPath();
-   ctx.arc(food.x + gridSize / 2, food.y + gridSize / 2, gridSize / 2, 0, Math.PI * 2);
-   
-   // Create a linear gradient for the Inter colors
-   const gradient = ctx.createLinearGradient(food.x, food.y, food.x + gridSize, food.y + gridSize);
-   gradient.addColorStop(0, '#000080'); // Dark blue
-   gradient.addColorStop(0.5, '#000000'); // Black
-   gradient.addColorStop(1, '#000080'); // Dark blue
-   
-   ctx.fillStyle = gradient;
-   ctx.fill();
-   ctx.strokeStyle = '#FFD700'; // Gold border for visibility
-   ctx.lineWidth = 2;
-   ctx.stroke();
-   ctx.closePath();
-   
-   // Note: For a more accurate "Inter ball", you would load an image here.
-   // E.g., const interBallImage = new Image(); interBallImage.src = 'path/to/inter_ball.png';
-   // ctx.drawImage(interBallImage, food.x, food.y, gridSize, gridSize);
+   if (interBallImage.complete && interBallImage.naturalWidth > 0) {
+    ctx.drawImage(interBallImage, food.x, food.y, gridSize, gridSize);
+   } else {
+    // Fallback if image not loaded
+    ctx.beginPath();
+    ctx.arc(food.x + gridSize / 2, food.y + gridSize / 2, gridSize / 2, 0, Math.PI * 2);
+    const gradient = ctx.createLinearGradient(food.x, food.y, food.x + gridSize, food.y + gridSize);
+    gradient.addColorStop(0, '#000080'); // Dark blue
+    gradient.addColorStop(0.5, '#000000'); // Black
+    gradient.addColorStop(1, '#000080'); // Dark blue
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    ctx.strokeStyle = '#FFD700'; // Gold border for visibility
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.closePath();
+   }
   }
 
   function clearCanvas() {
-   ctx.fillStyle = 'black';
-   ctx.strokeStyle = 'black';
-   ctx.fillRect(0, 0, canvas.width, canvas.height);
+   drawCover(ctx, campoImage, 0, 0, canvas.width, canvas.height);
+   ctx.strokeStyle = 'black'; // Keep border if any
    ctx.strokeRect(0, 0, canvas.width, canvas.height);
   }
 
@@ -395,6 +464,7 @@
     gameStarted = true;
     startMessage.style.display = 'none';
     gameInterval = setInterval(mainLoop, gameSpeed);
+    backgroundMusic.play(); // Start music on game start
    }
 
    if (!gameStarted) return; // Don't allow direction changes before game starts
@@ -419,12 +489,17 @@
   function endGame(win) {
    clearInterval(gameInterval);
    gameOverModal.style.display = 'flex';
+   backgroundMusic.pause(); // Pause background music on game over
+   backgroundMusic.currentTime = 0; // Reset background music
+
    if (win) {
     modalTitle.innerHTML = '<span class="emoji-sparkle">🏆</span> HAI VINTO! <span class="emoji-sparkle">🏆</span>';
     modalMessage.textContent = `Complimenti! Hai mangiato tutti i ${requiredBalls} palloni dell'Inter!`;
+    winSound.play(); // Play win sound
    } else {
     modalTitle.innerHTML = '<span class="emoji-sparkle">Game Over</span>';
     modalMessage.textContent = `Hai mangiato ${score} palloni dell'Inter. Hai perso! Riprova!`;
+    loseSound.play(); // Play lose sound
    }
   }
 
@@ -443,16 +518,64 @@
    generateFood(); // Generate food for the new game
    drawSnake();
    drawFood();
+   
+   // Stop and reset end game sounds
+   winSound.pause();
+   winSound.currentTime = 0;
+   loseSound.pause();
+   loseSound.currentTime = 0;
+   
+   backgroundMusic.currentTime = 0; // Reset background music
   }
 
   document.addEventListener('keydown', changeDirection);
 
+  /* New: Snowflake generation JavaScript from giorno01 */
+  function createSnowflake() {
+    const snowflake = document.createElement('div');
+    snowflake.classList.add('snowflake');
+    snowflake.textContent = '❄';
+    snowflake.style.left = Math.random() * 100 + '%';
+    snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+    snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+    snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+    document.body.appendChild(snowflake);
+    
+    setTimeout(() => snowflake.remove(), 8000);
+  }
+
   // Initial setup when the page loads
   document.addEventListener('DOMContentLoaded', () => {
-   clearCanvas();
-   generateFood();
-   drawSnake();
-   drawFood();
+   // Ensure images are loaded before initial drawing
+   let imagesLoaded = 0;
+   const totalImages = 2;
+
+   const imageLoaded = () => {
+    imagesLoaded++;
+    if (imagesLoaded === totalImages) {
+     clearCanvas();
+     generateFood();
+     drawSnake();
+     drawFood();
+    }
+   };
+
+   interBallImage.onload = imageLoaded;
+   campoImage.onload = imageLoaded;
+
+   // If images are already in cache, onload might not fire, check naturalWidth
+   if (interBallImage.complete && interBallImage.naturalWidth > 0) imageLoaded();
+   if (campoImage.complete && campoImage.naturalWidth > 0) imageLoaded();
+
+   // Attempt to play music automatically (might be blocked by browsers)
+   backgroundMusic.volume = 0.3; // Adjust volume as needed
+   backgroundMusic.play().catch(error => {
+    console.log("Autoplay of background music was prevented. User interaction is needed to play music.", error);
+    // Optionally, show a message to the user to click to enable sound
+   });
+
+   // Start the actual falling snowflakes
+   setInterval(createSnowflake, 300);
   });
  </script>
 

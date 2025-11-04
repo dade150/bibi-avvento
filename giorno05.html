@@ -26,11 +26,14 @@
    align-items: center;
    padding: 2rem;
    position: relative;
+   overflow-x: hidden; /* Added to prevent horizontal scroll from snowflakes */
+   overflow-y: auto;
   }
   
+  /* Existing floating particles background */
   body::before {
    content: '';
-   position: absolute;
+   position: fixed; /* Changed to fixed to cover the whole viewport */
    width: 100%;
    height: 100%;
    background-image: 
@@ -44,11 +47,33 @@
    background-size: 200% 200%;
    animation: float 20s ease-in-out infinite;
    opacity: 0.3;
+   z-index: 0; /* Ensures it stays behind game content */
   }
   
   @keyframes float {
    0%, 100% { transform: translateY(0); }
    50% { transform: translateY(-20px); }
+  }
+
+  /* New: Animated snowflakes CSS from giorno01 */
+  .snowflake {
+   position: fixed;
+   top: -10px;
+   color: white;
+   font-size: 1em;
+   font-family: Arial, sans-serif;
+   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+   z-index: 0; /* Stays behind game content */
+   user-select: none;
+   pointer-events: none;
+   animation: fall linear infinite;
+  }
+  
+  @keyframes fall {
+   to {
+    transform: translateY(100vh) translateX(100px);
+    opacity: 0;
+   }
   }
 
   .hidden-objects-game-container {
@@ -59,7 +84,7 @@
    justify-content: center;
    width: 100%;
    max-width: 1000px; /* Larghezza massima del gioco */
-   z-index: 1;
+   z-index: 1; /* Ensures game content is above snow */
    padding: 2rem;
    background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
    border: 5px solid;
@@ -165,6 +190,16 @@
    padding: 0.5rem 0;
    border-bottom: 1px dashed rgba(255, 215, 0, 0.2);
    transition: color 0.3s ease, text-decoration 0.3s ease;
+   display: flex; /* Added for icon alignment */
+   align-items: center; /* Added for icon alignment */
+   justify-content: center; /* Added for icon alignment */
+  }
+
+  #objects-to-find li img {
+    height: 24px; /* Adjust icon size as needed */
+    width: 24px;
+    margin-right: 8px; /* Space between icon and text */
+    vertical-align: middle;
   }
 
   #objects-to-find li:last-child {
@@ -299,6 +334,9 @@
 </head>
 
 <body>
+ <!-- Audio elements -->
+ <audio id="tranquiMusic" src="audio/tranqui.mp3" preload="auto"></audio>
+ <audio id="sbustoSound" src="audio/sbusto.mp3" preload="auto"></audio>
 
  <div class="hidden-objects-game-container">
   <div class="game-header">
@@ -307,6 +345,18 @@
     Trova gli Oggetti Natalizi!
     <span class="emoji-sparkle">🎄</span>
    </h1>
+  </div>
+
+  <div class="game-buttons">
+   <button class="game-button" id="start-game-btn" onclick="startGame()">Inizia il Gioco</button>
+   <button class="game-button" onclick="resetGame()">Ricomincia</button>
+   <button class="game-button" onclick="window.location.href='index.html'">
+    🎄 Torna al Calendario
+   </button>
+  </div>
+
+  <div class="game-info">
+    Oggetti trovati: <span id="found-count">0</span> / <span id="total-objects">0</span>
   </div>
 
   <div class="game-content">
@@ -318,21 +368,11 @@
    <div class="object-list-container">
     <h3>Oggetti da trovare:</h3>
     <ul id="objects-to-find">
-        <img src="images/macchina-gialla.png" alt="Scena Natalizia" id="christmas-scene-img">    </ul>
+        <!-- Icons and object names will be dynamically inserted here -->
+    </ul>
    </div>
   </div>
 
-  <div class="game-info">
-    Oggetti trovati: <span id="found-count">0</span> / <span id="total-objects">0</span>
-  </div>
-
-  <div class="game-buttons">
-   <button class="game-button" id="start-game-btn" onclick="startGame()">Inizia il Gioco</button>
-   <button class="game-button" onclick="resetGame()">Ricomincia</button>
-   <button class="game-button" onclick="window.location.href='index.html'">
-    🎄 Torna al Calendario
-   </button>
-  </div>
  </div>
 
  <!-- Game Over/Win Modal -->
@@ -362,7 +402,7 @@
    { id: 'oggetto6', name: 'Lunetta Rossa', icon: 'images/hidden_objects_icons/oggetto6.png', x: 235, y: 245, width: 82, height: 82, found: false },
    { id: 'oggetto7', name: 'Lecca-Lecca', icon: 'images/hidden_objects_icons/oggetto7.png', x: 460, y: 175, width: 60, height: 60, found: false },
    { id: 'oggetto8', name: 'Pallina', icon: 'images/hidden_objects_icons/oggetto8.png', x: 155, y: 915, width: 50, height: 50, found: false },
-];
+  ];
 
   let currentObjects = []; // Copia degli oggetti per il gioco attuale
   let objectsFoundCount = 0;
@@ -378,6 +418,26 @@
   const modalTitle = document.getElementById('modalTitle');
   const modalMessage = document.getElementById('modalMessage');
 
+  // Audio elements
+  const tranquiMusic = document.getElementById('tranquiMusic');
+  const sbustoSound = document.getElementById('sbustoSound');
+
+
+  // Funzione per creare fiocchi di neve (from giorno01)
+  function createSnowflake() {
+    const snowflake = document.createElement('div');
+    snowflake.classList.add('snowflake');
+    snowflake.textContent = '❄';
+    snowflake.style.left = Math.random() * 100 + '%';
+    snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+    snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+    snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+    document.body.appendChild(snowflake);
+    
+    setTimeout(() => snowflake.remove(), 8000);
+  }
+
+
   function initializeGame() {
    currentObjects = JSON.parse(JSON.stringify(hiddenObjectsData)); // Crea una copia profonda
    objectsFoundCount = 0;
@@ -390,7 +450,8 @@
    currentObjects.forEach(obj => {
     const listItem = document.createElement('li');
     listItem.id = `object-item-${obj.id}`;
-    listItem.textContent = obj.name;
+    // Add icon next to the text
+    listItem.innerHTML = `<img src="${obj.icon}" alt="${obj.name} icon"> ${obj.name}`;
     objectsToFindList.appendChild(listItem);
    });
 
@@ -401,6 +462,12 @@
    gameSceneWrapper.style.cursor = 'auto'; // Cursore normale prima dell'inizio
    christmasSceneImg.removeEventListener('click', handleSceneClick); // Rimuovi listener se presente
    closeGameEndModal(); // Assicurati che il modal sia chiuso
+
+   // Stop and reset audio
+   tranquiMusic.pause();
+   tranquiMusic.currentTime = 0;
+   sbustoSound.pause();
+   sbustoSound.currentTime = 0;
   }
 
   // Funzione per avviare il gioco
@@ -409,6 +476,7 @@
    startGameBtn.style.display = 'none'; // Nascondi il pulsante "Inizia il Gioco"
    gameSceneWrapper.style.cursor = 'url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewport="0 0 100 100" style="fill:black;font-size:18px;"><text y="50%">🔍</text></svg>\') 15 15, auto'; // Cursore a lente
    christmasSceneImg.addEventListener('click', handleSceneClick);
+   tranquiMusic.play().catch(e => console.error("Error playing tranqui music:", e)); // Play tranqui.mp3
   }
 
   // Gestisce il clic sulla scena del gioco
@@ -471,6 +539,11 @@
    christmasSceneImg.removeEventListener('click', handleSceneClick);
    gameSceneWrapper.style.cursor = 'auto'; // Ripristina il cursore normale
 
+   tranquiMusic.pause(); // Stop background music
+   tranquiMusic.currentTime = 0; // Reset background music
+
+   sbustoSound.play().catch(e => console.error("Error playing sbusto sound:", e)); // Play end game sound
+
    gameEndModal.style.display = 'flex';
    if (win) {
     modalTitle.innerHTML = '<span class="emoji-sparkle">🎉</span> HAI VINTO! <span class="emoji-sparkle">🎉</span>';
@@ -490,10 +563,16 @@
   // Funzione per chiudere il modal di fine gioco
   function closeGameEndModal() {
    gameEndModal.style.display = 'none';
+   sbustoSound.pause(); // Stop end game sound if modal is closed
+   sbustoSound.currentTime = 0; // Reset end game sound
   }
 
   // Inizializza il gioco al caricamento della pagina
-  document.addEventListener('DOMContentLoaded', initializeGame);
+  document.addEventListener('DOMContentLoaded', () => {
+    initializeGame();
+    // Start the actual falling snowflakes
+    setInterval(createSnowflake, 300);
+  });
 
   // Assicurati che la funzione di gestione del clic sia registrata solo quando il gioco inizia
   // e che le dimensioni dell'immagine siano caricate per calcolare correttamente le posizioni

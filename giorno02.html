@@ -26,12 +26,14 @@
    align-items: center;
    padding: 2rem;
    position: relative;
+   overflow-x: hidden; /* Added to prevent horizontal scroll from snowflakes */
+   overflow-y: auto;
   }
   
-  /* Particelle fluttuanti di sfondo */
+  /* Particelle fluttuanti di sfondo (already present) */
   body::before {
    content: '';
-   position: absolute;
+   position: fixed; /* Changed to fixed to cover the whole viewport */
    width: 100%;
    height: 100%;
    background-image: 
@@ -45,11 +47,33 @@
    background-size: 200% 200%;
    animation: float 20s ease-in-out infinite;
    opacity: 0.3;
+   z-index: 0; /* Ensures it stays behind quiz content */
   }
   
   @keyframes float {
    0%, 100% { transform: translateY(0); }
    50% { transform: translateY(-20px); }
+  }
+
+  /* Neve animata (added from giorno01) */
+  .snowflake {
+   position: fixed;
+   top: -10px;
+   color: white;
+   font-size: 1em;
+   font-family: Arial, sans-serif;
+   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+   z-index: 0; /* Stays behind quiz content */
+   user-select: none;
+   pointer-events: none;
+   animation: fall linear infinite;
+  }
+  
+  @keyframes fall {
+   to {
+    transform: translateY(100vh) translateX(100px);
+    opacity: 0;
+   }
   }
 
   .quiz-container {
@@ -58,7 +82,7 @@
    align-items: center;
    justify-content: center;
    width: 100%;
-   z-index: 1;
+   z-index: 1; /* Ensures quiz content is above snow */
   }
 
   .quiz-card {
@@ -329,9 +353,9 @@
 
 <body>
 
- <audio id="correct-sound" src="audio/correct.mp3" preload="auto"></audio>
+ <audio id="correct-sound" src="audio/corretta.mp3" preload="auto"></audio>
  <audio id="wrong-sound" src="audio/wrong.mp3" preload="auto"></audio>
- <audio id="victory-sound" src="audio/win.mp3" preload="auto"></audio>
+ <audio id="victory-sound" src="audio/natale.mp3" preload="auto"></audio>
 
  <div class="quiz-container">
   <div class="quiz-card">
@@ -393,7 +417,7 @@
     correct: 0
    },
    {
-    question: "Nel processamento istologico, quale soluzione viene usata come agente chiarificante tra disidratazione e inclusione?",
+    question: "Nel processamento istologico, quale soluzione viene usata come agente chiarificante tra disidratazione e inclusione? (giorno 2)",
     answers: ["Acetone", "Xilene o suoi sostituti", "Etanolo assoluto"],
     correct: 1
    },
@@ -444,6 +468,7 @@
   const questionSection = document.getElementById('question-section');
   const resultSection = document.getElementById('result-section');
 
+  // Updated sound elements
   const correctSound = document.getElementById('correct-sound');
   const wrongSound = document.getElementById('wrong-sound');
   const victorySound = document.getElementById('victory-sound');
@@ -487,13 +512,21 @@
     btn.classList.add('correct');
     correctAnswers++;
     correctCountSpan.textContent = correctAnswers;
-    if (correctSound) correctSound.play().catch(e => console.error(e));
+    // Play correct sound
+    if (correctSound) {
+        correctSound.currentTime = 0; // Rewind to start
+        correctSound.play().catch(e => console.error("Error playing correct sound:", e));
+    }
    } else {
     btn.classList.add('wrong');
     wrongAnswers++;
     wrongCountSpan.textContent = wrongAnswers;
     allButtons[question.correct].classList.add('correct');
-    if (wrongSound) wrongSound.play().catch(e => console.error(e));
+    // Play wrong sound
+    if (wrongSound) {
+        wrongSound.currentTime = 0; // Rewind to start
+        wrongSound.play().catch(e => console.error("Error playing wrong sound:", e));
+    }
    }
 
    setTimeout(() => {
@@ -508,7 +541,11 @@
    
    progressFill.style.width = '100%';
 
-   if (victorySound) victorySound.play().catch(e => console.error(e));
+   // Play victory sound (natale.mp3)
+   if (victorySound) {
+       victorySound.currentTime = 0; // Rewind to start
+       victorySound.play().catch(e => console.error("Error playing victory sound:", e));
+   }
 
    const resultTitle = document.getElementById('result-title');
    const resultMessage = document.getElementById('result-message');
@@ -539,12 +576,29 @@
    }
   }
 
+  /* New: Snowflake generation JavaScript from giorno01 */
+  function createSnowflake() {
+    const snowflake = document.createElement('div');
+    snowflake.classList.add('snowflake');
+    snowflake.textContent = '❄';
+    snowflake.style.left = Math.random() * 100 + '%';
+    snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+    snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+    snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+    document.body.appendChild(snowflake);
+    
+    setTimeout(() => snowflake.remove(), 8000);
+  }
+
   // Avvia il quiz al caricamento della pagina
-  loadQuestion();
+  document.addEventListener('DOMContentLoaded', () => {
+    loadQuestion();
+    // Start the actual falling snowflakes
+    setInterval(createSnowflake, 300);
+  });
  </script>
 
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
-
