@@ -255,17 +255,14 @@
     </style>
 </head>
 <body>
-    <!-- Background Music -->
     <audio id="backgroundMusic" src="audio/tranqui.mp3" loop preload="auto"></audio>
-    <!-- End Game Music (User's favorite song) -->
     <audio id="endGameMusic" src="audio/canzoni-natale/canzone5.mp3" preload="auto"></audio>
 
     <div class="game-container">
-        <h1>🎶 Indovina la Canzone Natalizia! 🎶</h1>
+        <h1>🎶 Indovina la Canzone Natalizia!</h1>
         <p id="roundInfo" class="round-info">Round 0 di 4</p>
 
         <div id="roundProgressBar" class="mb-3">
-            <!-- Round steps will be inserted here by JavaScript -->
         </div>
 <br><br>
         <div class="clue-section">
@@ -352,15 +349,9 @@
             const playAgainButton = document.getElementById('playAgainButton');
             const roundProgressBar = document.getElementById('roundProgressBar');
             const scoreMessage = document.getElementById('scoreMessage');
-
-            // Audio elements for background and end game
             const backgroundMusic = document.getElementById('backgroundMusic');
             const endGameMusic = document.getElementById('endGameMusic');
 
-
-            // Removed audioTimeout variable as it's no longer needed
-
-            // Function to create snowflakes (copied from giorno01)
             function createSnowflake() {
                 const snowflake = document.createElement('div');
                 snowflake.classList.add('snowflake');

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giorno 20 - Elfi Indaffarati!</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
+    <style>
+        /* Stili globali per lo sfondo e i fiocchi di neve */
+        body {
+            font-family: 'Mountains of Christmas', cursive;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(2px 2px at 60% 70%, white, transparent),
+                radial-gradient(1px 1px at 50% 50%, white, transparent),
+                radial-gradient(1px 1px at 80% 10%, white, transparent),
+                radial-gradient(2px 2px at 90% 60%, white, transparent),
+                radial-gradient(1px 1px at 33% 80%, white, transparent),
+                radial-gradient(1px 1px at 75% 40%, white, transparent);
+            background-size: 200% 200%;
+            animation: float 20s ease-in-out infinite;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: white;
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            z-index: 0;
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Stili specifici per il contenuto della pagina */
+        .content-container {
+            background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+            border: 5px solid;
+            border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
+            border-radius: 25px;
+            padding: 3rem;
+            max-width: 850px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 
+                0 0 30px rgba(255, 215, 0, 0.3),
+                0 0 60px rgba(255, 215, 0, 0.2),
+                inset 0 0 50px rgba(0, 0, 0, 0.5);
+            animation: glow-pulse 3s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes glow-pulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+        }
+
+        h1 {
+            color: gold;
+            font-size: 2.8rem;
+            text-shadow: 
+                2px 2px 4px black,
+                0 0 20px rgba(255, 215, 0, 0.5),
+                0 0 30px rgba(255, 215, 0, 0.3);
+            margin-bottom: 1.5rem;
+            animation: title-glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes title-glow {
+            from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
+            to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
+        }
+
+        .message-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .message-text {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .elf-image {
+            max-width: 200px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .back-button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-family: 'Mountains of Christmas', cursive;
+            background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+            color: darkred;
+            border: 2px solid rgba(139, 0, 0, 0.5);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            margin-top: 2rem;
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+            background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+        }
+
+        /* Responsive adjustments */
+        @media (min-width: 768px) {
+            .message-box {
+                flex-direction: row;
+                justify-content: center;
+            }
+            .message-text {
+                flex: 1;
+                text-align: left;
+            }
+            .elf-image {
+                margin-left: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            .message-text {
+                font-size: 1.2rem;
+            }
+            .elf-image {
+                max-width: 150px;
+            }
+            .back-button {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            .message-text {
+                font-size: 1rem;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <audio id="backgroundMusic" src="audio/song44.mp3" loop autoplay preload="auto"></audio>
+
+    <div class="content-container">
+        <h1>Giorno 20 - Ops! Un Piccolo Imprevisto Elfico! 😅</h1>
+        
+        <div class="message-box">
+            <div class="message-text">
+                Ciao amore mio! ❤️
+                <br><br>
+                Oggi, gli elfi del nostro calendario sono stati così indaffarati a impacchettare regali e preparare la slitta di Babbo Natale che... si sono dimenticati di creare un contenuto speciale per il Giorno 20! 🎁📦
+                <br><br>
+                Siamo tutti un po' con la testa tra le nuvole (e la neve!), quindi ci scusiamo tantissimo per questo piccolo intoppo. A volte anche la magia ha bisogno di una pausa caffè! ☕✨
+                <br><br>
+                Spero che questo piccolo messaggio ti trovi bene e ti regali un sorriso. Ti mando un sacco di affetto virtuale e ti auguro una Buona Domenica super rilassante! 💖
+                <br><br>
+                Con tantissimo amore,
+                <br>
+                I tuoi Elfi (e Davide 😉)
+            </div>
+            <img src="images/elfi.png" alt="Elfo Indaffarato" class="elf-image">
+        </div>
+
+        <a href="index.html" class="btn back-button">
+            🎄 Torna al Calendario
+        </a>
+    </div>
+
+    <script>
+        // Funzione per creare fiocchi di neve
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.textContent = '❄';
+            snowflake.style.left = Math.random() * 100 + '%';
+            snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+            snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+            snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            document.body.appendChild(snowflake);
+            
+            setTimeout(() => snowflake.remove(), 8000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Avvia la riproduzione della musica di sottofondo
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            backgroundMusic.volume = 0.3; // Regola il volume
+            backgroundMusic.play().catch(error => {
+                console.log("Autoplay della musica di sottofondo bloccato. Interazione utente necessaria.", error);
+            });
+
+            // Avvia la creazione dei fiocchi di neve
+            setInterval(createSnowflake, 300);
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
