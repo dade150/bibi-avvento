@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giorno 23 - Babbo Natale in Letargo! 😴🎅</title>
+    <title>Giorno 20 - Elfi Indaffarati!</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
     <style>
@@ -125,19 +125,17 @@
             border: 1px solid rgba(255, 215, 0, 0.3);
         }
 
-        .santa-image {
-            max-width: 250px; /* Increased size for impact */
+        .elf-image {
+            max-width: 200px;
             height: auto;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7); /* Stronger shadow */
-            animation: float-sleep 4s infinite ease-in-out; /* Gentle floating animation */
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            animation: bounce 2s infinite ease-in-out;
         }
 
-        @keyframes float-sleep {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            25% { transform: translateY(-5px) rotate(-1deg); }
-            50% { transform: translateY(0) rotate(0deg); }
-            75% { transform: translateY(5px) rotate(1deg); }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
         }
 
         .back-button {
@@ -171,7 +169,7 @@
                 flex: 1;
                 text-align: left;
             }
-            .santa-image {
+            .elf-image {
                 margin-left: 1.5rem;
             }
         }
@@ -183,8 +181,8 @@
             .message-text {
                 font-size: 1.2rem;
             }
-            .santa-image {
-                max-width: 180px;
+            .elf-image {
+                max-width: 150px;
             }
             .back-button {
                 padding: 0.8rem 1.5rem;
@@ -204,28 +202,26 @@
     </style>
 </head>
 <body>
-    <audio id="backgroundMusic" src="audio/lullaby.mp3" loop autoplay preload="auto"></audio>
+    <audio id="backgroundMusic" src="audio/song44.mp3" loop autoplay preload="auto"></audio>
 
     <div class="content-container">
-        <h1>Giorno 23 - Babbo Natale in Letargo! 😴🎅</h1>
+        <h1>Giorno 20 - Ops! Un Piccolo Imprevisto Elfico! 😅</h1>
         
         <div class="message-box">
             <div class="message-text">
                 Ciao amore mio! ❤️
                 <br><br>
-                Oggi c'è stato un piccolo, tenero intoppo qui al Polo Nord... Babbo Natale, dopo aver controllato la lista dei 'buoni e cattivi' per la millesima volta e aver assaggiato troppi biscotti, si è addormentato profondamente! 🍪🥛
+                Oggi, gli elfi del nostro calendario sono stati così indaffarati a impacchettare regali e preparare la slitta di Babbo Natale che... si sono dimenticati di creare un contenuto speciale per il Giorno 20! 🎁📦
                 <br><br>
-                Sì, proprio così! È crollato sul divano con la sua coperta preferita e ora russa come un orsetto polare. Gli elfi hanno provato a svegliarlo, ma è nel suo 'sonno pre-consegna regali', un momento sacro in cui ricarica le batterie per la grande notte.
+                Siamo tutti un po' con la testa tra le nuvole (e la neve!), quindi ci scusiamo tantissimo per questo piccolo intoppo. A volte anche la magia ha bisogno di una pausa caffè! ☕✨
                 <br><br>
-                Quindi, per oggi, non siamo riusciti a preparare un'attività speciale. Non vogliamo assolutamente disturbarlo, altrimenti chi ci porterà i regali?! 🤫
+                Spero che questo piccolo messaggio ti trovi bene e ti regali un sorriso. Ti mando un sacco di affetto virtuale e ti auguro una Buona Domenica super rilassante! 💖
                 <br><br>
-                Spero tu possa perdonare questa piccola pausa natalizia. Ti mando un abbraccio enorme e un bacio virtuale. Riposati anche tu, che il Natale è quasi qui!
-                <br><br>
-                Con tanto amore e un pizzico di magia assonnata,
+                Con tantissimo amore,
                 <br>
-                Il tuo Babbo Natale (in incognito... e sveglio!) 😉
+                I tuoi Elfi (e Davide 😉)
             </div>
-            <img src="images/santa-claus.png" alt="Babbo Natale che dorme" class="santa-image">
+            <img src="images/elfi.png" alt="Elfo Indaffarato" class="elf-image">
         </div>
 
         <a href="index.html" class="btn back-button">
