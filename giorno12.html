@@ -7,12 +7,64 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
   <style>
+    /* Stili globali per lo sfondo e i fiocchi di neve */
     body {
-      font-family: "Mountains of Christmas", cursive;
+      font-family: 'Mountains of Christmas', cursive;
       background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
-      text-align: center;
-      padding: 40px;
       color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      position: relative;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(2px 2px at 20% 30%, white, transparent),
+        radial-gradient(2px 2px at 60% 70%, white, transparent),
+        radial-gradient(1px 1px at 50% 50%, white, transparent),
+        radial-gradient(1px 1px at 80% 10%, white, transparent),
+        radial-gradient(2px 2px at 90% 60%, white, transparent),
+        radial-gradient(1px 1px at 33% 80%, white, transparent),
+        radial-gradient(1px 1px at 75% 40%, white, transparent);
+      background-size: 200% 200%;
+      animation: float 20s ease-in-out infinite;
+      opacity: 0.3;
+      z-index: 0;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: white;
+      font-size: 1em;
+      font-family: Arial, sans-serif;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+      z-index: 0;
+      user-select: none;
+      pointer-events: none;
+      animation: fall linear infinite;
+    }
+    
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) translateX(100px);
+        opacity: 0;
+      }
     }
 
     .content-box {
@@ -50,60 +102,144 @@
       font-size: 1.4rem;
     }
 
-    .game-layout {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      flex-wrap: wrap;
-      margin-top: 2rem;
+    .start-screen {
+        background: rgba(0, 0, 0, 0.6);
+        border: 3px solid gold;
+        border-radius: 20px;
+        padding: 2.5rem;
+        max-width: 600px;
+        margin: 0 auto 2rem auto;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
     }
 
-    #stepsContainer {
+    .start-screen h2 {
+        color: gold;
+        font-size: 2.2rem;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+    .start-screen p {
+        font-size: 1.2rem;
+        line-height: 1.6;
+        color: #ccc;
+        margin-bottom: 2rem;
+    }
+
+    .game-area {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
+        max-width: 900px;
+    }
+
+    .top-row {
+        width: 100%;
+    }
+
+    .bottom-row {
+        display: flex;
+        gap: 20px;
+        width: 100%;
+    }
+
+    .left-column {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .right-column {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    #optionsContainer {
       display: flex;
-      flex-direction: column;
-      gap: 15px;
-      width: 450px;
-      min-height: 400px;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 10px;
+      width: 100%;
+      min-height: 120px;
       background-color: rgba(0, 0, 0, 0.4);
       border: 2px solid rgba(255, 215, 0, 0.3);
       border-radius: 15px;
-      padding: 20px;
-      margin-bottom: 20px;
+      padding: 15px;
+      justify-content: center;
+      align-items: flex-start;
     }
 
-    .step {
+    .ordered-steps-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        min-height: 300px;
+        background-color: rgba(0, 0, 0, 0.4);
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        border-radius: 15px;
+        padding: 20px;
+        text-align: left;
+    }
+
+    .ordered-steps-column {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .step-option, .ordered-step {
       background-color: #fff8f4;
       color: #3b2f2f;
       border: 2px solid #e4b9a6;
       border-radius: 10px;
       padding: 15px;
-      cursor: grab;
+      cursor: pointer;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       transition: all 0.2s ease;
       font-size: 1.1rem;
       text-align: left;
     }
 
-    .step:hover {
+    .step-option:hover:not(.disabled) {
       transform: scale(1.02);
       background-color: #fff;
     }
 
-    .step.highlight { /* For when a step is being dragged */
-      border-color: gold;
-      background-color: #fbeaea;
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    .step-option.disabled {
+      opacity: 0.5;
+      cursor: default;
+      pointer-events: none;
     }
 
-    .step.step-correct { /* New style for correctly placed steps */
-      background-color: #d4edda; /* Light green */
-      border-color: #28a745; /* Green border */
-      color: #155724; /* Dark green text */
+    .step-option.wrong {
+      animation: shake 0.5s ease-in-out;
+      background-color: #f8d7da;
+      border-color: #dc3545;
+      color: #721c24;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+
+    .ordered-step {
+      background-color: #d4edda;
+      border-color: #28a745;
+      color: #155724;
+      cursor: default;
+      pointer-events: none;
     }
 
     .progress-display {
-      width: 350px;
-      min-height: 400px;
+      width: 100%;
+      height: 300px;
       background-color: rgba(0, 0, 0, 0.4);
       border: 2px solid rgba(255, 215, 0, 0.3);
       border-radius: 15px;
@@ -119,11 +255,44 @@
       max-height: 100%;
       object-fit: contain;
       border-radius: 10px;
-      transition: opacity 0.5s ease-in-out;
+      opacity: 1;
+    }
+
+    .cloud-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0);
+        opacity: 0;
+        pointer-events: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 4em;
+        color: #fff;
+        z-index: 2;
+        transition: opacity 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    }
+
+    .cloud-overlay.active {
+        opacity: 1;
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    .cloud-emoji {
+        animation: cloudFloat 1.5s infinite ease-in-out;
+    }
+
+    @keyframes cloudFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
     }
 
     #message {
-      margin-top: 25px;
+      width: 100%;
+      margin-top: 15px;
       font-size: 1.6em;
       font-weight: bold;
       color: gold;
@@ -195,58 +364,113 @@
       background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
     }
 
-    body::before {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        radial-gradient(2px 2px at 20% 30%, white, transparent),
-        radial-gradient(2px 2px at 60% 70%, white, transparent),
-        radial-gradient(1px 1px at 50% 50%, white, transparent),
-        radial-gradient(1px 1px at 80% 10%, white, transparent),
-        radial-gradient(2px 2px at 90% 60%, white, transparent),
-        radial-gradient(1px 1px at 33% 80%, white, transparent),
-        radial-gradient(1px 1px at 75% 40%, white, transparent);
-      background-size: 200% 200%;
-      animation: float 20s ease-in-out infinite;
-      opacity: 0.3;
-      z-index: 0;
+    @media (max-width: 900px) {
+        .bottom-row {
+            flex-direction: column;
+        }
     }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
+
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 2rem;
+        }
+        p {
+            font-size: 1.2rem;
+        }
+        .start-screen h2 {
+            font-size: 1.8rem;
+        }
+        .start-screen p {
+            font-size: 1rem;
+        }
+        .btn-game {
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+        }
+        #message {
+            font-size: 1.2em;
+        }
+        .game-win-message h2 {
+            font-size: 1.8rem;
+        }
+        .game-win-message p {
+            font-size: 1.2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        h1 {
+            font-size: 1.5rem;
+        }
+        .start-screen h2 {
+            font-size: 1.5rem;
+        }
+        .start-screen p {
+            font-size: 0.9rem;
+        }
+        .progress-display {
+            height: 250px;
+        }
+        #optionsContainer, .ordered-steps-wrapper {
+            padding: 15px;
+            gap: 10px;
+        }
+        .step-option, .ordered-step {
+            font-size: 0.9rem;
+            padding: 10px;
+        }
+        #message {
+            font-size: 1em;
+        }
     }
   </style>
 </head>
 <body>
-  <audio id="game-music" loop>
-    <source src="audio/cooking_music.mp3" type="audio/mpeg"> 
+  <audio id="background-music" loop>
+    <source src="audio/natal.mp3" type="audio/mpeg"> 
   </audio>
   <audio id="correct-sound">
-    <source src="audio/correct.mp3" type="audio/mpeg">
+    <source src="audio/up.mp3" type="audio/mpeg">
   </audio>
   <audio id="incorrect-sound">
-    <source src="audio/incorrect.mp3" type="audio/mpeg">
+    <source src="audio/wrong.mp3" type="audio/mpeg">
   </audio>
   <audio id="win-sound">
-    <source src="audio/win.mp3" type="audio/mpeg">
+    <source src="audio/elfi.mp3" type="audio/mpeg">
   </audio>
 
   <div class="content-box">
     <h1>🍎 Prepara lo Strudel di Mele!</h1>
-    <p>Trascina i passaggi nell’ordine giusto per completare la ricetta 🎄</p>
+    <p>Clicca sui passaggi nell'ordine giusto per completare la ricetta 🎄</p>
 
-    <div class="game-layout">
-      <div id="stepsContainer">
-        <!-- Draggable shuffled steps will be rendered here -->
-      </div>
-      <div class="progress-display">
-        <img id="recipeProgressImage" src="images/strudel_progress/progresso0.png" alt="Progresso Ricetta">
-      </div>
+    <div id="startScreen" class="start-screen">
+        <h2>Benvenuta, Chef del Natale! 🧑‍🍳</h2>
+        <p>Il tuo compito è preparare un delizioso strudel di mele. Metti in ordine i passaggi della ricetta cliccando sull'opzione corretta. Ogni passaggio svelerà un pezzetto della nostra creazione!</p>
+        <button class="btn-game" id="startGameButton">Inizia il Gioco!</button>
     </div>
 
-    <div id="message"></div>
+    <div id="gameArea" class="game-area" style="display: none;">
+        <div class="top-row">
+            <div id="optionsContainer">
+            </div>
+        </div>
+        <div class="bottom-row">
+            <div class="left-column">
+                <div class="ordered-steps-wrapper">
+                    <div id="orderedStepsColumn" class="ordered-steps-column"></div>
+                </div>
+            </div>
+            <div class="right-column">
+                <div class="progress-display">
+                    <img id="recipeProgressImage" src="images/cooking-images/imm0.png" alt="Progresso Ricetta">
+                    <div class="cloud-overlay" id="cloudOverlay">
+                        <span class="cloud-emoji">☁️</span>
+                    </div>
+                </div>
+                <div id="message"></div>
+            </div>
+        </div>
+    </div>
 
     <div class="game-win-message" id="gameWinMessage">
       <h2>🎉 Bravissima! Lo strudel è pronto!</h2>
@@ -260,183 +484,177 @@
   </div>
 
   <script>
-    // Audio elements
-    const gameMusic = document.getElementById('game-music');
+    function createSnowflake() {
+        const snowflake = document.createElement('div');
+        snowflake.classList.add('snowflake');
+        snowflake.textContent = '❄';
+        snowflake.style.left = Math.random() * 100 + '%';
+        snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+        snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+        snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+        document.body.appendChild(snowflake);
+        
+        setTimeout(() => snowflake.remove(), 8000);
+    }
+
+    const backgroundMusic = document.getElementById('background-music');
     const correctSound = document.getElementById('correct-sound');
     const incorrectSound = document.getElementById('incorrect-sound');
     const winSound = document.getElementById('win-sound');
 
-    // UI elements
-    const stepsContainer = document.getElementById("stepsContainer");
+    const startScreen = document.getElementById('startScreen');
+    const startGameButton = document.getElementById('startGameButton');
+    const gameArea = document.getElementById('gameArea');
+
+    const optionsContainer = document.getElementById("optionsContainer");
+    const orderedStepsColumn = document.getElementById("orderedStepsColumn");
     const messageDisplay = document.getElementById("message");
     const recipeProgressImage = document.getElementById("recipeProgressImage");
+    const cloudOverlay = document.getElementById("cloudOverlay");
     const gameWinMessage = document.getElementById("gameWinMessage");
     const playAgainButton = document.getElementById("playAgainButton");
     const backButton = document.getElementById("back-to-calendar");
 
-    // Recipe steps data with images
     const recipeStepsData = [
-      { id: 0, text: "Prepara le mele con zucchero, cannella, pinoli e uvetta." },
-      { id: 1, text: "Stendi la pasta sfoglia e spennella con burro fuso." },
-      { id: 2, text: "Distribuisci il ripieno al centro e lascia i bordi liberi." },
-      { id: 3, text: "Arrotola lo strudel e sigilla le estremità." },
-      { id: 4, text: "Inforna a 180°C per circa 35-40 minuti." },
-      { id: 5, text: "Scalda il latte con la vaniglia per la crema." },
-      { id: 6, text: "Sbatti tuorli, zucchero e amido, poi unisci il latte caldo." },
-      { id: 7, text: "Cuoci finché la crema si addensa." },
-      { id: 8, text: "Spolvera lo strudel con zucchero a velo." },
-      { id: 9, text: "Servi con la crema calda alla vaniglia!" }
+      { id: 0, text: "Prepara le mele con zucchero, cannella, pinoli e uvetta.", image: "images/cooking-images/imm1.png" },
+      { id: 1, text: "Stendi la pasta sfoglia e spennella con burro fuso.", image: "images/cooking-images/imm2.png" },
+      { id: 2, text: "Distribuisci il ripieno al centro e lascia i bordi liberi.", image: "images/cooking-images/imm3.png" },
+      { id: 3, text: "Arrotola lo strudel e sigilla le estremità.", image: "images/cooking-images/imm4.png" },
+      { id: 4, text: "Spennella la superficie con uovo sbattuto.", image: "images/cooking-images/imm5.png" },
+      { id: 5, text: "Inforna a 180°C per circa 35-40 minuti.", image: "images/cooking-images/imm6.png" },
+      { id: 6, text: "Scalda il latte con la vaniglia per la crema.", image: "images/cooking-images/imm7.png" },
+      { id: 7, text: "Sbatti tuorli, zucchero e amido, poi unisci il latte caldo.", image: "images/cooking-images/imm8.png" },
+      { id: 8, text: "Spolvera lo strudel con zucchero a velo.", image: "images/cooking-images/imm9.png" },
+      { id: 9, text: "Servi lo strudel tiepido con la crema calda alla vaniglia!", image: "images/cooking-images/imm10.png" }
     ];
 
     let shuffledSteps = [];
-    let dragSrcElement = null;
+    let nextExpectedStepId = 0;
     let gameActive = false;
 
-    // --- Fisher-Yates shuffle function that ensures no initial correct placements ---
-    function shuffleAndEnsureNoInitialCorrect(array) {
-      let shuffled = [];
-      let attempts = 0;
-      const MAX_ATTEMPTS = 100; // Safety net to prevent infinite loops
-
-      do {
-        shuffled = [...array];
-        // Fisher-Yates shuffle
-        for (let i = shuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-
-        let anyCorrect = false;
-        for (let i = 0; i < shuffled.length; i++) {
-          if (shuffled[i].id === i) {
-            anyCorrect = true;
-            break;
-          }
-        }
-        if (!anyCorrect) return shuffled; // Found a good shuffle
-        attempts++;
-      } while (attempts < MAX_ATTEMPTS);
-
-      console.warn("Could not find a shuffle with no initial correct placements after max attempts. Returning a potentially incorrect shuffle.");
-      return shuffled; // Fallback
+    function shuffleArray(array) {
+      let currentIndex = array.length, randomIndex;
+      while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+      }
+      return array;
     }
 
-    // --- Game Initialization ---
     function initGame() {
-      gameActive = true;
-      shuffledSteps = shuffleAndEnsureNoInitialCorrect(recipeStepsData);
-      renderSteps();
-      updateGameVisuals(); // Set initial colors and image
-      messageDisplay.textContent = "";
-      gameWinMessage.style.display = 'none';
-      backButton.style.display = 'none';
+        gameActive = false;
+        nextExpectedStepId = 0;
+        shuffledSteps = shuffleArray([...recipeStepsData]);
+        
+        shuffledSteps.forEach(step => step.guessed = false);
 
-      gameMusic.pause();
-      gameMusic.currentTime = 0;
-      gameMusic.volume = 0.3;
-      gameMusic.play().catch(e => console.log("Audio play prevented:", e));
+        optionsContainer.innerHTML = '';
+        orderedStepsColumn.innerHTML = '';
+        messageDisplay.textContent = "";
+        gameWinMessage.style.display = 'none';
+        backButton.style.display = 'none';
+        recipeProgressImage.src = 'images/cooking-images/imm0.png';
+
+        startScreen.style.display = 'block';
+        gameArea.style.display = 'none';
+
+        backgroundMusic.pause();
+        backgroundMusic.currentTime = 0;
+        correctSound.pause(); correctSound.currentTime = 0;
+        incorrectSound.pause(); incorrectSound.currentTime = 0;
+        winSound.pause(); winSound.currentTime = 0;
     }
 
-    // --- Rendering Steps ---
-    function renderSteps() {
-      stepsContainer.innerHTML = '';
-      shuffledSteps.forEach(step => {
-        const div = document.createElement("div");
-        div.className = "step";
-        div.draggable = true;
-        div.dataset.id = step.id; // Store the correct ID for comparison
-        div.textContent = step.text;
-        stepsContainer.appendChild(div);
-      });
+    function startGame() {
+        gameActive = true;
+        startScreen.style.display = 'none';
+        gameArea.style.display = 'flex';
+        
+        renderOptions();
+        
+        backgroundMusic.volume = 0.3;
+        backgroundMusic.play().catch(e => console.log("Background audio play prevented:", e));
     }
 
-    // --- Drag & Drop Logic ---
-    stepsContainer.addEventListener("dragstart", (e) => {
-      if (!gameActive) {
-        e.preventDefault();
-        return;
-      }
-      if (e.target.classList.contains("step")) {
-        dragSrcElement = e.target;
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', e.target.dataset.id);
-        e.target.classList.add("highlight");
-      }
-    });
+    function renderOptions() {
+        optionsContainer.innerHTML = '';
+        shuffledSteps.forEach(step => {
+            if (!step.guessed) {
+                const button = document.createElement("button");
+                button.className = "step-option btn-game";
+                button.dataset.id = step.id;
+                button.textContent = step.text;
+                button.addEventListener('click', handleOptionClick);
+                optionsContainer.appendChild(button);
+            }
+        });
+    }
 
-    stepsContainer.addEventListener("dragover", (e) => {
-      e.preventDefault(); // Allow drop
-      e.dataTransfer.dropEffect = 'move';
-      // No DOM manipulation here in dragover for swap behavior
-    });
+    function handleOptionClick(event) {
+      if (!gameActive) return;
 
-    stepsContainer.addEventListener("drop", (e) => {
-      e.preventDefault();
-      if (dragSrcElement && e.target.classList.contains("step") && dragSrcElement !== e.target) {
-        const droppedOnElement = e.target;
+      const clickedButton = event.target;
+      const clickedStepId = parseInt(clickedButton.dataset.id);
 
-        // Perform DOM swap
-        const parent = stepsContainer;
-        const draggedIndex = Array.prototype.indexOf.call(parent.children, dragSrcElement);
-        const droppedIndex = Array.prototype.indexOf.call(parent.children, droppedOnElement);
+      if (clickedStepId === nextExpectedStepId) {
+        correctSound.pause();
+        correctSound.currentTime = 0;
+        correctSound.play().catch(e => console.log("Correct audio play prevented:", e));
+        
+        messageDisplay.textContent = "Corretto! 🎉";
+        messageDisplay.style.color = "lightgreen";
 
-        if (draggedIndex < droppedIndex) {
-            parent.insertBefore(dragSrcElement, droppedOnElement.nextSibling);
-        } else {
-            parent.insertBefore(dragSrcElement, droppedOnElement);
+        const stepIndex = shuffledSteps.findIndex(s => s.id === clickedStepId);
+        if (stepIndex !== -1) {
+            shuffledSteps[stepIndex].guessed = true;
         }
-        // Insert the droppedOnElement where dragSrcElement was originally
-        if (draggedIndex < droppedIndex) {
-            parent.insertBefore(droppedOnElement, dragSrcElement.previousSibling);
-        } else {
-            parent.insertBefore(droppedOnElement, dragSrcElement.nextSibling);
+        
+        const orderedStepDiv = document.createElement('div');
+        orderedStepDiv.className = 'ordered-step';
+        orderedStepDiv.textContent = `${nextExpectedStepId + 1}. ${recipeStepsData.find(s => s.id === clickedStepId).text}`;
+        orderedStepsColumn.appendChild(orderedStepDiv);
+
+        updateProgressImageWithTransition(nextExpectedStepId);
+        
+        nextExpectedStepId++;
+        renderOptions();
+
+        if (nextExpectedStepId === recipeStepsData.length) {
+          endGame(true);
         }
-      }
-      dragSrcElement.classList.remove("highlight");
-      dragSrcElement = null;
-      updateGameVisuals(); // Update visuals after DOM has been manipulated
-    });
-
-    stepsContainer.addEventListener("dragend", (e) => {
-      e.target.classList.remove("highlight");
-      dragSrcElement = null;
-      updateGameVisuals();
-    });
-
-    // --- Update Game Visuals (Colors and Image) ---
-    function updateGameVisuals() {
-      let currentConsecutiveCorrect = 0;
-      const currentOrderElements = Array.from(stepsContainer.children);
-
-      for (let i = 0; i < currentOrderElements.length; i++) {
-        const stepElement = currentOrderElements[i];
-        if (parseInt(stepElement.dataset.id) === i) {
-          stepElement.classList.add("step-correct");
-          currentConsecutiveCorrect++;
-        } else {
-          stepElement.classList.remove("step-correct");
-          // The consecutive streak breaks here, no need to check further for consecutive correct
-        }
-      }
-
-      updateProgressImage(currentConsecutiveCorrect);
-
-      if (currentConsecutiveCorrect === recipeStepsData.length) {
-          endGame(true); // All steps are in correct consecutive order
       } else {
-          gameWinMessage.style.display = 'none';
+        incorrectSound.pause();
+        incorrectSound.currentTime = 0;
+        incorrectSound.play().catch(e => console.log("Incorrect audio play prevented:", e));
+
+        messageDisplay.textContent = "Sbagliato! Riprova. 🤔";
+        messageDisplay.style.color = "red";
+        clickedButton.classList.add('wrong');
+        setTimeout(() => clickedButton.classList.remove('wrong'), 800);
       }
     }
 
-    function updateProgressImage(consecutiveCorrectCount) {
-      recipeProgressImage.src = `images/strudel_progress/progresso${consecutiveCorrectCount}.png`;
+    function updateProgressImageWithTransition(stepId) {
+        cloudOverlay.classList.add('active');
+        cloudOverlay.querySelector('.cloud-emoji').classList.add('cloudFloat');
+
+        setTimeout(() => {
+            if (stepId < recipeStepsData.length) {
+                recipeProgressImage.src = recipeStepsData[stepId].image;
+            }
+            
+            setTimeout(() => {
+                cloudOverlay.classList.remove('active');
+                cloudOverlay.querySelector('.cloud-emoji').classList.remove('cloudFloat');
+            }, 300);
+        }, 300);
     }
 
-    // --- Game End Logic ---
     function endGame(win) {
       gameActive = false;
-      gameMusic.pause();
-      gameMusic.currentTime = 0;
+      backgroundMusic.pause();
+      backgroundMusic.currentTime = 0;
 
       if (win) {
         winSound.volume = 0.7;
@@ -446,18 +664,18 @@
       backButton.style.display = 'inline-block';
     }
 
-    // --- Event Listeners for Buttons ---
+    startGameButton.addEventListener('click', startGame);
     playAgainButton.addEventListener('click', initGame);
 
-    // Ensure audio plays on first user interaction
-    document.body.addEventListener('click', () => {
-      if (gameMusic.paused && gameActive) {
-        gameMusic.play().catch(e => console.log("Audio play prevented:", e));
-      }
-    }, { once: true });
+    document.body.addEventListener('click', () => {}, { once: true });
 
-    // Initialize game on page load
-    document.addEventListener('DOMContentLoaded', initGame);
+    document.addEventListener('DOMContentLoaded', () => {
+      initGame();
+      setInterval(createSnowflake, 300);
+      if (!cloudOverlay.querySelector('.cloud-emoji')) {
+        cloudOverlay.innerHTML = '<span class="cloud-emoji">☁️</span>';
+      }
+    });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

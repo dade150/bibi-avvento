@@ -365,7 +365,7 @@
       // Vertical
       { clue: "7. Cognome del dottore noto come 'McDreamy'.", answer: "SHEPHERD", startRow: 0, startCol: 3, direction: "V", clueNum: 7 },
       { clue: "8. Il soprannome di Mark Sloan.", answer: "MCSTEAMY", startRow: 0, startCol: 7, direction: "V", clueNum: 8 },
-      { clue: "9. Il primario di chirurgia per molte stagioni.", answer: "RICHARD", startRow: 2, startCol: 1, direction: "V", clueNum: 9 },
+      { clue: "9. Il primario di chirurgia per le prime stagioni.", answer: "RICHARD", startRow: 2, startCol: 1, direction: "V", clueNum: 9 },
       { clue: "10. La specializzazione di Callie Torres.", answer: "ORTOPEDIA", startRow: 1, startCol: 5, direction: "V", clueNum: 10 },
       { clue: "11. Il dottore pediatrico che ha sposato Jo.", answer: "ALEX", startRow: 0, startCol: 9, direction: "V", clueNum: 11 },
       { clue: "12. La dottoressa che ha avuto un tumore al cervello.", answer: "AMELIA", startRow: 4, startCol: 11, direction: "V", clueNum: 12 }
@@ -390,8 +390,6 @@
               if (!gridData[r][c]) {
                   gridData[r][c] = { letter: '', clueH: null, clueV: null };
               }
-              // Set the correct letter for this cell (not strictly needed for check but good for debugging)
-              // gridData[r][c].letter = wordObj.answer[i]; 
 
               if (i === 0) { // Mark clue number at the start of the word
                   if (wordObj.direction === "H") {
