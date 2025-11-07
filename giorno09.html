@@ -9,7 +9,6 @@
  <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
 
  <style>
-  /* Stili globali basati su giorno01.html e giorno08.html */
   * {
    margin: 0;
    padding: 0;
@@ -27,12 +26,14 @@
    align-items: center;
    padding: 2rem;
    position: relative;
+   overflow-x: hidden; /* Added to prevent horizontal scroll from snowflakes */
+   overflow-y: auto;
   }
   
   /* Particelle fluttuanti di sfondo */
   body::before {
    content: '';
-   position: absolute;
+   position: fixed; /* Changed to fixed to cover the whole viewport */
    width: 100%;
    height: 100%;
    background-image: 
@@ -46,11 +47,33 @@
    background-size: 200% 200%;
    animation: float 20s ease-in-out infinite;
    opacity: 0.3;
+   z-index: 0; /* Ensures it stays behind game content */
   }
   
   @keyframes float {
    0%, 100% { transform: translateY(0); }
    50% { transform: translateY(-20px); }
+  }
+
+  /* New: Animated snowflakes CSS */
+  .snowflake {
+   position: fixed;
+   top: -10px;
+   color: white;
+   font-size: 1em;
+   font-family: Arial, sans-serif;
+   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+   z-index: 0; /* Stays behind game content */
+   user-select: none;
+   pointer-events: none;
+   animation: fall linear infinite;
+  }
+  
+  @keyframes fall {
+   to {
+    transform: translateY(100vh) translateX(100px);
+    opacity: 0;
+   }
   }
   
   .content-box {
@@ -66,7 +89,7 @@
     0 0 60px rgba(255, 215, 0, 0.2),
     inset 0 0 50px rgba(0, 0, 0, 0.5);
    position: relative;
-   z-index: 1;
+   z-index: 1; /* Ensure game content is above snow */
    animation: glow-pulse 3s ease-in-out infinite;
   }
   
@@ -129,6 +152,12 @@
    transform: translateY(-1px);
   }
   
+  /* Centering the start game button */
+  #startGameButton {
+    display: block;
+    margin: 1.5rem auto 2rem auto; /* Adjusted margin for centering */
+  }
+
   #result-area {
    margin-top: 2rem;
    min-height: 100px;
@@ -178,18 +207,20 @@
   .game-area {
       position: relative;
       width: 100%;
-      max-width: 800px;
-      height: 500px;
+      max-width: 800px; /* Base width for coordinate calculations */
       margin: 2rem auto;
       border: 3px solid gold;
       border-radius: 15px;
       overflow: hidden; 
       display: none;
-      background-image: url('images/foto-nostre/foto0.png');
-      background-size: cover;
-      background-position: center;
       box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
       cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewport="0 0 100 100" style="fill:white;font-size:18px;"><text y="50%">🔍</text></svg>') 15 15, auto;
+  }
+
+  .game-area img { /* Styles for the main game image */
+      width: 100%;
+      height: auto; /* Allow image to dictate height */
+      display: block;
   }
 
   .clickable-spot {
@@ -210,12 +241,52 @@
       pointer-events: none;
   }
 
+  /* DEBUG_STYLES: Rendi i punti cliccabili visibili per il debug. Cambia 'display: none;' a 'display: block;' per attivarli. */
+  .clickable-spot-debug {
+      border: 2px dashed red !important; /* Forza il bordo rosso */
+      background-color: rgba(255, 0, 0, 0.2) !important; /* Sfondo semitrasparente rosso */
+      display: none; /* Cambia a 'block' per visualizzare i punti di debug */
+  }
+  /* FINE DEBUG_STYLES */
+
+
   .photos-found-counter {
       color: gold;
       font-size: 1.5rem;
       margin-top: 1rem;
-      display: none;
+      display: flex; /* Changed to flex for centering progress bar */
+      flex-direction: column;
+      align-items: center;
       text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+      width: 100%; /* Ensure it spans full width for centering */
+      max-width: 800px; /* Match game-area max-width */
+      margin-left: auto;
+      margin-right: auto;
+  }
+
+  /* Progress bar styling */
+  .progress-bar-custom {
+    width: 80%; /* Adjust width of the progress bar */
+    height: 25px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    overflow: hidden;
+    margin-top: 10px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, gold, #ffed4e);
+    width: 0%;
+    transition: width 0.5s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: #333;
+    font-weight: bold;
+    text-shadow: none; /* Remove text-shadow from progress text */
   }
 
   /* Modal overlay per la foto grande */
@@ -314,17 +385,26 @@
 </head>
 
 <body>
- <audio id="sound-track" loop>
+ <!-- Background Music -->
+ <audio id="background-music" loop preload="auto">
   <source src="audio/sound-track0.mp3" type="audio/mpeg"> 
  </audio>
- 
- <audio id="sound-win">
-  <source src="audio/soundwin.mp3" type="audio/mpeg">
+ <!-- Sound when an item is found -->
+ <audio id="found-sound" preload="auto">
+  <source src="audio/herewego.mp3" type="audio/mpeg">
+ </audio>
+ <!-- Final sound at the end of the game -->
+ <audio id="final-sound" preload="auto">
+  <source src="audio/maialino.mp3" type="audio/mpeg">
+ </audio>
+ <!-- New: Intro Music -->
+ <audio id="intro-music" preload="auto">
+  <source src="audio/song.mp3" type="audio/mpeg">
  </audio>
 
  <div class="photo-modal-overlay" id="photoModal">
   <img id="modalPhoto" class="modal-photo" src="" alt="Foto rivelata">
-  <button class="btn btn-game" id="closePhotoModalButton">Continua la Caccia</button> <!-- Added close button -->
+  <button class="btn btn-game" id="closePhotoModalButton">Continua la Caccia</button>
  </div>
 
  <div class="content-box">
@@ -336,7 +416,7 @@
   
   <div class="message-container" id="intro-message">
    <p>
-    Ciao Davide! Ho preparato un'immagine speciale... ma qualcosa non torna! 
+    Ciao Mapi! Ho preparato un'immagine speciale... ma qualcosa non torna! 
     Sembra che ci siano delle modifiche, dei dettagli nascosti che hanno a che fare con delle foto.
     Riesci a scovarli tutti e a rivelare le sorprese che ti aspettano?
     Clicca su "Inizia la Caccia" e buona fortuna! ❤️
@@ -346,11 +426,14 @@
   <button class="btn btn-game" id="startGameButton">Inizia la Caccia ✨</button>
 
   <div class="game-area" id="gameArea">
-   <!-- Clickable spots will be dynamically added here by JavaScript -->
+    <img id="mainGameImage" src="images/foto-nostre/foto0.png" alt="Scena di gioco principale">
   </div>
 
   <div class="photos-found-counter" id="foundCounter">
    Dettagli trovati: <span id="currentFound">0</span> / <span id="totalPhotos">5</span>
+   <div class="progress-bar-custom">
+        <div class="progress-fill" id="progressBarFill">0%</div>
+   </div>
   </div>
 
   <div class="carousel-container" id="carouselContainer">
@@ -378,51 +461,83 @@
  </div>
 
  <script>
-  const soundtrack = document.getElementById('sound-track');
-  const soundwin = document.getElementById('sound-win');
+  // Funzione per creare fiocchi di neve (from giorno01)
+  function createSnowflake() {
+      const snowflake = document.createElement('div');
+      snowflake.classList.add('snowflake');
+      snowflake.textContent = '❄';
+      snowflake.style.left = Math.random() * 100 + '%';
+      snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+      snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+      snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+      document.body.appendChild(snowflake);
+      
+      setTimeout(() => snowflake.remove(), 8000);
+  }
+
+  const backgroundMusic = document.getElementById('background-music');
+  const foundSound = document.getElementById('found-sound');
+  const finalSound = document.getElementById('final-sound');
+  const introMusic = document.getElementById('intro-music');
   const startGameButton = document.getElementById('startGameButton');
   const gameArea = document.getElementById('gameArea');
+  const mainGameImage = document.getElementById('mainGameImage');
   const introMessage = document.getElementById('intro-message');
   const foundCounter = document.getElementById('foundCounter');
   const currentFoundSpan = document.getElementById('currentFound');
   const totalPhotosSpan = document.getElementById('totalPhotos');
+  const progressBarFill = document.getElementById('progressBarFill');
   const resultArea = document.getElementById('result-area');
   const backButton = document.getElementById('back-to-calendar');
   const photoModal = document.getElementById('photoModal');
   const modalPhoto = document.getElementById('modalPhoto');
-  const closePhotoModalButton = document.getElementById('closePhotoModalButton'); // Get the new button
+  const closePhotoModalButton = document.getElementById('closePhotoModalButton');
   const carouselContainer = document.getElementById('carouselContainer');
   const carouselInner = document.getElementById('carouselInner');
+
+  // ** COME CALCOLARE LE COORDINATE PER GLI INDIZI (x, y, width, height): **
+  // 1. Apri la tua immagine 'images/foto-nostre/foto0.png' in un editor di immagini (es. Paint, GIMP, Photoshop, o anche un visualizzatore online che mostri le coordinate).
+  // 2. Annota le dimensioni originali in pixel dell'immagine.
+  //    - Imposta `originalImageWidth` e `originalImageHeight` qui sotto con le dimensioni reali della tua immagine.
+  //      NELL'ESEMPIO SOTTO, HO IMPOSTATO 800x500 COME DIMENSIONI ORIGINALI.
+  // 3. Per ogni indizio:
+  //    - Trova l'angolo in alto a sinistra dell'indizio e annota le sue coordinate X e Y in pixel.
+  //    - Trova la larghezza (width) e l'altezza (height) in pixel dell'area dell'indizio.
+  // 4. Inserisci questi valori in `hiddenItemsData` per ogni oggetto.
+  // Il codice JavaScript farà automaticamente il ridimensionamento proporzionale per adattarsi a schermi diversi.
+
+  const originalImageWidth = 800; // <<< MODIFICA QUESTO con la larghezza reale in pixel della tua 'foto0.png'
+  const originalImageHeight = 500; // <<< MODIFICA QUESTO con l'altezza reale in pixel della tua 'foto0.png'
 
   const hiddenItemsData = [
     { 
       id: 'spot1', 
-      x: 100, y: 50, width: 80, height: 80,
-      revealedPhotoSrc: 'images/foto-nostre/foto1.png', 
+      x: 174, y: 183, width: 35, height: 52, // Esempio: Coordinate basate su 800x500
+      revealedPhotoSrc: 'images/foto-nostre/foto1.jpg', 
       found: false 
     },
     { 
       id: 'spot2', 
-      x: 300, y: 150, width: 70, height: 70,
-      revealedPhotoSrc: 'images/foto-nostre/foto2.png', 
+      x: 15, y: 439, width: 57, height: 27,
+      revealedPhotoSrc: 'images/foto-nostre/foto2.jpg', 
       found: false 
     },
     { 
       id: 'spot3', 
-      x: 50, y: 300, width: 90, height: 90,
-      revealedPhotoSrc: 'images/foto-nostre/foto3.png', 
+      x: 115, y: 280, width: 30, height: 19,
+      revealedPhotoSrc: 'images/foto-nostre/foto3.jpg', 
       found: false 
     },
     { 
       id: 'spot4', 
-      x: 450, y: 20, width: 60, height: 60,
-      revealedPhotoSrc: 'images/foto-nostre/foto4.png', 
+      x: 582, y: 203, width: 42, height: 30,
+      revealedPhotoSrc: 'images/foto-nostre/foto4.jpg', 
       found: false 
     },
     { 
       id: 'spot5', 
-      x: 200, y: 400, width: 100, height: 100,
-      revealedPhotoSrc: 'images/foto-nostre/foto5.png', 
+      x: 720, y: 455, width: 70, height: 20,
+      revealedPhotoSrc: 'images/foto-nostre/foto5.jpg', 
       found: false 
     }
   ];
@@ -434,6 +549,12 @@
 
   totalPhotosSpan.textContent = hiddenItemsData.length;
 
+  function updateProgressBar() {
+      const percentage = (foundCount / hiddenItemsData.length) * 100;
+      progressBarFill.style.width = `${percentage}%`;
+      progressBarFill.textContent = `${Math.round(percentage)}%`;
+  }
+
   function initializeGame() {
     currentHiddenItems = JSON.parse(JSON.stringify(hiddenItemsData));
     foundCount = 0;
@@ -441,38 +562,66 @@
     revealedPhotos = [];
 
     currentFoundSpan.textContent = foundCount;
+    updateProgressBar(); // Initialize progress bar
     resultArea.innerHTML = '';
     backButton.style.display = 'none';
     carouselContainer.classList.remove('active');
 
-    gameArea.innerHTML = '';
+    const existingSpots = gameArea.querySelectorAll('.clickable-spot');
+    existingSpots.forEach(spot => spot.remove());
+
     gameArea.style.display = 'none';
     foundCounter.style.display = 'none';
     introMessage.style.display = 'block';
     startGameButton.style.display = 'block';
 
-    currentHiddenItems.forEach(item => {
-      const spotDiv = document.createElement('div');
-      spotDiv.classList.add('clickable-spot');
-      spotDiv.id = `spot-${item.id}`;
-      spotDiv.style.left = `${(item.x / 800) * 100}%`;
-      spotDiv.style.top = `${(item.y / 500) * 100}%`;
-      spotDiv.style.width = `${(item.width / 800) * 100}%`;
-      spotDiv.style.height = `${(item.height / 500) * 100}%`;
-      
-      spotDiv.addEventListener('click', () => handleSpotClick(item, spotDiv));
-      gameArea.appendChild(spotDiv);
-    });
+    mainGameImage.src = 'images/foto-nostre/foto0.png';
+
+    mainGameImage.onload = () => {
+        // Quando l'immagine principale è caricata, aggiungiamo i punti cliccabili
+        // Le loro posizioni e dimensioni sono calcolate in percentuale
+        // rispetto alle dimensioni originali dell'immagine, rendendoli responsivi.
+        currentHiddenItems.forEach(item => {
+            const spotDiv = document.createElement('div');
+            spotDiv.classList.add('clickable-spot');
+            // Aggiungi la classe di debug qui, se vuoi visualizzare i punti
+            // spotDiv.classList.add('clickable-spot-debug'); // <-- ATTIVA/DISATTIVA QUESTA RIGA PER IL DEBUG
+            spotDiv.id = `spot-${item.id}`;
+            
+            spotDiv.style.left = `${(item.x / originalImageWidth) * 100}%`;
+            spotDiv.style.top = `${(item.y / originalImageHeight) * 100}%`;
+            spotDiv.style.width = `${(item.width / originalImageWidth) * 100}%`;
+            spotDiv.style.height = `${(item.height / originalImageHeight) * 100}%`;
+            
+            spotDiv.addEventListener('click', () => handleSpotClick(item, spotDiv));
+            gameArea.appendChild(spotDiv);
+        });
+    };
+
+    backgroundMusic.pause(); backgroundMusic.currentTime = 0;
+    foundSound.pause(); foundSound.currentTime = 0;
+    finalSound.pause(); finalSound.currentTime = 0;
+    introMusic.pause(); introMusic.currentTime = 0;
   }
 
   function startGame() {
     gameActive = true;
     introMessage.style.display = 'none';
     startGameButton.style.display = 'none';
-    gameArea.style.display = 'block';
-    foundCounter.style.display = 'block';
-    soundtrack.volume = 0.5;
-    soundtrack.play().catch(e => console.log("Audio play prevented:", e));
+    gameArea.style.display = 'block'; /* Make game area visible */
+    foundCounter.style.display = 'flex'; // Use flex for counter and progress bar
+    
+    // Play intro music (song.mp3)
+    introMusic.volume = 0.6;
+    introMusic.play().then(() => {
+        console.log("Intro music started successfully.");
+    }).catch(e => console.error("Error playing intro music:", e));
+
+    // Start background music (sound-track0.mp3) immediately after intro music attempt
+    backgroundMusic.volume = 0.5;
+    backgroundMusic.play().then(() => {
+        console.log("Background music started successfully.");
+    }).catch(e => console.error("Error playing background music:", e));
   }
 
   function handleSpotClick(item, spotDiv) {
@@ -481,24 +630,29 @@
     item.found = true;
     foundCount++;
     currentFoundSpan.textContent = foundCount;
+    updateProgressBar(); // Update progress bar
     spotDiv.classList.add('found');
 
-    // Salva la foto per il carosello finale
+    foundSound.pause();
+    foundSound.currentTime = 0;
+    foundSound.play().then(() => {
+        console.log("Found sound started successfully.");
+    }).catch(e => console.error("Error playing found sound:", e));
+
     revealedPhotos.push(item.revealedPhotoSrc);
 
-    // Mostra la foto in modal
     showPhotoModal(item.revealedPhotoSrc);
   }
 
   function showPhotoModal(photoSrc) {
-    gameActive = false; // Disabilita il gioco mentre la foto è visibile
+    gameActive = false; // Temporarily disable game interaction
     modalPhoto.src = photoSrc;
     photoModal.classList.add('active');
   }
 
   function closePhotoModal() {
     photoModal.classList.remove('active');
-    gameActive = true; // Riabilita il gioco
+    gameActive = true; // Re-enable game interaction
     if (foundCount === currentHiddenItems.length) {
       endGame();
     }
@@ -520,37 +674,45 @@
       carouselItem.appendChild(img);
       carouselInner.appendChild(carouselItem);
     });
+    // Inizializza il carosello di Bootstrap dopo aver aggiunto gli elementi
+    new bootstrap.Carousel(document.getElementById('finalCarousel'), {
+        interval: 3000 // Cambia immagine ogni 3 secondi
+    });
   }
 
   function endGame() {
     gameActive = false;
-    soundtrack.pause();
-    soundtrack.currentTime = 0;
-    soundwin.volume = 0.7;
-    soundwin.play().catch(e => console.log("Win audio play prevented:", e));
+    backgroundMusic.pause();
+    backgroundMusic.currentTime = 0;
+    introMusic.pause(); introMusic.currentTime = 0;
+    
+    finalSound.volume = 0.7;
+    finalSound.play().then(() => {
+        console.log("Final sound started successfully.");
+    }).catch(e => console.error("Error playing final sound:", e));
     
     gameArea.style.display = 'none';
     foundCounter.style.display = 'none';
     
-    // Crea e mostra il carosello
-    createCarousel();
-    carouselContainer.classList.add('active');
+    createCarousel(); // Popola e inizializza il carosello
+    carouselContainer.classList.add('active'); // Rendi visibile il contenitore del carosello
     
-    // Mostra il pulsante per tornare
     backButton.style.display = 'inline-block';
     
-    // Disabilita ulteriori clic
     document.querySelectorAll('.clickable-spot').forEach(spot => spot.style.pointerEvents = 'none');
   }
 
-  document.addEventListener('DOMContentLoaded', initializeGame);
+  document.addEventListener('DOMContentLoaded', () => {
+    initializeGame();
+    setInterval(createSnowflake, 300);
+  });
   startGameButton.addEventListener('click', startGame);
-  closePhotoModalButton.addEventListener('click', closePhotoModal); // Add event listener for the new button
+  closePhotoModalButton.addEventListener('click', closePhotoModal);
 
   document.body.addEventListener('click', () => {
-    if (soundtrack.paused && gameActive) {
-      soundtrack.play().catch(e => console.log("Audio play prevented:", e));
-    }
+    // Questo listener è un fallback generale per sbloccare l'audio in alcuni browser
+    // se le policy di autoplay sono molto restrittive e i .play() diretti vengono bloccati.
+    // Le musiche specifiche vengono gestite nelle rispettive funzioni.
   }, { once: true });
 
  </script>
