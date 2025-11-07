@@ -26,12 +26,14 @@
    align-items: center;
    padding: 2rem;
    position: relative;
+   overflow-x: hidden; /* Added for snowflakes */
+   overflow-y: auto; /* Added for snowflakes */
   }
   
-  /* Particelle fluttuanti di sfondo */
+  /* Particelle fluttuanti di sfondo (esistente) */
   body::before {
    content: '';
-   position: absolute;
+   position: fixed; /* Changed to fixed to cover the whole viewport */
    width: 100%;
    height: 100%;
    background-image: 
@@ -45,11 +47,33 @@
    background-size: 200% 200%;
    animation: float 20s ease-in-out infinite;
    opacity: 0.3;
+   z-index: 0; /* Ensures it stays behind game content */
   }
   
   @keyframes float {
    0%, 100% { transform: translateY(0); }
    50% { transform: translateY(-20px); }
+  }
+
+  /* New: Animated snowflakes CSS (from giorno01) */
+  .snowflake {
+   position: fixed;
+   top: -10px;
+   color: white;
+   font-size: 1em;
+   font-family: Arial, sans-serif;
+   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+   z-index: 0; /* Stays behind game content */
+   user-select: none;
+   pointer-events: none;
+   animation: fall linear infinite;
+  }
+  
+  @keyframes fall {
+   to {
+    transform: translateY(100vh) translateX(100px);
+    opacity: 0;
+   }
   }
   
   .content-box {
@@ -65,7 +89,7 @@
     0 0 60px rgba(255, 215, 0, 0.2),
     inset 0 0 50px rgba(0, 0, 0, 0.5);
    position: relative;
-   z-index: 1;
+   z-index: 1; /* Ensure content is above snow */
    animation: glow-pulse 3s ease-in-out infinite;
   }
   
@@ -190,8 +214,7 @@
 
   .crossword-grid {
       display: grid;
-      grid-template-columns: repeat(12, 40px); /* 12 columns, 40px each */
-      grid-template-rows: repeat(12, 40px); /* 12 rows, 40px each */
+      /* GRID_ROWS and GRID_COLS will be set dynamically by JS for exact fit */
       gap: 1px;
       border: 2px solid gold;
       margin: 1rem auto; /* Center the grid */
@@ -201,17 +224,26 @@
 
   .grid-cell {
       position: relative;
-      width: 40px;
-      height: 40px;
+      width: 40px; /* Fixed cell size */
+      height: 40px; /* Fixed cell size */
       background-color: transparent; /* Default for empty cells */
       display: flex;
       justify-content: center;
       align-items: center;
   }
 
+  /* Style for cells that are part of a word */
   .grid-cell.active-cell {
       background-color: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 215, 0, 0.3);
+  }
+
+  /* Style for empty cells (not part of any word) */
+  .grid-cell.empty-cell {
+      background-color: transparent !important; /* Force transparent */
+      border: none !important; /* Remove border */
+      box-shadow: none !important; /* Remove shadow */
+      pointer-events: none; /* Make them non-interactive */
   }
 
   .grid-cell input {
@@ -230,6 +262,16 @@
 
   .grid-cell input:focus {
       background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Style for correct input cells */
+  .grid-cell input.correct {
+      background-color: rgba(144, 238, 144, 0.3) !important; /* Light green */
+      color: #90EE90 !important;
+  }
+  /* Style for disabled input cells (after correct answer) */
+  .grid-cell input:disabled {
+      cursor: not-allowed;
   }
 
   .clue-number {
@@ -280,12 +322,14 @@
 </head>
 
 <body>
- <audio id="sound-track" loop>
+ <!-- Audio elements -->
+ <audio id="sound-track" loop preload="auto">
   <source src="audio/sound-track0.mp3" type="audio/mpeg"> 
  </audio>
  
- <audio id="sound-win">
-  <source src="audio/soundwin.mp3" type="audio/mpeg">
+ <!-- Changed sound-win to win1.mp3 -->
+ <audio id="sound-win" preload="auto">
+  <source src="audio/win1.mp3" type="audio/mpeg">
  </audio>
 
  <div class="content-box">
@@ -297,8 +341,8 @@
   
   <div class="message-container" id="intro-message">
    <p>
-    Benvenuta nel cruciverba a tema Grey's Anatomy! Metti alla prova la tua conoscenza del Seattle Grace e dei suoi dottori.
-    Quando sei pronta, clicca su "Inizia il Gioco" e risolvi le 12 domande. In bocca al lupo, Davide! ❤️
+    Benvenuta, Mapi! (o Bibi, se preferisci 😉) nel cruciverba a tema Grey's Anatomy! Metti alla prova la tua conoscenza del Grey Sloan Memorial e dei suoi dottori.
+    Quando sei pronta, clicca su "Inizia il Gioco" e risolvi le 12 domande. In bocca al lupo! ❤️
    </p>
   </div>
 
@@ -338,8 +382,22 @@
  </div>
 
  <script>
+  // Funzione per creare fiocchi di neve (from giorno01)
+  function createSnowflake() {
+      const snowflake = document.createElement('div');
+      snowflake.classList.add('snowflake');
+      snowflake.textContent = '❄';
+      snowflake.style.left = Math.random() * 100 + '%';
+      snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+      snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+      snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+      document.body.appendChild(snowflake);
+      
+      setTimeout(() => snowflake.remove(), 8000);
+  }
+
   const soundtrack = document.getElementById('sound-track');
-  const soundwin = document.getElementById('sound-win');
+  const soundwin = document.getElementById('sound-win'); // Now refers to win1.mp3
   const startGameButton = document.getElementById('startGameButton');
   const crosswordGame = document.getElementById('crosswordGame');
   const crosswordGridElement = document.getElementById('crosswordGrid');
@@ -351,31 +409,34 @@
   const backButton = document.getElementById('back-to-calendar');
   const introMessage = document.getElementById('intro-message');
 
-  // Define the words and their placement (row, col are 0-indexed)
-  // Format: { clue: "...", answer: "WORD", startRow: R, startCol: C, direction: "H"|"V", clueNum: N }
+  // Dati per le parole del cruciverba, allineati all'immagine e con incroci consistenti
+  // (startRow, startCol sono 0-indexed)
   const wordsData = [
-      // Horizontal
-      { clue: "1. Il chirurgo cardiotoracico che ha sposato Cristina.", answer: "BURKE", startRow: 1, startCol: 1, direction: "H", clueNum: 1 },
-      { clue: "2. L'ospedale prima di chiamarsi Grey Sloan ______ Memorial.", answer: "GRACE", startRow: 3, startCol: 4, direction: "H", clueNum: 2 },
-      { clue: "3. La figlia di Meredith e Derek.", answer: "ZOLA", startRow: 5, startCol: 1, direction: "H", clueNum: 3 },
-      { clue: "4. La dottoressa che è 'la persona' di Meredith.", answer: "CRISTINA", startRow: 7, startCol: 2, direction: "H", clueNum: 4 },
-      { clue: "5. Il cognome del dottore che ha lasciato per l'esercito.", answer: "HUNT", startRow: 9, startCol: 1, direction: "H", clueNum: 5 },
-      { clue: "6. La dottoressa che ha sposato Jackson Avery.", answer: "APRIL", startRow: 9, startCol: 7, direction: "H", clueNum: 6 },
+    // Orizzontali (come da immagine, con risposte e incroci consistenti)
+    { clue: "5. La neurochirurga, sorella di Derek, con un passato difficile e un'iconica frase 'It's a beautiful day to save lives'.", answer: "AMELIA", startRow: 2, startCol: 0, direction: "H", clueNum: 5 },
+    { clue: "7. La specializzazione della dottoressa Callie Torres, spesso coinvolta in casi complessi di ossa e protesi.", answer: "ORTOPEDIA", startRow: 6, startCol: 1, direction: "H", clueNum: 7 },
+    { clue: "9. Il cognome della dottoressa che Meredith definisce 'la sua persona', una cardiologa di talento e cinica, con cui ha un legame profondo.", answer: "YANG", startRow: 8, startCol: 9, direction: "H", clueNum: 9 },
+    { clue: "11. Il chirurgo cardiotoracico dal carattere difficile, ex mentore e primo marito di Cristina, famoso per la sua perfezione.", answer: "BURKE", startRow: 9, startCol: 2, direction: "H", clueNum: 11 },
+    { clue: "12. La primogenita adottiva di Meredith e Derek, un nome di origine africana che significa 'essere speciale'.", answer: "ZOLA", startRow: 12, startCol: 8, direction: "H", clueNum: 12 },
 
-      // Vertical
-      { clue: "7. Cognome del dottore noto come 'McDreamy'.", answer: "SHEPHERD", startRow: 0, startCol: 3, direction: "V", clueNum: 7 },
-      { clue: "8. Il soprannome di Mark Sloan.", answer: "MCSTEAMY", startRow: 0, startCol: 7, direction: "V", clueNum: 8 },
-      { clue: "9. Il primario di chirurgia per le prime stagioni.", answer: "RICHARD", startRow: 2, startCol: 1, direction: "V", clueNum: 9 },
-      { clue: "10. La specializzazione di Callie Torres.", answer: "ORTOPEDIA", startRow: 1, startCol: 5, direction: "V", clueNum: 10 },
-      { clue: "11. Il dottore pediatrico che ha sposato Jo.", answer: "ALEX", startRow: 0, startCol: 9, direction: "V", clueNum: 11 },
-      { clue: "12. La dottoressa che ha avuto un tumore al cervello.", answer: "AMELIA", startRow: 4, startCol: 11, direction: "V", clueNum: 12 }
+    // Verticali (come da immagine, con risposte e incroci consistenti)
+    { clue: "1. Il cognome del neurochirurgo 'McDreamy', amore di Meredith, il cui destino ha spezzato molti cuori e ha ispirato un soprannome iconico.", answer: "SHEPHERD", startRow: 0, startCol: 2, direction: "V", clueNum: 1 },
+    { clue: "2. Il nome dell'ospedale prima di essere rinominato Grey Sloan ______ Memorial, in onore di due medici tragicamente scomparsi.", answer: "GRACE", startRow: 0, startCol: 5, direction: "V", clueNum: 2 },
+    { clue: "3. Il cognome del dottore pediatrico, poi capo di chirurgia, marito di Jo, con un passato difficile e un'evoluzione sorprendente.", answer: "KAREV", startRow: 1, startCol: 0, direction: "V", clueNum: 3 },
+    { clue: "4. Il soprannome di Marc Sloan", answer: "MCSTEAMY", startRow: 1, startCol: 9, direction: "V", clueNum: 4 },
+    { clue: "6. Il primario di chirurgia per gran parte delle stagioni, poi capo del programma di specializzazione, mentore e figura paterna per molti specializzandi.", answer: "WEBBER", startRow: 5, startCol: 6, direction: "V", clueNum: 6 },
+    { clue: "8. Il cognome del capo di chirurgia traumatica, con un passato militare e un rapporto tormentato con Cristina Yang, noto per le sue decisioni impulsive.", answer: "HUNT", startRow: 8, startCol: 3, direction: "V", clueNum: 8 },
+    { clue: "10. La dottoressa specializzata in chirurgia plastica, ex moglie di Jackson Avery, nota per la sua fede e le sue lotte personali.", answer: "APRIL", startRow: 8, startCol: 10, direction: "V", clueNum: 10 }
   ];
 
-  const GRID_ROWS = 12;
-  const GRID_COLS = 12;
+
+  const GRID_ROWS = 13; // 13 righe per adattarsi all'immagine
+  const GRID_COLS = 13; // 13 colonne per adattarsi all'immagine
+
+  // Inizializza la griglia con null per le celle vuote
   const gridData = Array(GRID_ROWS).fill(null).map(() => Array(GRID_COLS).fill(null));
 
-  // Populate gridData with letters and clue numbers
+  // Popola gridData con le parole e i numerini delle definizioni
   wordsData.forEach(wordObj => {
       for (let i = 0; i < wordObj.answer.length; i++) {
           let r = wordObj.startRow;
@@ -386,18 +447,24 @@
               r += i;
           }
 
-          if (r < GRID_ROWS && c < GRID_COLS) {
+          // Controllo per evitare di andare fuori dalla griglia
+          if (r >= 0 && r < GRID_ROWS && c >= 0 && c < GRID_COLS) {
               if (!gridData[r][c]) {
-                  gridData[r][c] = { letter: '', clueH: null, clueV: null };
+                  gridData[r][c] = { letter: '', clueH: null, clueV: null }; // Inizializza l'oggetto cella
               }
+              // Assegna la lettera corretta della parola
+              gridData[r][c].letter = wordObj.answer[i];
 
-              if (i === 0) { // Mark clue number at the start of the word
+              // Assegna il numerino della definizione solo alla prima lettera della parola
+              if (i === 0) {
                   if (wordObj.direction === "H") {
                       gridData[r][c].clueH = wordObj.clueNum;
                   } else {
                       gridData[r][c].clueV = wordObj.clueNum;
                   }
               }
+          } else {
+              console.warn(`Parola '${wordObj.answer}' (Clue ${wordObj.clueNum}) esce dai bordi della griglia a riga ${r}, colonna ${c}.`);
           }
       }
   });
@@ -406,13 +473,14 @@
       horizontalCluesElement.innerHTML = '';
       verticalCluesElement.innerHTML = '';
 
-      wordsData.filter(w => w.direction === "H").forEach(w => {
+      // Ordina le definizioni per numero di indizio prima di renderle
+      wordsData.filter(w => w.direction === "H").sort((a, b) => a.clueNum - b.clueNum).forEach(w => {
           const li = document.createElement('li');
           li.textContent = w.clue;
           horizontalCluesElement.appendChild(li);
       });
 
-      wordsData.filter(w => w.direction === "V").forEach(w => {
+      wordsData.filter(w => w.direction === "V").sort((a, b) => a.clueNum - b.clueNum).forEach(w => {
           const li = document.createElement('li');
           li.textContent = w.clue;
           verticalCluesElement.appendChild(li);
@@ -420,38 +488,54 @@
   }
 
   function renderCrosswordGrid() {
-      crosswordGridElement.innerHTML = '';
-      for (let r = 0; r < GRID_ROWS; r++) {
-          for (let c = 0; c < GRID_COLS; c++) {
-              const cellDiv = document.createElement('div');
-              cellDiv.classList.add('grid-cell');
-              cellDiv.dataset.row = r;
-              cellDiv.dataset.col = c;
+    crosswordGridElement.innerHTML = '';
+    crosswordGridElement.style.gridTemplateColumns = `repeat(${GRID_COLS}, 40px)`;
+    crosswordGridElement.style.gridTemplateRows = `repeat(${GRID_ROWS}, 40px)`;
 
-              const cellData = gridData[r][c];
+    for (let r = 0; r < GRID_ROWS; r++) {
+        for (let c = 0; c < GRID_COLS; c++) {
+            const cellDiv = document.createElement('div');
+            cellDiv.classList.add('grid-cell');
 
-              if (cellData) { // If there's any data (i.e., it's part of a word)
-                  cellDiv.classList.add('active-cell');
-                  const input = document.createElement('input');
-                  input.type = 'text';
-                  input.maxLength = '1';
-                  input.id = `cell-${r}-${c}`;
-                  input.dataset.row = r;
-                  input.dataset.col = c;
-                  cellDiv.appendChild(input);
+            const cellData = gridData[r][c];
 
-                  if (cellData.clueH !== null || cellData.clueV !== null) {
-                      const clueSpan = document.createElement('span');
-                      clueSpan.classList.add('clue-number');
-                      // Prefer horizontal clue number if both exist, or just show one
-                      clueSpan.textContent = cellData.clueH || cellData.clueV; 
-                      cellDiv.appendChild(clueSpan);
-                  }
-              }
-              crosswordGridElement.appendChild(cellDiv);
-          }
-      }
-  }
+            // Se la cella non ha dati (non fa parte di nessuna parola), la stilizziamo come vuota
+            if (!cellData || cellData.letter === '') {
+                cellDiv.classList.add('empty-cell');
+                crosswordGridElement.appendChild(cellDiv);
+                continue; // Passa alla prossima cella
+            }
+
+            // Altrimenti, è una cella attiva del cruciverba
+            cellDiv.classList.add('active-cell');
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.maxLength = 1;
+            input.id = `cell-${r}-${c}`;
+            input.dataset.row = r;
+            input.dataset.col = c;
+            
+            // NON pre-compilare e NON disabilitare all'inizio
+            // input.value = cellData.letter; 
+            // input.classList.add('correct');
+            // input.disabled = true;
+            
+            cellDiv.appendChild(input);
+
+            // Inserisci il numerino della definizione
+            if (cellData.clueH !== null || cellData.clueV !== null) {
+                const clueSpan = document.createElement('span');
+                clueSpan.classList.add('clue-number');
+                clueSpan.textContent = cellData.clueH || cellData.clueV; 
+                cellDiv.appendChild(clueSpan);
+            }
+
+            crosswordGridElement.appendChild(cellDiv);
+        }
+    }
+}
+
 
   function startGame() {
     introMessage.style.display = 'none';
@@ -464,7 +548,8 @@
   }
 
   function checkAnswers() {
-    let allCorrect = true;
+    let correctCellsCount = 0;
+    let totalExpectedCells = 0;
     resultArea.innerHTML = ''; // Clear previous messages
 
     const inputCells = document.querySelectorAll('.crossword-grid input');
@@ -472,35 +557,26 @@
       const r = parseInt(input.dataset.row);
       const c = parseInt(input.dataset.col);
       
-      // Find the correct letter for this cell from wordsData
-      let correctLetter = '';
-      wordsData.forEach(wordObj => {
-          for (let i = 0; i < wordObj.answer.length; i++) {
-              let currentR = wordObj.startRow;
-              let currentC = wordObj.startCol;
-              if (wordObj.direction === "H") {
-                  currentC += i;
-              } else { // V
-                  currentR += i;
-              }
-              if (currentR === r && currentC === c) {
-                  correctLetter = wordObj.answer[i];
-                  break; // Found the letter for this cell
-              }
+      const cellData = gridData[r][c]; // Ottieni i dati della cella dalla nostra mappa
+      
+      if (cellData && cellData.letter !== '') { // Se la cella fa parte di una parola
+          totalExpectedCells++;
+          if (input.value.toUpperCase().trim() === cellData.letter) {
+            input.classList.add('correct'); // Aggiungi classe per stile corretto
+            input.disabled = true; // Disabilita le celle corrette
+            correctCellsCount++;
+          } else {
+            // Se la risposta è sbagliata e la cella non era già corretta, svuotala
+            if (!input.classList.contains('correct')) { 
+                input.classList.remove('correct'); 
+                input.value = ''; // Cancella le risposte sbagliate per permettere di riprovare
+                input.disabled = false; // Assicurati che l'input sia abilitato per la correzione
+            }
           }
-      });
-
-      if (input.value.toUpperCase().trim() === correctLetter) {
-        input.style.backgroundColor = 'rgba(144, 238, 144, 0.3)'; // Light green
-        input.style.color = '#90EE90';
-      } else {
-        input.style.backgroundColor = 'rgba(255, 215, 0, 0.3)'; // Gold for incorrect
-        input.style.color = '#FFD700';
-        allCorrect = false;
       }
     });
 
-    if (allCorrect) {
+    if (correctCellsCount === totalExpectedCells) {
       soundtrack.pause();
       soundtrack.currentTime = 0;
       soundwin.volume = 0.7; // Adjust volume
@@ -508,22 +584,18 @@
       resultArea.innerHTML = `
         <div class="result-message success-message">
          <span class="lab-icon">🎉</span>
-         Complimenti Davide! Hai completato il cruciverba a tema Grey's Anatomy!
+         Complimenti Mapi! Hai completato il cruciverba a tema Grey's Anatomy!
          <span class="lab-icon">🥳</span>
         </div>
       `;
       backButton.style.display = 'inline-block';
       checkAnswersButton.style.display = 'none';
       resetGameButton.style.display = 'none';
-      // Disable inputs after completion
-      inputCells.forEach(input => {
-        input.disabled = true;
-      });
     } else {
       resultArea.innerHTML = `
         <div class="result-message punch-message">
          <span class="lab-icon">🤔</span>
-         Alcune risposte sono sbagliate. Riprova!
+         Hai ${correctCellsCount} lettere corrette su ${totalExpectedCells}. Continua così, Bibi!
          <span class="lab-icon">💡</span>
         </div>
       `;
@@ -531,13 +603,8 @@
   }
 
   function resetGame() {
-    const inputCells = document.querySelectorAll('.crossword-grid input');
-    inputCells.forEach(input => {
-      input.value = ''; // Clear input values
-      input.style.backgroundColor = 'transparent'; // Reset background color
-      input.style.color = '#fff'; // Reset text color
-      input.disabled = false; // Enable inputs
-    });
+    // Re-render the grid to reset all inputs to their initial (empty and enabled) state
+    renderCrosswordGrid(); 
     resultArea.innerHTML = ''; // Clear result message
     soundtrack.currentTime = 0;
     soundtrack.play().catch(e => console.log("Audio play prevented:", e));
@@ -556,6 +623,11 @@
       soundtrack.play().catch(e => console.log("Audio play prevented:", e));
     }
   }, { once: true });
+
+  // Initialize snow and game on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    setInterval(createSnowflake, 300); // Start snow
+  });
 
  </script>
 
