@@ -27,12 +27,14 @@
    align-items: center;
    padding: 2rem;
    position: relative;
+   overflow-x: hidden; /* Added for snowflakes */
+   overflow-y: auto; /* Added for snowflakes */
   }
   
-  /* Particelle fluttuanti di sfondo */
+  /* Particelle fluttuanti di sfondo (esistente) */
   body::before {
    content: '';
-   position: absolute;
+   position: fixed; /* Changed to fixed to cover the whole viewport */
    width: 100%;
    height: 100%;
    background-image: 
@@ -46,11 +48,33 @@
    background-size: 200% 200%;
    animation: float 20s ease-in-out infinite;
    opacity: 0.3;
+   z-index: 0; /* Ensures it stays behind game content */
   }
   
   @keyframes float {
    0%, 100% { transform: translateY(0); }
    50% { transform: translateY(-20px); }
+  }
+
+  /* New: Animated snowflakes CSS (from giorno01) */
+  .snowflake {
+   position: fixed;
+   top: -10px;
+   color: white;
+   font-size: 1em;
+   font-family: Arial, sans-serif;
+   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+   z-index: 0; /* Stays behind game content */
+   user-select: none;
+   pointer-events: none;
+   animation: fall linear infinite;
+  }
+  
+  @keyframes fall {
+   to {
+    transform: translateY(100vh) translateX(100px);
+    opacity: 0;
+   }
   }
   
   .content-box {
@@ -66,7 +90,7 @@
     0 0 60px rgba(255, 215, 0, 0.2),
     inset 0 0 50px rgba(0, 0, 0, 0.5);
    position: relative;
-   z-index: 1;
+   z-index: 1; /* Ensure content is above snow */
    animation: glow-pulse 3s ease-in-out infinite;
   }
   
@@ -119,7 +143,7 @@
    cursor: pointer;
   }
   
-  .back-button:hover, .btn-game:hover { 
+  .back-button:hover { 
    transform: translateY(-3px) scale(1.05);
    box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
    background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
@@ -176,7 +200,7 @@
 
   /* Stili specifici per il gioco "Scalata verso il Rifugio" */
   #gameCanvas {
-    background: linear-gradient(to bottom, #87CEEB 0%, #B0E0E6 50%, #ADD8E6 100%); /* Sky to snowy mountain */
+    /* Background will be drawn by JS using monti.png */
     border: 4px solid #fff;
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
     image-rendering: pixelated; /* Essential for pixel art */
@@ -207,27 +231,74 @@
   }
 
   #gameControls {
-    margin-top: 1.5rem;
     font-family: 'Press Start 2P', cursive;
     color: #eee;
     font-size: 0.9rem;
+    margin-top: 1.5rem;
     display: none;
+  }
+
+  /* Loading Screen Styles */
+  #loadingScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: gold;
+    font-size: 2rem;
+    z-index: 1000;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+  }
+
+  #loadingScreen span {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: #fff;
+  }
+  /* Disabled button style */
+  .btn-game:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+      background: linear-gradient(135deg, #888 0%, #aaa 100%); /* Greyed out */
+      border-color: #666;
+  }
+
+  /* Style for centering the start game button */
+  #startGameButton {
+    display: block;
+    margin: 1.5rem auto 2rem auto; /* Adjusted margin for centering */
   }
  </style>
 </head>
 
 <body>
- <audio id="game-music" loop>
-  <source src="audio/game_loop.mp3" type="audio/mpeg"> 
+ <!-- Audio elements -->
+ <!-- Changed game-music to arcade.mp3 -->
+ <audio id="game-music" loop preload="auto">
+  <source src="audio/awimmawe.mp3" type="audio/mpeg"> 
  </audio>
- 
- <audio id="hit-sound">
-  <source src="audio/hit.mp3" type="audio/mpeg">
+ <!-- Changed hit-sound to lose3.mp3 -->
+ <audio id="lose-sound" preload="auto">
+  <source src="audio/lose.wav" type="audio/mpeg">
  </audio>
-
- <audio id="win-sound">
+ <!-- Changed win-sound to win3.mp3 -->
+ <audio id="win-sound" preload="auto">
   <source src="audio/win.mp3" type="audio/mpeg">
  </audio>
+
+ <!-- Loading Screen -->
+ <div id="loadingScreen">
+    Caricamento risorse di gioco...
+    <span id="loadingProgress">0%</span>
+ </div>
 
  <div class="content-box">
   <h1>
@@ -238,14 +309,14 @@
   
   <div class="message-container" id="intro-message">
    <p>
-    Ciao Davide! Preparati per una scalata epica sulle Alpi Trentine!
+    Ciao Mapi! (o Bibi, se preferisci 😉) Preparati per una scalata epica sulle Alpi Trentine!
     Il tuo obiettivo è raggiungere la cima della montagna, evitando i massi che cadono.
     Riuscirai a raggiungere il Rifugio Lago di Tovel?
     Usa le frecce ← → (o A/D) per muoverti.
    </p>
   </div>
 
-  <button class="btn btn-game" id="startGameButton">Inizia la Scalata ✨</button>
+  <button class="btn btn-game" id="startGameButton" disabled>Inizia la Scalata ✨</button>
 
   <canvas id="gameCanvas" width="600" height="400"></canvas>
 
@@ -253,13 +324,14 @@
   <div id="gameTimer" class="game-info">Tempo: <span id="currentTime">0</span>s</div>
 
   <div id="gameOverMessage" class="game-message">
-    Oh no! Riprova!
+    Oh no! Sei stata colpita da un masso! Riprova, non mollare!
     <button class="btn btn-game" id="retryButton">Riprova</button>
   </div>
   
   <div id="gameWinMessage" class="game-message">
     Ce l'hai fatta! Hai raggiunto il Rifugio Lago di Tovel ❤️
-    <img src="images/lago_tovel_pixel.png" alt="Lago di Tovel" style="max-width: 100%; height: auto; margin-top: 1rem; image-rendering: pixelated; border: 2px solid gold;">
+    <!-- Changed image src to lago.png -->
+    <img src="images/lago.png" alt="Lago di Tovel" style="max-width: 100%; height: auto; margin-top: 1rem; image-rendering: pixelated; border: 2px solid gold;">
     <p style="font-family: 'Mountains of Christmas', cursive; font-size: 1.2rem; margin-top: 1rem;">
       Qui ti aspetta una cioccolata calda e un abbraccio ❤️
     </p>
@@ -276,10 +348,24 @@
  </div>
 
  <script>
+  // Funzione per creare fiocchi di neve (from giorno01)
+  function createSnowflake() {
+      const snowflake = document.createElement('div');
+      snowflake.classList.add('snowflake');
+      snowflake.textContent = '❄';
+      snowflake.style.left = Math.random() * 100 + '%';
+      snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+      snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+      snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+      document.body.appendChild(snowflake);
+      
+      setTimeout(() => snowflake.remove(), 8000);
+  }
+
   // Audio elements
-  const gameMusic = document.getElementById('game-music');
-  const hitSound = document.getElementById('hit-sound');
-  const winSound = document.getElementById('win-sound');
+  const gameMusic = document.getElementById('game-music'); // arcade.mp3
+  const loseSound = document.getElementById('lose-sound'); // lose3.mp3
+  const winSound = document.getElementById('win-sound');   // win3.mp3
 
   // Game UI elements
   const startGameButton = document.getElementById('startGameButton');
@@ -296,6 +382,8 @@
   const gameTimerDisplay = document.getElementById('gameTimer');
   const currentTimeSpan = document.getElementById('currentTime');
   const gameControls = document.getElementById('gameControls');
+  const loadingScreen = document.getElementById('loadingScreen');
+  const loadingProgress = document.getElementById('loadingProgress');
 
   // Game variables
   let player;
@@ -305,33 +393,72 @@
   let gameActive = false;
   let score = 0;
   let gameStartTime;
-  const WIN_TIME = 30; // seconds to win
+  const WIN_TIME = 45; // seconds to win (30 + 15)
   let gameSpeed = 1; // Initial speed multiplier
 
   // Player properties
-  const PLAYER_WIDTH = 20;
-  const PLAYER_HEIGHT = 20;
+  const PLAYER_WIDTH = 30; // Adjusted for image size
+  const PLAYER_HEIGHT = 30; // Adjusted for image size
   const PLAYER_SPEED = 5;
 
   // Rock properties
-  const ROCK_WIDTH = 15;
-  const ROCK_HEIGHT = 15;
+  const ROCK_WIDTH = 30; // Slightly larger for image
+  const ROCK_HEIGHT = 30; // Slightly larger for image
   const INITIAL_ROCK_SPEED = 2;
   const MAX_ROCKS = 10; // Max rocks on screen at once
 
-  // Assets (simple colors for pixel art style)
-  const PLAYER_COLOR = '#FF0000'; // Red
-  const ROCK_COLOR = '#A9A9A9'; // Dark Gray
-  const SNOW_COLOR = '#F0F8FF'; // AliceBlue for snow
-  const PINE_COLOR = '#228B22'; // ForestGreen for pines
-  const SKY_COLOR_TOP = '#87CEEB'; // Light sky blue
-  const SKY_COLOR_BOTTOM = '#B0E0E6'; // Slightly darker sky blue
+  // Assets (images for background and rocks)
+  const mountainBackground = new Image();
+  mountainBackground.src = 'images/monti.png';
+  const lakeImage = new Image();
+  lakeImage.src = 'images/lago.png';
+  const rockImage1 = new Image();
+  rockImage1.src = 'images/masso1.png';
+  const rockImage2 = new Image();
+  rockImage2.src = 'images/masso2.png';
+  const rockImages = [rockImage1, rockImage2]; // Array of rock images
 
+  const playerImage = new Image(); // New player image
+  playerImage.src = 'images/faccia.png';
+
+  // Asset loading management
+  let assetsLoadedCount = 0;
+  const totalAssetsToLoad = 1 + rockImages.length + 1 + 1; // background + 2 rock images + lakeImage + playerImage
+
+  function updateLoadingProgress() {
+    assetsLoadedCount++;
+    const progressPercentage = Math.floor((assetsLoadedCount / totalAssetsToLoad) * 100);
+    loadingProgress.textContent = `${progressPercentage}%`;
+
+    if (assetsLoadedCount === totalAssetsToLoad) {
+      loadingScreen.style.display = 'none'; // Hide loading screen
+      startGameButton.disabled = false; // Enable start button
+      console.log("All game assets loaded successfully.");
+    }
+  }
+
+  // Set onload and onerror for all images
+mountainBackground.onload = () => { console.log("✓ monti.png loaded"); updateLoadingProgress(); };
+  mountainBackground.onerror = (e) => { console.error("✗ Failed to load monti.png", e); updateLoadingProgress(); };
+
+  lakeImage.onload = () => { console.log("✓ lago.png loaded"); updateLoadingProgress(); };
+  lakeImage.onerror = (e) => { console.error("✗ Failed to load lago.png", e); updateLoadingProgress(); };
+
+  rockImage1.onload = () => { console.log("✓ masso1.png loaded"); updateLoadingProgress(); };
+  rockImage1.onerror = (e) => { console.error("✗ Failed to load masso1.png", e); updateLoadingProgress(); };
+
+  rockImage2.onload = () => { console.log("✓ masso2.png loaded"); updateLoadingProgress(); };
+  rockImage2.onerror = (e) => { console.error("✗ Failed to load masso2.png", e); updateLoadingProgress(); };
+
+  playerImage.onload = () => { console.log("✓ faccia.png loaded"); updateLoadingProgress(); };
+  playerImage.onerror = (e) => { console.error("✗ Failed to load faccia.png", e); updateLoadingProgress(); };
+  
   // Game initialization
   function initGame() {
     // Hide all game-related messages and show intro
     introMessage.style.display = 'block';
     startGameButton.style.display = 'block';
+    startGameButton.disabled = true; // Keep disabled until assets load
     gameCanvas.style.display = 'none';
     gameOverMessage.style.display = 'none';
     gameWinMessage.style.display = 'none';
@@ -339,6 +466,7 @@
     gameScoreDisplay.style.display = 'none';
     gameTimerDisplay.style.display = 'none';
     gameControls.style.display = 'none';
+    loadingScreen.style.display = 'flex'; // Show loading screen on init
 
     player = {
       x: gameCanvas.width / 2 - PLAYER_WIDTH / 2,
@@ -356,10 +484,24 @@
 
     gameMusic.pause();
     gameMusic.currentTime = 0;
+    loseSound.pause(); // Reset lose sound
+    loseSound.currentTime = 0;
+    winSound.pause();  // Reset win sound
+    winSound.currentTime = 0;
+
+    // Draw initial empty canvas or placeholder if assets not loaded yet
+    ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
   }
 
   // Start the game
   function startGame() {
+    // Check if assets are loaded before starting
+    if (assetsLoadedCount < totalAssetsToLoad) {
+      // This should ideally not be reached if button is disabled, but good fallback
+      console.warn("Attempted to start game before all assets loaded.");
+      return;
+    }
+
     introMessage.style.display = 'none';
     startGameButton.style.display = 'none';
     gameCanvas.style.display = 'block';
@@ -373,7 +515,8 @@
     gameMusic.play().catch(e => console.log("Audio play prevented:", e));
 
     gameInterval = requestAnimationFrame(gameLoop);
-    rockSpawnInterval = setInterval(spawnRock, 700 / gameSpeed); // Adjust spawn rate with speed
+    // Adjust spawn rate with speed, initial interval
+    rockSpawnInterval = setInterval(spawnRock, 700); 
   }
 
   // Game loop
@@ -396,6 +539,7 @@
     // Update rocks
     for (let i = 0; i < rocks.length; i++) {
       rocks[i].y += rocks[i].speed * gameSpeed;
+      rocks[i].rotation += rocks[i].rotationSpeed; // Update rotation
 
       // Check for collision
       if (
@@ -427,42 +571,65 @@
     }
 
     // Increase game speed over time
-    gameSpeed = 1 + (elapsedTime / 60); // Speed increases gradually every minute
+    // Adjust rock spawn interval based on speed
+    const newGameSpeed = 1 + (elapsedTime / 60); 
+    if (newGameSpeed !== gameSpeed) {
+        gameSpeed = newGameSpeed;
+        clearInterval(rockSpawnInterval);
+        rockSpawnInterval = setInterval(spawnRock, Math.max(100, 700 / gameSpeed)); // Min interval 100ms
+    }
   }
 
   // Draw game elements
   function draw() {
-    // Background (mountain landscape - pixel art style)
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
 
-    // Sky gradient
-    const skyGradient = ctx.createLinearGradient(0, 0, 0, gameCanvas.height / 2);
-    skyGradient.addColorStop(0, SKY_COLOR_TOP);
-    skyGradient.addColorStop(1, SKY_COLOR_BOTTOM);
-    ctx.fillStyle = skyGradient;
-    ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+    // Draw mountain background image
+    if (mountainBackground.complete && mountainBackground.naturalWidth > 0) {
+        // Draw the image to cover the canvas, maintaining aspect ratio
+        const aspectRatio = mountainBackground.naturalWidth / mountainBackground.naturalHeight;
+        const canvasAspectRatio = gameCanvas.width / gameCanvas.height;
+        let sx = 0, sy = 0, sWidth = mountainBackground.naturalWidth, sHeight = mountainBackground.naturalHeight;
+        let dx = 0, dy = 0, dWidth = gameCanvas.width, dHeight = gameCanvas.height;
 
-    // Snowy mountains (simple triangles/rectangles)
-    ctx.fillStyle = SNOW_COLOR;
-    ctx.beginPath();
-    ctx.moveTo(0, gameCanvas.height / 2);
-    ctx.lineTo(gameCanvas.width / 4, gameCanvas.height / 4);
-    ctx.lineTo(gameCanvas.width / 2, gameCanvas.height / 2);
-    ctx.lineTo(gameCanvas.width * 3 / 4, gameCanvas.height / 4 + 50);
-    ctx.lineTo(gameCanvas.width, gameCanvas.height / 2);
-    ctx.lineTo(gameCanvas.width, gameCanvas.height);
-    ctx.lineTo(0, gameCanvas.height);
-    ctx.closePath();
-    ctx.fill();
+        if (aspectRatio > canvasAspectRatio) { // Image is wider than canvas
+            sHeight = mountainBackground.naturalHeight;
+            sWidth = sHeight * canvasAspectRatio;
+            sx = (mountainBackground.naturalWidth - sWidth) / 2;
+        } else { // Image is taller than canvas
+            sWidth = mountainBackground.naturalWidth;
+            sHeight = sWidth / canvasAspectRatio;
+            sy = (mountainBackground.naturalHeight - sHeight) / 2;
+        }
+        ctx.drawImage(mountainBackground, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+    } else {
+        // Fallback if image not loaded
+        ctx.fillStyle = '#ADD8E6'; // Light blue
+        ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+    }
 
-    // Player (simple square)
-    ctx.fillStyle = PLAYER_COLOR;
-    ctx.fillRect(player.x, player.y, player.width, player.height);
+    // Player (draw player image)
+    if (playerImage.complete && playerImage.naturalWidth > 0) {
+        ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
+    } else {
+        // Fallback if image not loaded
+        ctx.fillStyle = '#FF0000'; // Red
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+    }
 
-    // Rocks (simple squares)
-    ctx.fillStyle = ROCK_COLOR;
+    // Rocks (using images with rotation)
     rocks.forEach(rock => {
-      ctx.fillRect(rock.x, rock.y, rock.width, rock.height);
+      if (rock.image.complete && rock.image.naturalWidth > 0) {
+        ctx.save(); // Save current canvas state
+        ctx.translate(rock.x + rock.width / 2, rock.y + rock.height / 2); // Move origin to center of rock
+        ctx.rotate(rock.rotation); // Apply rotation
+        ctx.drawImage(rock.image, -rock.width / 2, -rock.height / 2, rock.width, rock.height); // Draw image centered
+        ctx.restore(); // Restore canvas state
+      } else {
+        // Fallback if image not loaded
+        ctx.fillStyle = '#A9A9A9'; // Dark Gray
+        ctx.fillRect(rock.x, rock.y, rock.width, rock.height);
+      }
     });
   }
 
@@ -472,12 +639,18 @@
 
     const x = Math.floor(Math.random() * (gameCanvas.width - ROCK_WIDTH));
     const speed = INITIAL_ROCK_SPEED + Math.random() * 2; // Slightly varied speed
+    const randomRockImage = rockImages[Math.floor(Math.random() * rockImages.length)]; // Choose random rock image
+    const rotationSpeed = (Math.random() - 0.5) * 0.1; // Random rotation speed (-0.05 to 0.05 radians/frame)
+
     rocks.push({
       x: x,
       y: -ROCK_HEIGHT, // Start above canvas
       width: ROCK_WIDTH,
       height: ROCK_HEIGHT,
-      speed: speed
+      speed: speed,
+      image: randomRockImage, // Assign the image
+      rotation: 0, // Initial rotation angle
+      rotationSpeed: rotationSpeed // How fast it rotates
     });
   }
 
@@ -500,8 +673,8 @@
       winSound.play().catch(e => console.log("Win audio play prevented:", e));
       gameWinMessage.style.display = 'block';
     } else {
-      hitSound.volume = 0.7;
-      hitSound.play().catch(e => console.log("Hit audio play prevented:", e));
+      loseSound.volume = 0.7; // Use loseSound for game over
+      loseSound.play().catch(e => console.log("Lose audio play prevented:", e));
       gameOverMessage.style.display = 'block';
     }
     backButton.style.display = 'inline-block';
@@ -530,14 +703,17 @@
   
   // Ensure audio plays on first user interaction
   document.body.addEventListener('click', () => {
-    if (gameMusic.paused && gameActive) {
-      gameMusic.play().catch(e => console.log("Audio play prevented:", e));
-    }
+    // This listener is a general fallback for browser autoplay policies.
+    // Specific audio is started in startGame() and endGame().
   }, { once: true });
 
 
-  // Initialize the game when the page loads
-  document.addEventListener('DOMContentLoaded', initGame);
+  // Initialize the game and snow when the page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    // This will trigger the loading process and then initGame
+    initGame(); 
+    setInterval(createSnowflake, 300); // Start snow
+  });
  </script>
 
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
