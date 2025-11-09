@@ -3,13 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giorno 7 - Puzzle Natalizio a Tempo</title>
+    <title>Giorno 11 - Puzzle Natalizio a Tempo! 🧩</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
     <style>
+        /* Particelle fluttuanti di sfondo (esistente) */
+        body::before {
+            content: '';
+            position: fixed; /* Changed to fixed to cover the whole viewport */
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(2px 2px at 60% 70%, white, transparent),
+                radial-gradient(1px 1px at 50% 50%, white, transparent),
+                radial-gradient(1px 1px at 80% 10%, white, transparent),
+                radial-gradient(2px 2px at 90% 60%, white, transparent),
+                radial-gradient(1px 1px at 33% 80%, white, transparent),
+                radial-gradient(1px 1px at 75% 40%, white, transparent);
+            background-size: 200% 200%;
+            animation: float 20s ease-in-out infinite;
+            opacity: 0.3;
+            z-index: 0; /* Ensures it stays behind game content */
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Animated snowflakes CSS */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: white;
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            z-index: 0; /* Stays behind game content */
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
         body {
             font-family: 'Mountains of Christmas', cursive;
-            background: linear-gradient(100deg, #000000 0%, #f83030 50%, #000000 100%);
+            background: linear-gradient(100deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
             color: gold;
             display: flex;
             flex-direction: column;
@@ -18,6 +64,9 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
+            position: relative; /* Needed for snowflakes */
+            overflow-x: hidden; /* Prevent horizontal scroll from snowflakes */
+            overflow-y: auto;
         }
 
         .game-container {
@@ -30,6 +79,7 @@
             max-width: 900px;
             width: 100%;
             position: relative;
+            z-index: 1; /* Ensure game content is above snow */
         }
 
         h1 {
@@ -54,29 +104,27 @@
 
         .puzzle-board {
             position: relative;
-            width: 240px;
-            height: 480px;
+            /* Dimensions set by JS for responsiveness */
             border: 3px solid #ffd700;
             margin: 0 auto 30px auto;
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
             background-color: rgba(255, 255, 255, 0.05);
             overflow: hidden;
+            display: grid; /* Use grid for layout */
+            gap: 0; /* No gap between pieces */
         }
 
         .puzzle-piece {
-            position: absolute;
-            width: 240px;
-            height: 480px;
+            position: absolute; /* Absolute positioning for dragging */
+            /* Dimensions set by JS for responsiveness */
             cursor: grab;
             transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
             box-sizing: border-box;
             z-index: 10;
-            background-size: cover;
+            background-size: cover; /* Ensure image covers piece */
             background-position: center;
-            border: 2px solid rgba(255, 215, 0, 0.5);
+            border: 1px solid rgba(255, 215, 0, 0.5); /* Thinner border */
             user-select: none;
-            top: 0 !important;
-            left: 0 !important;
         }
 
         .puzzle-piece:hover {
@@ -93,7 +141,7 @@
 
         .puzzle-piece.snapped {
             cursor: default;
-            border: 2px solid #28a745;
+            border: 1px solid #28a745; /* Green border for snapped */
             box-shadow: 0 0 12px rgba(40, 167, 69, 0.7);
             z-index: 5;
             transition: all 0.2s ease-out;
@@ -120,6 +168,10 @@
             color: #000;
             transform: scale(1.05);
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.9);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         #winMessage, #loseMessage {
@@ -191,6 +243,30 @@
             margin-bottom: 10px;
         }
 
+        /* Loading Screen Styles */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: gold;
+            font-size: 2rem;
+            z-index: 1000;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+
+        #loadingScreen span {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
         @media (max-width: 768px) {
             .game-container {
                 padding: 20px;
@@ -201,112 +277,198 @@
             }
 
             .puzzle-board {
-                width: 300px;
-                height: 450px;
-            }
-
-            .puzzle-piece {
-                width: 75px;
-                height: 75px;
+                /* Will be scaled by JS based on new piece sizes */
+                width: auto;
+                height: auto;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Audio Elements -->
+    <audio id="gameMusic" loop preload="auto">
+        <source src="audio/down.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="winAudio" preload="auto">
+        <source src="audio/win.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="loseAudio" preload="auto">
+        <source src="audio/win1.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="snapAudio" preload="auto">
+        <source src="audio/up.mp3" type="audio/mpeg"> <!-- Optional: add a snap sound -->
+    </audio>
+    <audio id="alertAudio" preload="auto">
+        <source src="audio/allert.mp3" type="audio/mpeg"> <!-- Optional: add an alert sound for timer -->
+    </audio>
+
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen">
+        Caricamento risorse di gioco...
+        <span id="loadingProgress">0%</span>
+    </div>
 
     <div class="game-container">
         <h1>🧩 Puzzle Natalizio a Tempo! 🧩</h1>
-        <p class="puzzle-info">Riordina i 2 pezzi per completare l'immagine!</p>
-        <div id="timer">01:00</div>
-        <div class="progress-text">Pezzi collegati: <span id="snappedCount">0</span>/2</div>
+        <p class="puzzle-info">Riordina i 24 pezzi per completare l'immagine! Sei abbastanza veloce, Mapi? 😉</p>
+        <div id="timer">03:00</div>
+        <div class="progress-text">Pezzi collegati: <span id="snappedCount">0</span>/24</div>
 
         <div id="puzzleBoard" class="puzzle-board">
             <!-- Puzzle pieces will be inserted here by JavaScript -->
         </div>
 
-        <button id="startButton" class="btn btn-primary">Avvia Puzzle</button>
+        <button id="startButton" class="btn btn-primary" disabled>Avvia Puzzle</button>
         <button id="resetButton" class="btn btn-primary" style="display: none;">Resetta Puzzle</button>
         <button id="homeBtn" class="btn btn-primary" style="display: none;">🎄 Torna al Calendario</button>
         
-        <p id="winMessage">🎉 Complimenti! Hai completato il puzzle! 🎉</p>
-        <p id="loseMessage">⏰ Tempo scaduto! Riprova!</p>
+        <p id="winMessage" style="display: none;">🎉 Complimenti, Mapi! Hai completato il puzzle in tempo! 🎉</p>
+        <p id="loseMessage" style="display: none;">⏰ Tempo scaduto, Bibi! Riprova, non mollare! 💔</p>
     </div>
-
-    <!-- Audio Elements (genereranno suoni sintetizzati se i file non esistono) -->
-    <audio id="tranquiAudio"></audio>
-    <audio id="allertAudio"></audio>
-    <audio id="winAudio"></audio>
-    <audio id="loseAudio"></audio>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const rows = 2;
-            const cols = 1;
-            const totalPieces = rows * cols; // 2 pieces
-            const initialTime = 60; // 1 minute
-            const alertTime = 7; // seconds for alert sound
+        // Funzione per creare fiocchi di neve
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.textContent = '❄';
+            snowflake.style.left = Math.random() * 100 + '%';
+            snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+            snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+            snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            document.body.appendChild(snowflake);
+            
+            setTimeout(() => snowflake.remove(), 8000);
+        }
 
-            const puzzleBoard = document.getElementById('puzzleBoard');
-            const timerDisplay = document.getElementById('timer');
-            const snappedCountDisplay = document.getElementById('snappedCount');
-            const startButton = document.getElementById('startButton');
-            const resetButton = document.getElementById('resetButton');
-            const homeBtn = document.getElementById('homeBtn');
-            const winMessage = document.getElementById('winMessage');
-            const loseMessage = document.getElementById('loseMessage');
+        const rows = 6;
+        const cols = 4;
+        const totalPieces = rows * cols; // 24 pieces
+        const initialTime = 180; // 1 minute
+        const alertTime = 10; // seconds for alert sound
 
-            // Audio elements
-            const tranquiAudio = document.getElementById('tranquiAudio');
-            const allertAudio = document.getElementById('allertAudio');
-            const winAudio = document.getElementById('winAudio');
-            const loseAudio = document.getElementById('loseAudio');
+        const puzzleBoard = document.getElementById('puzzleBoard');
+        const timerDisplay = document.getElementById('timer');
+        const snappedCountDisplay = document.getElementById('snappedCount');
+        const startButton = document.getElementById('startButton');
+        const resetButton = document.getElementById('resetButton');
+        const homeBtn = document.getElementById('homeBtn');
+        const winMessage = document.getElementById('winMessage');
+        const loseMessage = document.getElementById('loseMessage');
 
-            let pieces = [];
-            let timerInterval;
-            let timeLeft;
-            let gameStarted = false;
-            let snappedPiecesCount = 0;
-            const snapThreshold = 15; // Pixels distance for snapping
+        // Audio elements
+        const gameMusic = document.getElementById('gameMusic');
+        const winAudio = document.getElementById('winAudio');
+        const loseAudio = document.getElementById('loseAudio');
+        const snapAudio = document.getElementById('snapAudio'); // Optional snap sound
+        const alertAudio = document.getElementById('alertAudio'); // Optional alert sound
 
-            let draggedPiece = null;
-            let offsetX, offsetY;
+        // Loading Screen elements
+        const loadingScreen = document.getElementById('loadingScreen');
+        const loadingProgress = document.getElementById('loadingProgress');
 
-            const boardWidth = 240;
-            const boardHeight = 480;
-            const pieceWidth = boardWidth / cols; // 240px
-            const pieceHeight = boardHeight / rows; // 240px
+        let pieces = [];
+        let timerInterval;
+        let timeLeft;
+        let gameStarted = false;
+        let snappedPiecesCount = 0;
+        const snapThreshold = 15; // Pixels distance for snapping
 
-            // Preload audio files in background (o crea suoni sintetizzati se non esistono)
-            setTimeout(() => {
-                // Prova a caricare gli audio reali
-                tranquiAudio.src = 'audio/tranqui.mp3';
-                allertAudio.src = 'audio/allert.mp3';
-                winAudio.src = 'audio/win.mp3';
-                loseAudio.src = 'audio/lose.wav';
-                
-                tranquiAudio.preload = 'auto';
-                allertAudio.preload = 'auto';
-                winAudio.preload = 'auto';
-                loseAudio.preload = 'auto';
-            }, 500);
+        let draggedPiece = null;
+        let offsetX, offsetY;
 
-            function createPuzzlePieces() {
-                puzzleBoard.innerHTML = '';
-                pieces = [];
-                snappedPiecesCount = 0;
+        // --- NEW: Puzzle board and piece dimensions based on original image ---
+        const originalImageWidth = 1440;
+        const originalImageHeight = 1920;
 
-                for (let i = 0; i < totalPieces; i++) {
+        const originalPieceWidth = originalImageWidth / cols; // 1440 / 4 = 360px
+        const originalPieceHeight = originalImageHeight / rows; // 1920 / 6 = 320px
+
+        // Scale factor to make the puzzle board larger (e.g., 2x current size)
+        const scaleFactor = 2; // Make it double the previous rendered size for better visibility
+
+        const renderedPieceWidth = originalPieceWidth / (originalImageWidth / (240 * scaleFactor)); // Scale to new board width
+        const renderedPieceHeight = originalPieceHeight / (originalImageHeight / (360 * scaleFactor)); // Scale to new board height
+
+        const boardWidth = renderedPieceWidth * cols; // New rendered board width
+        const boardHeight = renderedPieceHeight * rows; // New rendered board height
+        // --- END NEW ---
+
+        // Asset loading management
+        let assetsLoadedCount = 0;
+        const assetImages = [];
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                const img = new Image();
+                img.src = `images/puzzle-images/piece_${r}_${c}.png`; // New naming convention
+                assetImages.push(img);
+            }
+        }
+        const audioAssets = [gameMusic, winAudio, loseAudio, snapAudio, alertAudio];
+        const totalAssetsToLoad = assetImages.length + audioAssets.length;
+
+        function updateLoadingProgress() {
+            assetsLoadedCount++;
+            const progressPercentage = Math.floor((assetsLoadedCount / totalAssetsToLoad) * 100);
+            loadingProgress.textContent = `${progressPercentage}%`;
+
+            if (assetsLoadedCount === totalAssetsToLoad) {
+                loadingScreen.style.display = 'none'; // Hide loading screen
+                startButton.disabled = false; // Enable start button
+                console.log("All game assets loaded successfully.");
+            }
+        }
+
+        // Attach onload/onerror to all images
+        assetImages.forEach(img => {
+            img.onload = updateLoadingProgress;
+            img.onerror = (e) => { 
+                console.error(`Failed to load puzzle piece: ${img.src}`, e); 
+                updateLoadingProgress(); // Still count as loaded to avoid blocking
+            };
+        });
+
+        // Attach canplaythrough/onerror to all audio (more reliable for audio readiness)
+        audioAssets.forEach(audio => {
+            audio.addEventListener('canplaythrough', updateLoadingProgress, { once: true });
+            audio.addEventListener('error', (e) => { 
+                console.error(`Failed to load audio: ${audio.src}`, e); 
+                updateLoadingProgress(); // Still count as loaded
+            }, { once: true });
+            audio.load(); // Start loading audio
+        });
+
+
+        function createPuzzlePieces() {
+            puzzleBoard.innerHTML = '';
+            pieces = [];
+            snappedPiecesCount = 0;
+            snappedCountDisplay.textContent = snappedPiecesCount;
+
+            // Set puzzle board dimensions based on calculated values
+            puzzleBoard.style.width = `${boardWidth}px`;
+            puzzleBoard.style.height = `${boardHeight}px`;
+            puzzleBoard.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+            puzzleBoard.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const i = r * cols + c; // Linear index
                     const piece = document.createElement('div');
                     piece.classList.add('puzzle-piece');
                     piece.setAttribute('data-id', i);
-                    piece.setAttribute('data-correct-x', (i % cols) * pieceWidth);
-                    piece.setAttribute('data-correct-y', Math.floor(i / cols) * pieceHeight);
-                    piece.setAttribute('data-image-loaded', 'false');
                     
-                    piece.style.width = `${pieceWidth}px`;
-                    piece.style.height = `${pieceHeight}px`;
-                    piece.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 60%)`; // Colore placeholder
+                    // Calculate correct position for snapping using rendered dimensions
+                    piece.setAttribute('data-correct-x', c * renderedPieceWidth);
+                    piece.setAttribute('data-correct-y', r * renderedPieceHeight);
+                    
+                    piece.style.width = `${renderedPieceWidth}px`;
+                    piece.style.height = `${renderedPieceHeight}px`;
+                    piece.style.backgroundImage = `url(images/puzzle-images/piece_${r}_${c}.png)`; // New naming convention
+                    piece.style.backgroundColor = 'transparent'; // Assume image will load
 
                     piece.addEventListener('mousedown', handleMouseDown);
                     
@@ -314,229 +476,272 @@
                     puzzleBoard.appendChild(piece);
                 }
             }
+        }
 
-            function loadPuzzleImages() {
-                pieces.forEach(piece => {
-                    if (piece.getAttribute('data-image-loaded') === 'false') {
-                        const i = parseInt(piece.getAttribute('data-id'));
-                        const pieceNumber = String(i).padStart(2, '0');
-                        const img = new Image();
-                        img.onload = () => {
-                            piece.style.backgroundImage = `url(images/pezzi-puzzle/pezzo${pieceNumber}.jpg)`;
-                            piece.style.backgroundColor = 'transparent';
-                            piece.setAttribute('data-image-loaded', 'true');
-                        };
-                        img.onerror = () => {
-                            console.warn(`Immagine non trovata: pezzo${pieceNumber}.jpg`);
-                            // Mantieni il colore placeholder se l'immagine non esiste
-                        };
-                        img.src = `images/pezzi-puzzle/pezzo${pieceNumber}.jpg`;
-                    }
-                });
-            }
-
-            function placePiecesRandomly() {
-                const pieceWidth = puzzleBoard.offsetWidth / cols;
-                const pieceHeight = puzzleBoard.offsetHeight / rows;
-
-                pieces.forEach(piece => {
-                    if (!piece.classList.contains('snapped')) {
-                        let randomX, randomY;
-                        let overlap;
-
-                        do {
-                            overlap = false;
-                            randomX = Math.random() * (boardWidth - pieceWidth);
-                            randomY = Math.random() * (boardHeight - pieceHeight);
-
-                            for (const otherPiece of pieces) {
-                                if (otherPiece === piece || otherPiece.classList.contains('snapped')) continue;
-
-                                const otherX = parseFloat(otherPiece.style.left) || 0;
-                                const otherY = parseFloat(otherPiece.style.top) || 0;
-
-                                if (
-                                    randomX < otherX + pieceWidth + 10 &&
-                                    randomX + pieceWidth + 10 > otherX &&
-                                    randomY < otherY + pieceHeight + 10 &&
-                                    randomY + pieceHeight + 10 > otherY
-                                ) {
-                                    overlap = true;
-                                    break;
-                                }
-                            }
-                        } while (overlap);
-
-                        piece.style.left = `${randomX}px`;
-                        piece.style.top = `${randomY}px`;
-                    }
-                });
-            }
-
-            function handleMouseDown(e) {
-                if (!gameStarted || e.button !== 0 || e.target.classList.contains('snapped')) return;
-
-                draggedPiece = e.target.closest('.puzzle-piece');
-                draggedPiece.classList.add('dragging');
-
-                const pieceRect = draggedPiece.getBoundingClientRect();
-                const boardRect = puzzleBoard.getBoundingClientRect();
-
-                offsetX = e.clientX - pieceRect.left;
-                offsetY = e.clientY - pieceRect.top;
-
-                document.addEventListener('mousemove', handleMouseMove);
-                document.addEventListener('mouseup', handleMouseUp);
-            }
-
-            function handleMouseMove(e) {
-                if (!draggedPiece) return;
-
-                const boardRect = puzzleBoard.getBoundingClientRect();
-                let newX = e.clientX - boardRect.left - offsetX;
-                let newY = e.clientY - boardRect.top - offsetY;
-
-                newX = Math.max(0, Math.min(newX, boardRect.width - draggedPiece.offsetWidth));
-                newY = Math.max(0, Math.min(newY, boardRect.height - draggedPiece.offsetHeight));
-
-                draggedPiece.style.left = `${newX}px`;
-                draggedPiece.style.top = `${newY}px`;
-            }
-
-            function handleMouseUp() {
-                if (draggedPiece) {
-                    draggedPiece.classList.remove('dragging');
-                    checkSnap(draggedPiece);
-                    draggedPiece = null;
-                }
-                document.removeEventListener('mousemove', handleMouseMove);
-                document.removeEventListener('mouseup', handleMouseUp);
-            }
-
-            function checkSnap(droppedPiece) {
-                const correctX = parseFloat(droppedPiece.getAttribute('data-correct-x'));
-                const correctY = parseFloat(droppedPiece.getAttribute('data-correct-y'));
-                const currentX = parseFloat(droppedPiece.style.left) || 0;
-                const currentY = parseFloat(droppedPiece.style.top) || 0;
-
-                if (Math.abs(currentX - correctX) < snapThreshold && Math.abs(currentY - correctY) < snapThreshold) {
-                    snapPiece(droppedPiece, correctX, correctY);
-                }
-            }
-
-            function snapPiece(piece, targetX, targetY) {
+        function placePiecesRandomly() {
+            const shuffledPieces = [...pieces].sort(() => Math.random() - 0.5); // Shuffle pieces
+            
+            // Place pieces randomly without overlap within the board boundaries
+            shuffledPieces.forEach(piece => {
                 if (!piece.classList.contains('snapped')) {
-                    piece.style.left = `${targetX}px`;
-                    piece.style.top = `${targetY}px`;
-                    piece.classList.add('snapped');
-                    snappedPiecesCount++;
-                    snappedCountDisplay.textContent = snappedPiecesCount;
-                    piece.removeEventListener('mousedown', handleMouseDown);
-                    checkWin();
-                }
-            }
+                    let randomX, randomY;
+                    let overlap;
 
-            function startTimer() {
-                timeLeft = initialTime;
-                updateTimerDisplay();
-                
-                tranquiAudio.currentTime = 0;
-                tranquiAudio.loop = true;
-                tranquiAudio.play().catch(e => console.error("Error playing tranqui audio:", e));
-                allertAudio.pause(); 
-                allertAudio.currentTime = 0;
+                    // Try to find a non-overlapping random position
+                    let attempts = 0;
+                    do {
+                        overlap = false;
+                        randomX = Math.random() * (boardWidth - renderedPieceWidth);
+                        randomY = Math.random() * (boardHeight - renderedPieceHeight);
 
-                timerInterval = setInterval(() => {
-                    timeLeft--;
-                    updateTimerDisplay();
+                        // Check against other pieces already placed or snapped
+                        for (const otherPiece of pieces) {
+                            if (otherPiece === piece || otherPiece.classList.contains('snapped')) continue;
 
-                    if (timeLeft === alertTime) {
-                        tranquiAudio.pause();
-                        tranquiAudio.loop = false;
-                        allertAudio.currentTime = 0;
-                        allertAudio.loop = true;
-                        allertAudio.play().catch(e => console.error("Error playing alert audio:", e));
-                    }
-                    
-                    if (timeLeft <= 0) {
-                        clearInterval(timerInterval);
-                        if (snappedPiecesCount < totalPieces) {
-                            endGame(false);
-                        } else {
-                            endGame(true);
+                            const otherX = parseFloat(otherPiece.style.left) || 0;
+                            const otherY = parseFloat(otherPiece.style.top) || 0;
+
+                            // Basic AABB collision detection
+                            if (
+                                randomX < otherX + renderedPieceWidth &&
+                                randomX + renderedPieceWidth > otherX &&
+                                randomY < otherY + renderedPieceHeight &&
+                                randomY + renderedPieceHeight > otherY
+                            ) {
+                                overlap = true;
+                                break;
+                            }
                         }
-                    }
-                }, 1000);
-            }
+                        attempts++;
+                    } while (overlap && attempts < 100); // Limit attempts to prevent infinite loop
 
-            function stopTimer() {
-                clearInterval(timerInterval);
-                tranquiAudio.pause();
-                tranquiAudio.loop = false;
-                allertAudio.pause();
-                allertAudio.loop = false;
-            }
-
-            function updateTimerDisplay() {
-                const seconds = timeLeft % 60;
-                const minutes = Math.floor(timeLeft / 60);
-                timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            }
-
-            function checkWin() {
-                if (snappedPiecesCount === totalPieces) {
-                    stopTimer();
-                    endGame(true);
+                    piece.style.left = `${randomX}px`;
+                    piece.style.top = `${randomY}px`;
                 }
+            });
+        }
+
+        function handleMouseDown(e) {
+            if (!gameStarted || e.button !== 0 || e.target.classList.contains('snapped')) return;
+
+            draggedPiece = e.target.closest('.puzzle-piece');
+            draggedPiece.classList.add('dragging');
+
+            const pieceRect = draggedPiece.getBoundingClientRect();
+            const boardRect = puzzleBoard.getBoundingClientRect();
+
+            offsetX = e.clientX - pieceRect.left;
+            offsetY = e.clientY - pieceRect.top;
+
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+        }
+
+        function handleMouseMove(e) {
+            if (!draggedPiece) return;
+
+            const boardRect = puzzleBoard.getBoundingClientRect();
+            let newX = e.clientX - boardRect.left - offsetX;
+            let newY = e.clientY - boardRect.top - offsetY;
+
+            // Constrain piece within board boundaries
+            newX = Math.max(0, Math.min(newX, boardRect.width - draggedPiece.offsetWidth));
+            newY = Math.max(0, Math.min(newY, boardRect.height - draggedPiece.offsetHeight));
+
+            draggedPiece.style.left = `${newX}px`;
+            draggedPiece.style.top = `${newY}px`;
+        }
+
+        function handleMouseUp() {
+            if (draggedPiece) {
+                draggedPiece.classList.remove('dragging');
+                checkSnap(draggedPiece);
+                draggedPiece = null;
+            }
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        }
+
+        function checkSnap(droppedPiece) {
+            const correctX = parseFloat(droppedPiece.getAttribute('data-correct-x'));
+            const correctY = parseFloat(droppedPiece.getAttribute('data-correct-y'));
+            const currentX = parseFloat(droppedPiece.style.left) || 0;
+            const currentY = parseFloat(droppedPiece.style.top) || 0;
+
+            if (Math.abs(currentX - correctX) < snapThreshold && Math.abs(currentY - correctY) < snapThreshold) {
+                snapPiece(droppedPiece, correctX, correctY);
+            }
+        }
+
+        function snapPiece(piece, targetX, targetY) {
+            if (!piece.classList.contains('snapped')) {
+                piece.style.left = `${targetX}px`;
+                piece.style.top = `${targetY}px`;
+                piece.classList.add('snapped');
+                snappedPiecesCount++;
+                snappedCountDisplay.textContent = snappedPiecesCount;
+                if (snapAudio) {
+                    snapAudio.currentTime = 0;
+                    snapAudio.play().catch(e => console.error("Snap audio play prevented:", e));
+                }
+                piece.removeEventListener('mousedown', handleMouseDown);
+                checkWin();
+            }
+        }
+
+        function startTimer() {
+            timeLeft = initialTime;
+            updateTimerDisplay();
+            
+            gameMusic.currentTime = 0;
+            gameMusic.loop = true;
+            gameMusic.play().catch(e => console.error("Error playing game music:", e));
+            
+            if (alertAudio) { // Stop alert audio if it was playing
+                alertAudio.pause(); 
+                alertAudio.currentTime = 0;
+                alertAudio.loop = false;
             }
 
-            function resetGame() {
-                stopTimer();
-                gameStarted = false;
-                timerDisplay.textContent = `01:00`;
-                snappedCountDisplay.textContent = '0';
-                winMessage.style.display = 'none';
-                loseMessage.style.display = 'none';
-                startButton.style.display = 'inline-block';
-                resetButton.style.display = 'none';
-                homeBtn.style.display = 'none';
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft === alertTime && alertAudio) {
+                    gameMusic.pause(); // Pause game music for alert
+                    alertAudio.currentTime = 0;
+                    alertAudio.loop = true;
+                    alertAudio.play().catch(e => console.error("Error playing alert audio:", e));
+                } else if (timeLeft < alertTime && timeLeft > 0 && alertAudio && alertAudio.paused && !alertAudio.loop) {
+                    // Resume alert if user paused it
+                    alertAudio.loop = true;
+                    alertAudio.play().catch(e => console.error("Error resuming alert audio:", e));
+                } else if (timeLeft === 0 && alertAudio && alertAudio.loop) {
+                    alertAudio.pause(); // Stop alert when time runs out
+                }
                 
-                createPuzzlePieces();
-                placePiecesRandomly();
-            }
-
-            function startGame() {
-                gameStarted = true;
-                startButton.style.display = 'none';
-                resetButton.style.display = 'inline-block';
-                winMessage.style.display = 'none';
-                loseMessage.style.display = 'none';
-                loadPuzzleImages(); // Carica le immagini quando inizia il gioco
-                placePiecesRandomly();
-                startTimer();
-            }
-
-            function endGame(won) {
-                gameStarted = false;
-                stopTimer();
-
-                if (won) {
-                    winAudio.currentTime = 0;
-                    winAudio.play().catch(e => console.error("Error playing win audio:", e));
-                    winMessage.style.display = 'block';
-                } else {
-                    loseAudio.currentTime = 0;
-                    loseAudio.play().catch(e => console.error("Error playing lose audio:", e));
-                    loseMessage.style.display = 'block';
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    if (snappedPiecesCount < totalPieces) {
+                        endGame(false);
+                    } else {
+                        endGame(true); // Should already be won, but as a safeguard
+                    }
                 }
-                startButton.style.display = 'none';
-                resetButton.style.display = 'inline-block';
-                homeBtn.style.display = 'inline-block';
-            }
+            }, 1000);
+        }
 
-            startButton.addEventListener('click', startGame);
-            resetButton.addEventListener('click', resetGame);
-            homeBtn.addEventListener('click', () => window.location.href = 'index.html');
+        function stopTimer() {
+            clearInterval(timerInterval);
+            gameMusic.pause();
+            gameMusic.loop = false;
+            if (alertAudio) {
+                alertAudio.pause();
+                alertAudio.loop = false;
+            }
+        }
+
+        function updateTimerDisplay() {
+            const seconds = timeLeft % 60;
+            const minutes = Math.floor(timeLeft / 60);
+            timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function checkWin() {
+            if (snappedPiecesCount === totalPieces) {
+                stopTimer();
+                endGame(true);
+            }
+        }
+
+        function resetGame() {
+            stopTimer();
+            gameStarted = false;
+            timerDisplay.textContent = `01:00`;
+            snappedCountDisplay.textContent = `0`;
+            winMessage.style.display = 'none';
+            loseMessage.style.display = 'none';
+            startButton.style.display = 'inline-block';
+            resetButton.style.display = 'none';
+            homeBtn.style.display = 'none';
+            
+            createPuzzlePieces(); // Recreate pieces
+            placePiecesRandomly(); // Place them randomly
+        }
+
+        function startGame() {
+            gameStarted = true;
+            startButton.style.display = 'none';
+            resetButton.style.display = 'inline-block';
+            homeBtn.style.display = 'none';
+            winMessage.style.display = 'none';
+            loseMessage.style.display = 'none';
+            
+            // Re-place pieces randomly for a new game
+            placePiecesRandomly(); 
+            startTimer();
+        }
+
+        function endGame(won) {
+            gameStarted = false;
+            stopTimer();
+
+            if (won) {
+                winAudio.currentTime = 0;
+                winAudio.play().catch(e => console.error("Error playing win audio:", e));
+                winMessage.style.display = 'block';
+            } else {
+                loseAudio.currentTime = 0;
+                loseAudio.play().catch(e => console.error("Error playing lose audio:", e));
+                loseMessage.style.display = 'block';
+            }
+            startButton.style.display = 'none'; // Hide start
+            resetButton.style.display = 'inline-block'; // Show reset
+            homeBtn.style.display = 'inline-block'; // Show home
+        }
+
+        startButton.addEventListener('click', startGame);
+        resetButton.addEventListener('click', resetGame);
+        homeBtn.addEventListener('click', () => window.location.href = 'index.html');
+
+        // Initialize snow and puzzle on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setInterval(createSnowflake, 300); // Start snow
+
+            // Initial setup for the puzzle
+            createPuzzlePieces();
+            placePiecesRandomly();
+
+            // Initial check for assets loaded to enable button
+            let assetsLoadedAtInit = 0;
+            const allAssets = [...assetImages, ...audioAssets];
+            allAssets.forEach(asset => {
+                if (asset instanceof HTMLImageElement) {
+                    if (asset.complete) {
+                        assetsLoadedAtInit++;
+                    } else {
+                        asset.onload = () => { assetsLoadedAtInit++; checkAllAssetsLoaded(); };
+                        asset.onerror = () => { console.error(`Failed to load image: ${asset.src}`); assetsLoadedAtInit++; checkAllAssetsLoaded(); };
+                    }
+                } else if (asset instanceof HTMLAudioElement) {
+                    if (asset.readyState >= 3) { // HAVE_FUTURE_DATA or more
+                        assetsLoadedAtInit++;
+                    } else {
+                        asset.addEventListener('canplaythrough', () => { assetsLoadedAtInit++; checkAllAssetsLoaded(); }, { once: true });
+                        asset.addEventListener('error', () => { console.error(`Failed to load audio: ${asset.src}`); assetsLoadedAtInit++; checkAllAssetsLoaded(); }, { once: true });
+                        asset.load(); // Start loading audio
+                    }
+                }
+            });
+
+            function checkAllAssetsLoaded() {
+                loadingProgress.textContent = `${Math.floor((assetsLoadedAtInit / totalAssetsToLoad) * 100)}%`;
+                if (assetsLoadedAtInit === totalAssetsToLoad) {
+                    loadingScreen.style.display = 'none';
+                    startButton.disabled = false;
+                }
+            }
+            checkAllAssetsLoaded(); // Initial check in case all assets are cached
         });
     </script>
 </body>
