@@ -3,14 +3,13 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1">
- <title>Giorno 11 - Componi il Corpo Umano</title>
+ <title>Giorno 11 - Componi il Corpo Umano! 🧠</title>
 
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
  <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&family=Press+Start+2P&display=swap" rel="stylesheet">
 
  <style>
-  /* Stili globali basati su giorno01.html e giorno08.html */
-  * {
+  *{
    margin: 0;
    padding: 0;
    box-sizing: border-box;
@@ -27,12 +26,13 @@
    align-items: center;
    padding: 2rem;
    position: relative;
+   overflow-x: hidden;
+   overflow-y: auto;
   }
   
-  /* Particelle fluttuanti di sfondo */
   body::before {
    content: '';
-   position: absolute;
+   position: fixed;
    width: 100%;
    height: 100%;
    background-image: 
@@ -46,11 +46,32 @@
    background-size: 200% 200%;
    animation: float 20s ease-in-out infinite;
    opacity: 0.3;
+   z-index: 0;
   }
   
   @keyframes float {
    0%, 100% { transform: translateY(0); }
    50% { transform: translateY(-20px); }
+  }
+
+  .snowflake {
+   position: fixed;
+   top: -10px;
+   color: white;
+   font-size: 1em;
+   font-family: Arial, sans-serif;
+   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+   z-index: 0;
+   user-select: none;
+   pointer-events: none;
+   animation: fall linear infinite;
+  }
+  
+  @keyframes fall {
+   to {
+    transform: translateY(100vh) translateX(100px);
+    opacity: 0;
+   }
   }
   
   .content-box {
@@ -119,7 +140,7 @@
    cursor: pointer;
   }
   
-  .back-button:hover, .btn-game:hover { 
+  .btn-game:hover { 
    transform: translateY(-3px) scale(1.05);
    box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
    background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
@@ -174,39 +195,38 @@
    50% { transform: translateY(-10px); }
   }
 
-  /* Stili specifici per il gioco "Componi il Corpo Umano" */
   #gameArea {
     position: relative;
-    width: 400px; /* Base image width */
-    height: 600px; /* Base image height */
+    width: 400px;
+    height: 600px;
     margin: 2rem auto;
     border: 4px solid #fff;
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-    background-image: url('images/corpo.png'); /* Base body image */
+    background-image: url('images/corpo-umano/corpo.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     image-rendering: pixelated;
-    display: none; /* Hidden until game starts */
+    display: none;
   }
 
   .drop-target {
     position: absolute;
-    background: transparent; /* Changed: No visible background */
-    border: none; /* Changed: No visible border */
+    background: transparent;
+    border: none;
     transition: all 0.2s ease-in-out;
     z-index: 10;
   }
 
   .drop-target.hover {
-    background: rgba(255, 215, 0, 0.3); /* Gold tint on hover */
+    background: rgba(255, 215, 0, 0.3);
     border: 1px dashed gold;
   }
 
   .drop-target.correct {
-    background: rgba(144, 238, 144, 0.3); /* Light green when correct */
+    background: rgba(144, 238, 144, 0.3);
     border: 1px solid #90EE90;
-    pointer-events: none; /* Disable further drops on this target */
+    pointer-events: none;
   }
 
   #organTray {
@@ -215,19 +235,21 @@
     flex-wrap: wrap;
     gap: 1rem;
     margin-top: 2rem;
-    min-height: 100px; /* To prevent layout shift */
+    min-height: 100px;
   }
 
   .draggable-organ {
     cursor: grab;
-    width: 60px; /* Example size for organs */
-    height: 60px;
+    width: 12%;
+    height: auto;
+    max-width: 100px;
     border: 2px solid #ccc;
     border-radius: 5px;
     image-rendering: pixelated;
     transition: all 0.1s ease-out;
-    background-color: rgba(0, 0, 0, 0.5); /* Background for visibility if image is transparent */
+    background-color: rgba(0, 0, 0, 0.5);
     padding: 5px;
+    object-fit: contain;
   }
 
   .draggable-organ.dragged {
@@ -238,8 +260,9 @@
   .placed-organ {
     position: absolute;
     image-rendering: pixelated;
-    z-index: 11; /* Above targets */
-    pointer-events: none; /* Cannot be dragged again once placed */
+    z-index: 11;
+    pointer-events: none;
+    object-fit: contain;
   }
 
   .game-message {
@@ -255,36 +278,96 @@
     text-shadow: 2px 2px 0px #000;
   }
 
-  /* Style for the win message title */
-  #gameWinMessage h2 { /* Changed h1 to h2 for semantic structure within content-box */
-    font-family: 'Mountains of Christmas', cursive; /* Applied requested font */
+  #gameWinMessage h2 { 
+    font-family: 'Mountains of Christmas', cursive; 
     color: gold;
     text-shadow: 
      2px 2px 4px black,
      0 0 20px rgba(255, 215, 0, 0.5),
      0 0 30px rgba(255, 215, 0, 0.3);
-    font-size: 2.2rem; /* Adjusted size for consistency */
+    font-size: 2.2rem; 
     margin-bottom: 1rem;
+  }
+
+  #loadingScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: gold;
+    font-size: 2rem;
+    z-index: 1000;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+  }
+
+  #loadingScreen span {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: #fff;
+  }
+
+  .btn-game:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+      background: linear-gradient(135deg, #888 0%, #aaa 100%);
+      border-color: #666;
+  }
+
+  #videoOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1500;
+    display: none;
+  }
+
+  #videoPlayer {
+    max-width: 90vw;
+    max-height: 90vh;
+    border: 5px solid gold;
+    border-radius: 10px;
   }
  </style>
 </head>
 
 <body>
- <audio id="game-music" loop>
-  <source src="audio/puzzle_music.mp3" type="audio/mpeg"> 
+ <audio id="game-music" loop preload="auto">
+  <source src="audio/greys.mp3" type="audio/mpeg"> 
  </audio>
- 
- <audio id="correct-sound">
-  <source src="audio/correct.mp3" type="audio/mpeg">
+ <audio id="correct-sound" preload="auto">
+  <source src="audio/up.mp3" type="audio/mpeg">
+ </audio>
+ <audio id="incorrect-sound" preload="auto">
+  <source src="audio/down.mp3" type="audio/mpeg">
+ </audio>
+ <audio id="alert-sound" loop preload="auto">
+  <source src="audio/allert.mp3" type="audio/mpeg">
  </audio>
 
- <audio id="incorrect-sound">
-  <source src="audio/incorrect.mp3" type="audio/mpeg">
- </audio>
+ <div id="loadingScreen">
+    Caricamento risorse di gioco...
+    <span id="loadingProgress">0%</span>
+ </div>
 
- <audio id="win-sound">
-  <source src="audio/win.mp3" type="audio/mpeg">
- </audio>
+ <div id="videoOverlay" style="display: none;">
+    <video id="videoPlayer" controls preload="auto">
+        Il tuo browser non supporta il tag video.
+    </video>
+ </div>
 
  <div class="content-box">
   <h1>
@@ -295,33 +378,37 @@
   
   <div class="message-container" id="intro-message">
    <p>
-    Ciao Davide! È ora di mettere insieme i pezzi!
+    Ciao Mapi! (o Bibi, se preferisci 😉) È ora di mettere insieme i pezzi!
     Trascina gli organi al loro posto corretto sul corpo umano.
-    Riuscirai a completare l'anatomia?
+    Riuscirai a completare l'anatomia in tempo? Ogni organo ha la sua posizione!
    </p>
   </div>
 
-  <button class="btn btn-game" id="startGameButton">Inizia il Puzzle ✨</button>
+  <button class="btn-game" id="startGameButton" disabled>Inizia il Gioco ✨</button>
 
   <div id="gameArea">
-    <!-- Drop targets will be dynamically added here -->
   </div>
 
   <div id="organTray" style="display: none;">
-    <!-- Draggable organs will be dynamically added here -->
   </div>
 
-  <div id="gameWinMessage" class="game-message">
-    <h2>Congratulazioni! Hai composto il corpo umano perfettamente!</h2> <!-- Changed h1 to h2 and added class -->
+  <div id="timer" style="display: none;">01:00</div>
+  <div class="progress-text" style="display: none;">Organi posizionati: <span id="placedOrgansCount">0</span>/9</div>
+
+  <div id="gameWinMessage" class="game-message" style="display: none;">
+    <h2>🎉 Congratulazioni, Mapi! Hai composto il corpo umano perfettamente! 🎉</h2>
     <p style="font-family: 'Mountains of Christmas', cursive; font-size: 1.2rem; margin-top: 1rem;">
-      Sei un vero anatomista! 🎉
+      Sei una vera anatomista! Questo merita un applauso! 👏
     </p>
-    <button class="btn btn-game" id="playAgainButton">Gioca Ancora</button>
+    <button class="btn-game" id="playAgainButton">Gioca Ancora</button>
   </div>
 
-  <div id="gameOverMessage" class="game-message">
-    Ops! Qualcosa non è al suo posto. Riprova!
-    <button class="btn btn-game" id="retryButton">Riprova</button>
+  <div id="gameOverMessage" class="game-message" style="display: none;">
+    <h2>⏰ Tempo scaduto, Bibi! Qualcosa non è al suo posto.</h2>
+    <p style="font-family: 'Mountains of Christmas', cursive; font-size: 1.2rem; margin-top: 1rem;">
+      Non preoccuparti, riprova! La pratica rende perfetti! 💪
+    </p>
+    <button class="btn-game" id="retryButton">Riprova</button>
   </div>
 
   <a href="index.html" class="btn back-button" id="back-to-calendar" style="display: none; margin-top: 2rem;">
@@ -330,72 +417,188 @@
  </div>
 
  <script>
-  // Audio elements
+  function createSnowflake() {
+      const snowflake = document.createElement('div');
+      snowflake.classList.add('snowflake');
+      snowflake.textContent = '❄';
+      snowflake.style.left = Math.random() * 100 + '%';
+      snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+      snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+      snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+      document.body.appendChild(snowflake);
+      
+      setTimeout(() => snowflake.remove(), 8000);
+  }
+
   const gameMusic = document.getElementById('game-music');
   const correctSound = document.getElementById('correct-sound');
   const incorrectSound = document.getElementById('incorrect-sound');
-  const winSound = document.getElementById('win-sound');
+  const alertSound = document.getElementById('alert-sound');
+  
+  const videoPlayer = document.getElementById('videoPlayer');
+  const introVideoSrc = 'video/video.mp4';
+  const winVideoSrc = 'video/video1.mp4';
+  const loseVideoSrc = 'video/video2.mp4';
 
-  // Game UI elements
   const startGameButton = document.getElementById('startGameButton');
   const introMessage = document.getElementById('intro-message');
   const gameArea = document.getElementById('gameArea');
   const organTray = document.getElementById('organTray');
   const gameWinMessage = document.getElementById('gameWinMessage');
-  const gameOverMessage = document.getElementById('gameOverMessage'); // Using for incorrect placement feedback
+  const gameOverMessage = document.getElementById('gameOverMessage');
   const retryButton = document.getElementById('retryButton');
   const playAgainButton = document.getElementById('playAgainButton');
   const backButton = document.getElementById('back-to-calendar');
+  const timerDisplay = document.getElementById('timer');
+  const placedOrgansCountDisplay = document.getElementById('placedOrgansCount');
+  const videoOverlay = document.getElementById('videoOverlay');
 
-  // Game state
   let gameActive = false;
   let placedOrgansCount = 0;
   let draggedOrganId = null;
+  let timerInterval;
+  let timeLeft;
+  const initialTime = 60;
+  const alertTime = 10;
+  
+  // Variables to track drag offset
+  let offsetX = 0;
+  let offsetY = 0;
 
-  // Organ data: id, image source, and target area properties (x, y, width, height relative to gameArea)
-  // NOTE: Adjust 'left', 'top', 'width', 'height' values based on your 'corpo.png' image for accurate placement.
+  // MODIFICATO: Ora ogni organo ha dimensioni personalizzabili (widthPercent e heightPercent)
   const organsData = [
     { 
       id: 'cervello', 
-      src: 'images/organo1.png', // e.g., images/cervello.png
-      target: { left: 140, top: 20, width: 120, height: 80 },
-      isPlaced: false 
-    },
-    { 
-      id: 'cuore', 
-      src: 'images/organo2.png', // e.g., images/cuore.png
-      target: { left: 180, top: 200, width: 70, height: 70 },
-      isPlaced: false 
-    },
-    { 
-      id: 'stomaco', 
-      src: 'images/organo3.png', // e.g., images/stomaco.png
-      target: { left: 150, top: 300, width: 100, height: 80 },
+      src: 'images/corpo-umano/organo1.png', 
+      target: { left: 140, top: 20, width: 120, height: 100 },
+      widthPercent: 12, // Personalizza la dimensione in percentuale
+      heightAuto: true, // true = mantiene proporzioni, false = usa heightPercent
       isPlaced: false 
     },
     { 
       id: 'polmoni', 
-      src: 'images/organo4.png', // e.g., images/polmoni.png
-      target: { left: 120, top: 150, width: 160, height: 120 },
+      src: 'images/corpo-umano/organo2.png', 
+      target: { left: 180, top: 250, width: 60, height: 70 },
+      widthPercent: 10,
+      heightAuto: true,
+      isPlaced: false 
+    },
+    { 
+      id: 'cuore', 
+      src: 'images/corpo-umano/organo3.png', 
+      target: { left: 120, top: 150, width: 180, height: 150 },
+      widthPercent: 15,
+      heightAuto: true,
       isPlaced: false 
     },
     { 
       id: 'fegato', 
-      src: 'images/organo5.png', // e.g., images/fegato.png
-      target: { left: 160, top: 260, width: 100, height: 80 },
+      src: 'images/corpo-umano/organo4.png', 
+      target: { left: 160, top: 320, width: 100, height: 80 },
+      widthPercent: 12,
+      heightAuto: true,
+      isPlaced: false 
+    },
+    { 
+      id: 'stomaco', 
+      src: 'images/corpo-umano/organo5.png', 
+      target: { left: 170, top: 300, width: 80, height: 60 },
+      widthPercent: 11,
+      heightAuto: true,
+      isPlaced: false 
+    },
+    { 
+      id: 'intestino', 
+      src: 'images/corpo-umano/organo6.png', 
+      target: { left: 140, top: 400, width: 120, height: 100 },
+      widthPercent: 14,
+      heightAuto: true,
+      isPlaced: false 
+    },
+    { 
+      id: 'milza', 
+      src: 'images/corpo-umano/organo7.png', 
+      target: { left: 100, top: 350, width: 70, height: 60 },
+      widthPercent: 10,
+      heightAuto: true,
+      isPlaced: false 
+    },
+    { 
+      id: 'reni', 
+      src: 'images/corpo-umano/organo8.png', 
+      target: { left: 250, top: 380, width: 80, height: 70 },
+      widthPercent: 11,
+      heightAuto: true,
+      isPlaced: false 
+    },
+    { 
+      id: 'vescica', 
+      src: 'images/corpo-umano/organo9.png', 
+      target: { left: 190, top: 500, width: 60, height: 50 },
+      widthPercent: 9,
+      heightAuto: true,
       isPlaced: false 
     }
   ];
 
-  // Initialize the game
+  const loadingScreen = document.getElementById('loadingScreen');
+  const loadingProgress = document.getElementById('loadingProgress');
+
+  let assetsLoadedCount = 0;
+  const assetImages = [];
+  assetImages.push(new Image()); assetImages[0].src = 'images/corpo-umano/corpo.png';
+  organsData.forEach(organ => {
+    const img = new Image();
+    img.src = organ.src;
+    assetImages.push(img);
+  });
+  const audioAssets = [gameMusic, correctSound, incorrectSound, alertSound];
+  const preloadVideos = [
+    document.createElement('video'),
+    document.createElement('video'),
+    document.createElement('video')
+  ];
+  preloadVideos[0].src = introVideoSrc;
+  preloadVideos[1].src = winVideoSrc;
+  preloadVideos[2].src = loseVideoSrc;
+
+  const totalAssetsToLoad = assetImages.length + audioAssets.length + preloadVideos.length;
+
+  function updateLoadingProgress() {
+    assetsLoadedCount++;
+    const progressPercentage = Math.floor((assetsLoadedCount / totalAssetsToLoad) * 100);
+    loadingProgress.textContent = `${progressPercentage}%`;
+
+    if (assetsLoadedCount === totalAssetsToLoad) {
+      loadingScreen.style.display = 'none';
+      startGameButton.disabled = false;
+      console.log("All game assets loaded successfully.");
+    }
+  }
+
+  assetImages.forEach(img => {
+    img.onload = updateLoadingProgress;
+    img.onerror = (e) => { 
+      console.error(`Failed to load image: ${img.src}`, e); 
+      updateLoadingProgress();
+    };
+  });
+
+  [...audioAssets, ...preloadVideos].forEach(asset => {
+    asset.addEventListener('canplaythrough', updateLoadingProgress, { once: true });
+    asset.addEventListener('error', (e) => { 
+      console.error(`Failed to load asset: ${asset.src || asset.id}`, e); 
+      updateLoadingProgress();
+    }, { once: true });
+    asset.load();
+  });
+
   function initGame() {
-    // Reset game state
     gameActive = false;
     placedOrgansCount = 0;
     draggedOrganId = null;
     organsData.forEach(organ => organ.isPlaced = false);
 
-    // Hide all game elements and show intro
     introMessage.style.display = 'block';
     startGameButton.style.display = 'block';
     gameArea.style.display = 'none';
@@ -403,31 +606,58 @@
     gameWinMessage.style.display = 'none';
     gameOverMessage.style.display = 'none';
     backButton.style.display = 'none';
+    timerDisplay.style.display = 'none';
+    placedOrgansCountDisplay.parentElement.style.display = 'none';
+    videoOverlay.style.display = 'none';
 
-    // Clear game area and organ tray
     gameArea.innerHTML = '';
     organTray.innerHTML = '';
 
-    gameMusic.pause();
-    gameMusic.currentTime = 0;
+    gameMusic.pause(); gameMusic.currentTime = 0;
+    correctSound.pause(); correctSound.currentTime = 0;
+    incorrectSound.pause(); incorrectSound.currentTime = 0;
+    alertSound.pause(); alertSound.currentTime = 0;
+    videoPlayer.pause(); videoPlayer.currentTime = 0;
   }
 
-  // Start the game
   function startGame() {
+    if (assetsLoadedCount < totalAssetsToLoad) {
+      console.warn("Attempted to start game before all assets loaded.");
+      return;
+    }
+
     introMessage.style.display = 'none';
     startGameButton.style.display = 'none';
+    
+    videoOverlay.style.display = 'flex';
+    videoPlayer.src = introVideoSrc;
+    videoPlayer.load();
+    videoPlayer.play().catch(e => console.error("Error playing intro video:", e));
+
+    videoPlayer.onended = () => {
+        videoOverlay.style.display = 'none';
+        startActualGame();
+    };
+  }
+
+  function startActualGame() {
     gameArea.style.display = 'block';
-    organTray.style.display = 'flex'; // Show organ tray
+    organTray.style.display = 'flex';
+    timerDisplay.style.display = 'block';
+    placedOrgansCountDisplay.parentElement.style.display = 'block';
     gameActive = true;
+    placedOrgansCount = 0;
+    placedOrgansCountDisplay.textContent = placedOrgansCount;
 
     gameMusic.volume = 0.3;
-    gameMusic.play().catch(e => console.log("Audio play prevented:", e));
+    gameMusic.loop = true;
+    gameMusic.play().catch(e => console.error("Error playing game music:", e));
 
     createDropTargets();
     createDraggableOrgans();
+    startTimer();
   }
 
-  // Create drop targets on the game area
   function createDropTargets() {
     organsData.forEach(organ => {
       const targetDiv = document.createElement('div');
@@ -447,9 +677,8 @@
     });
   }
 
-  // Create draggable organ images in the tray
+  // MODIFICATO: Ora applica le dimensioni personalizzate per ogni organo
   function createDraggableOrgans() {
-    // Shuffle organs for varied starting positions if desired
     const shuffledOrgans = [...organsData].sort(() => Math.random() - 0.5);
 
     shuffledOrgans.forEach(organ => {
@@ -460,6 +689,10 @@
       organImg.classList.add('draggable-organ');
       organImg.draggable = true;
 
+      // Applica dimensioni personalizzate
+      organImg.style.width = `${organ.widthPercent}%`;
+      organImg.style.height = organ.heightAuto ? 'auto' : `${organ.heightPercent || 12}%`;
+
       organImg.addEventListener('dragstart', handleDragStart);
       organImg.addEventListener('dragend', handleDragEnd);
 
@@ -467,7 +700,6 @@
     });
   }
 
-  // Drag event handlers
   function handleDragStart(e) {
     if (!gameActive) {
       e.preventDefault();
@@ -476,17 +708,22 @@
     draggedOrganId = e.target.id.replace('organ-', '');
     e.dataTransfer.setData('text/plain', draggedOrganId);
     e.target.classList.add('dragged');
-    gameOverMessage.style.display = 'none'; // Hide any previous error messages
+    
+    // Calculate offset from where user clicked on the organ image
+    const rect = e.target.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+    
+    // The gameOverMessage is for game over, not for temporary incorrect drops.
+    // So, no need to hide it here if it's already hidden.
   }
 
   function handleDragEnd(e) {
     e.target.classList.remove('dragged');
-    draggedOrganId = null;
   }
 
-  // Drop target event handlers
   function handleDragOver(e) {
-    e.preventDefault(); // Allow drop
+    e.preventDefault();
   }
 
   function handleDragEnter(e) {
@@ -508,36 +745,58 @@
     const organBeingDropped = organsData.find(o => o.id === droppedOrganId);
     const targetForOrgan = organsData.find(o => o.id === targetDivId);
 
-    if (organBeingDropped && targetForOrgan && droppedOrganId === targetDivId && !organBeingDropped.isPlaced) {
-      // Correct placement
-      correctSound.play().catch(err => console.log("Correct audio play prevented:", err));
-      organBeingDropped.isPlaced = true;
-      placedOrgansCount++;
+    const organImg = document.getElementById(`organ-${droppedOrganId}`);
+    
+    // Calculate the drop position relative to the gameArea
+    const gameAreaRect = gameArea.getBoundingClientRect();
+    let droppedPieceX = e.clientX - gameAreaRect.left - offsetX;
+    let droppedPieceY = e.clientY - gameAreaRect.top - offsetY;
 
-      const organImg = document.getElementById(`organ-${droppedOrganId}`);
-      organImg.classList.remove('draggable-organ');
-      organImg.classList.add('placed-organ');
-      organImg.draggable = false; // Cannot drag again
+    // Constrain the dropped position within gameArea boundaries
+    droppedPieceX = Math.max(0, Math.min(droppedPieceX, gameArea.offsetWidth - organImg.offsetWidth));
+    droppedPieceY = Math.max(0, Math.min(droppedPieceY, gameArea.offsetHeight - organImg.offsetHeight));
 
-      // Position the organ image precisely over the target
-      organImg.style.position = 'absolute';
-      organImg.style.left = `${targetForOrgan.target.left}px`;
-      organImg.style.top = `${targetForOrgan.target.top}px`;
-      organImg.style.width = `${targetForOrgan.target.width}px`;
-      organImg.style.height = `${targetForOrgan.target.height}px`;
+    // Calculate the center of the dropped organ
+    const droppedOrganCenterX = droppedPieceX + organImg.offsetWidth / 2;
+    const droppedOrganCenterY = droppedPieceY + organImg.offsetHeight / 2;
 
-      e.target.classList.add('correct'); // Visual feedback for correct target
-      e.target.appendChild(organImg); // Append the organ to the target div
+    // Check if the center of the dropped organ is within its correct target area
+    const isCenterInCorrectTargetArea = (
+        droppedOrganCenterX >= targetForOrgan.target.left &&
+        droppedOrganCenterX <= targetForOrgan.target.left + targetForOrgan.target.width &&
+        droppedOrganCenterY >= targetForOrgan.target.top &&
+        droppedOrganCenterY <= targetForOrgan.target.top + targetForOrgan.target.height
+    );
 
-      checkWinCondition();
+    if (organBeingDropped && targetForOrgan && droppedOrganId === targetDivId && !organBeingDropped.isPlaced && isCenterInCorrectTargetArea) {
+        // Correct organ, correct target div, not already placed, AND center is in target area
+        correctSound.currentTime = 0;
+        correctSound.play().catch(err => console.error("Correct audio play prevented:", err));
+        organBeingDropped.isPlaced = true;
+        placedOrgansCount++;
+        placedOrgansCountDisplay.textContent = placedOrgansCount;
+
+        organImg.classList.remove('draggable-organ', 'dragged');
+        organImg.classList.add('placed-organ');
+        organImg.draggable = false;
+
+        // Apply the exact dropped position and target dimensions
+        organImg.style.left = `${droppedPieceX}px`;
+        organImg.style.top = `${droppedPieceY}px`;
+        organImg.style.width = `${targetForOrgan.target.width}px`; // Set width based on target
+        organImg.style.height = `${targetForOrgan.target.height}px`; // Set height based on target
+
+        e.target.classList.add('correct'); // Visual feedback for correct target area
+        gameArea.appendChild(organImg); // Append to gameArea directly
+
+        checkWinCondition();
     } else {
-      // Incorrect placement
-      incorrectSound.play().catch(err => console.log("Incorrect audio play prevented:", err));
-      gameOverMessage.style.display = 'block'; // Show a temporary error message
-      setTimeout(() => {
-        gameOverMessage.style.display = 'none';
-      }, 1500); // Hide after 1.5 seconds
-      // The dragged organ will return to its original position in the tray automatically via handleDragEnd
+        // Incorrect placement (wrong organ for target, or dropped outside target bounds, or already placed)
+        incorrectSound.currentTime = 0;
+        incorrectSound.play().catch(err => console.error("Incorrect audio play prevented:", err));
+        
+        // Removed the temporary error message display using gameOverMessage
+        // The incorrect sound and organ returning to tray provide feedback.
     }
   }
 
@@ -548,44 +807,93 @@
     }
   }
 
-  // End the game (win or general reset)
-  function endGame(win) {
+  // Start the game timer
+  function startTimer() {
+      timeLeft = initialTime;
+      updateTimerDisplay();
+      
+      timerInterval = setInterval(() => {
+          timeLeft--;
+          updateTimerDisplay();
+
+          if (timeLeft === alertTime) {
+              gameMusic.pause(); // Pause game music for alert
+              alertSound.currentTime = 0;
+              alertSound.loop = true;
+              alertSound.play().catch(e => console.error("Error playing alert audio:", e));
+          } else if (timeLeft < alertTime && timeLeft > 0 && alertSound.paused && !alertSound.loop) {
+              // Resume alert if user paused it, and it's still within alert time
+              alertSound.loop = true;
+              alertSound.play().catch(e => console.error("Error resuming alert audio:", e));
+          } else if (timeLeft === 0 && alertSound.loop) {
+              alertSound.pause(); // Stop alert when time runs out
+          }
+          
+          if (timeLeft <= 0) {
+              clearInterval(timerInterval);
+              if (placedOrgansCount < organsData.length) {
+                  endGame(false); // Time ran out, game lost
+              } else {
+                  endGame(true); // Should already be won, but as a safeguard
+              }
+          }
+      }, 1000);
+  }
+
+  // Stop the game timer
+  function stopTimer() {
+      clearInterval(timerInterval);
+      gameMusic.pause();
+      gameMusic.loop = false;
+      alertSound.pause();
+      alertSound.loop = false;
+  }
+
+  // Update timer display
+  function updateTimerDisplay() {
+      const seconds = timeLeft % 60;
+      const minutes = Math.floor(timeLeft / 60);
+      timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+
+  // End the game (win or lose)
+  function endGame(won) {
     gameActive = false;
-    gameMusic.pause();
-    gameMusic.currentTime = 0;
+    stopTimer();
 
     gameArea.style.display = 'none';
     organTray.style.display = 'none';
+    timerDisplay.style.display = 'none';
+    placedOrgansCountDisplay.parentElement.style.display = 'none'; // Hide parent div
 
-    if (win) {
-      winSound.volume = 0.7;
-      winSound.play().catch(e => console.log("Win audio play prevented:", e));
-      gameWinMessage.style.display = 'block';
-    } else {
-      // This path might be less used if we only have win condition
-      // but good for general error/reset logic.
-      gameOverMessage.style.display = 'block';
-    }
-    backButton.style.display = 'inline-block';
+    videoOverlay.style.display = 'flex'; // Show video overlay for win/lose video
+    videoPlayer.src = won ? winVideoSrc : loseVideoSrc; // Set win or lose video source
+    videoPlayer.load();
+    videoPlayer.play().catch(e => console.error(`Error playing ${won ? 'win' : 'lose'} video:`, e));
+
+    videoPlayer.onended = () => {
+        videoOverlay.style.display = 'none'; // Hide video after it ends
+        if (won) {
+            gameWinMessage.style.display = 'block';
+        } else {
+            gameOverMessage.style.display = 'block';
+        }
+        backButton.style.display = 'inline-block';
+    };
   }
 
   // Event Listeners for buttons
   startGameButton.addEventListener('click', startGame);
   retryButton.addEventListener('click', initGame); // Retry button resets game
   playAgainButton.addEventListener('click', initGame); // Play again button resets game
-
-  // Ensure audio plays on first user interaction
-  document.body.addEventListener('click', () => {
-    if (gameMusic.paused && gameActive) {
-      gameMusic.play().catch(e => console.log("Audio play prevented:", e));
-    }
-  }, { once: true });
-
-  // Initialize the game when the page loads
-  document.addEventListener('DOMContentLoaded', initGame);
+  
+  // Initialize snow and game on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    setInterval(createSnowflake, 300); // Start snow
+    initGame(); // This will trigger the initial asset loading
+  });
  </script>
 
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
