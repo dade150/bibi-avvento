@@ -1,1 +1,635 @@
-<!-- quiz tennis-->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>Giorno 19 - Quiz Tennis</title>
+
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+ <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
+
+ <style>
+  * {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+  }
+  
+  body {
+   font-family: 'Mountains of Christmas', cursive;
+   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+   color: #fff;
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   padding: 2rem;
+   position: relative;
+   overflow-x: hidden;
+   overflow-y: auto;
+  }
+  
+  body::before {
+   content: '';
+   position: fixed;
+   width: 100%;
+   height: 100%;
+   background-image: 
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 60% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent),
+    radial-gradient(2px 2px at 90% 60%, white, transparent),
+    radial-gradient(1px 1px at 33% 80%, white, transparent),
+    radial-gradient(1px 1px at 75% 40%, white, transparent);
+   background-size: 200% 200%;
+   animation: float 20s ease-in-out infinite;
+   opacity: 0.3;
+   z-index: 0;
+  }
+  
+  @keyframes float {
+   0%, 100% { transform: translateY(0); }
+   50% { transform: translateY(-20px); }
+  }
+
+  .snowflake {
+   position: fixed;
+   top: -10px;
+   color: white;
+   font-size: 1em;
+   font-family: Arial, sans-serif;
+   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+   z-index: 0;
+   user-select: none;
+   pointer-events: none;
+   animation: fall linear infinite;
+  }
+  
+  @keyframes fall {
+   to {
+    transform: translateY(100vh) translateX(100px);
+    opacity: 0;
+   }
+  }
+
+  .quiz-container {
+   flex: 1;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 100%;
+   z-index: 1;
+  }
+
+.quiz-card {
+  background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+  border: 5px solid;
+  border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
+  border-radius: 25px;
+  padding: 3rem;
+  max-width: 850px;
+  width: 100%;
+  box-shadow: 
+   0 0 30px rgba(255, 215, 0, 0.3),
+   0 0 60px rgba(255, 215, 0, 0.2),
+   inset 0 0 50px rgba(0, 0, 0, 0.5);
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+  
+  @keyframes glow-pulse {
+   0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+   50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+  }
+
+  .quiz-header {
+   text-align: center;
+   margin-bottom: 2rem;
+  }
+
+  .quiz-header h1 {
+   color: #FFD700;
+   font-size: 2.8rem;
+   text-shadow: 
+    2px 2px 4px black,
+    0 0 20px rgba(255, 215, 0, 0.5),
+    0 0 30px rgba(255, 215, 0, 0.3);
+   margin-bottom: 1rem;
+   animation: title-glow 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes title-glow {
+   from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
+   to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
+  }
+
+  .intro-text {
+   font-size: 1.3rem;
+   color: #FFD700;
+   text-align: center;
+   margin-bottom: 1.5rem;
+   line-height: 1.6;
+  }
+
+  .warning-text {
+   font-size: 1.5rem;
+   color: #FF6347;
+   text-align: center;
+   margin-bottom: 1.5rem;
+   font-weight: bold;
+   text-shadow: 0 0 10px rgba(255, 99, 71, 0.8);
+   animation: warning-pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes warning-pulse {
+   0%, 100% { opacity: 1; }
+   50% { opacity: 0.6; }
+  }
+
+  .score-display {
+   background: rgba(0, 0, 0, 0.4);
+   border: 2px solid rgba(255, 215, 0, 0.3);
+   border-radius: 15px;
+   padding: 1.5rem;
+   display: flex;
+   justify-content: space-around;
+   margin-bottom: 2rem;
+  }
+
+  .score-item {
+   text-align: center;
+  }
+
+  .score-item .label {
+   font-size: 1rem;
+   color: #FFD700;
+   margin-bottom: 0.5rem;
+  }
+
+  .score-item .value {
+   font-size: 2rem;
+   font-weight: bold;
+   color: #fff;
+   text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  }
+
+  .progress-bar-custom {
+   height: 12px;
+   background: rgba(255, 255, 255, 0.2);
+   border-radius: 10px;
+   overflow: hidden;
+   margin-bottom: 2rem;
+   border: 1px solid rgba(255, 215, 0, 0.3);
+  }
+
+  .progress-fill {
+   height: 100%;
+   background: linear-gradient(90deg, #FFD700, #FFED4E);
+   transition: width 0.5s ease;
+   box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+  }
+
+  .question-section {
+   margin-bottom: 2rem;
+  }
+
+  .question-text {
+   font-size: 1.6rem;
+   color: #fff;
+   margin-bottom: 2rem;
+   text-align: center;
+   line-height: 1.8;
+   background: rgba(0, 0, 0, 0.4);
+   border-radius: 15px;
+   padding: 1.5rem;
+   border: 2px solid rgba(255, 215, 0, 0.3);
+   min-height: 120px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+  }
+
+  .answer-btn {
+   width: 100%;
+   padding: 1.2rem;
+   margin-bottom: 1rem;
+   font-size: 1.2rem;
+   font-family: 'Mountains of Christmas', cursive;
+   background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+   border: 2px solid rgba(255, 215, 0, 0.5);
+   color: #fff;
+   border-radius: 15px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   font-weight: bold;
+  }
+
+  .answer-btn:hover {
+   background: linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 215, 0, 0.2) 100%);
+   border-color: #FFD700;
+   transform: translateY(-3px) scale(1.02);
+   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.4);
+  }
+
+  .answer-btn:active {
+   transform: translateY(-1px);
+  }
+
+  .answer-btn.correct {
+   background: linear-gradient(135deg, rgba(0, 255, 0, 0.4) 0%, rgba(0, 200, 0, 0.3) 100%);
+   border-color: #00ff00;
+   animation: correctPulse 0.5s ease;
+  }
+
+  .answer-btn.wrong {
+   background: linear-gradient(135deg, rgba(255, 0, 0, 0.4) 0%, rgba(200, 0, 0, 0.3) 100%);
+   border-color: #ff0000;
+   animation: wrongShake 0.5s ease;
+  }
+
+  @keyframes correctPulse {
+   0%, 100% { transform: scale(1); }
+   50% { transform: scale(1.05); }
+  }
+
+  @keyframes wrongShake {
+   0%, 100% { transform: translateX(0); }
+   25% { transform: translateX(-10px); }
+   75% { transform: translateX(10px); }
+  }
+
+  .result-section {
+   text-align: center;
+   display: none;
+  }
+
+  .result-section.active {
+   display: block;
+   animation: fadeIn 0.5s ease;
+  }
+
+  @keyframes fadeIn {
+   from { opacity: 0; transform: translateY(20px); }
+   to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-title {
+   font-size: 3rem;
+   color: #FFD700;
+   margin-bottom: 1.5rem;
+   text-shadow: 
+    2px 2px 4px black,
+    0 0 20px rgba(255, 215, 0, 0.8),
+    0 0 40px rgba(255, 215, 0, 0.5);
+   animation: title-glow 2s ease-in-out infinite alternate;
+  }
+
+  .result-message {
+   font-size: 1.4rem;
+   color: #fff;
+   margin-bottom: 2rem;
+   line-height: 1.8;
+   background: rgba(0, 0, 0, 0.4);
+   border-radius: 15px;
+   padding: 1.5rem;
+   border: 2px solid rgba(255, 215, 0, 0.3);
+  }
+
+  .video-container {
+  margin: 2rem auto;
+  border-radius: 15px;
+  overflow: hidden;
+  border: 3px solid #FFD700;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  display: inline-block;
+  max-width: 100%;
+}
+
+.video-container video {
+  width: 100%;
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+
+  .home-btn {
+  padding: 1rem 3rem;
+  font-size: 1.3rem;
+  font-family: 'Mountains of Christmas', cursive;
+  background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+  color: darkred;
+  border: 2px solid rgba(139, 0, 0, 0.5);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+}
+
+
+  .home-btn:hover {
+   transform: translateY(-3px) scale(1.05);
+   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+   background: linear-gradient(135deg, #FFED4E 0%, #FFD700 100%);
+  }
+
+  .emoji-sparkle {
+   display: inline-block;
+   animation: gentle-shake 3s ease-in-out infinite;
+  }
+  
+  @keyframes gentle-shake {
+   0%, 100% { transform: translate(0, 0) rotate(0deg); }
+   10% { transform: translate(-1px, -1px) rotate(-1deg); }
+   20% { transform: translate(1px, 1px) rotate(1deg); }
+   30% { transform: translate(-1px, 1px) rotate(-1deg); }
+   40% { transform: translate(1px, -1px) rotate(1deg); }
+   50%, 90% { transform: translate(0, 0) rotate(0deg); }
+  }
+
+  .tennis-icon {
+   font-size: 2rem;
+   margin: 0 0.3rem;
+   display: inline-block;
+   animation: subtle-vibrate 4s ease-in-out infinite;
+  }
+  
+  @keyframes subtle-vibrate {
+   0%, 100% { transform: translate(0, 0); }
+   15% { transform: translate(-2px, 0); }
+   30% { transform: translate(2px, 0); }
+   45% { transform: translate(0, -2px); }
+   60% { transform: translate(0, 2px); }
+   75%, 95% { transform: translate(0, 0); }
+  }
+ </style>
+</head>
+
+<body>
+
+ <audio id="tennis-music" src="audio/soundtennis.mp3" preload="auto" loop></audio>
+ <audio id="correct-sound" src="audio/corretta.mp3" preload="auto"></audio>
+ <audio id="wrong-sound" src="audio/wrong.mp3" preload="auto"></audio>
+
+ <div class="quiz-container">
+  <div class="quiz-card">
+   <div class="quiz-header">
+    <h1>
+          <span class="emoji-sparkle">🏆</span>
+    </h1>
+    <p class="intro-text">Vediamo quanto hai imparato sul tennis seguendo le mie partite! 💚</p>
+   </div>
+
+   <div class="score-display">
+    <div class="score-item">
+     <div class="label">Domanda</div>
+     <div class="value"><span id="current-question">1</span>/<span id="total-questions">10</span></div>
+    </div>
+    <div class="score-item">
+     <div class="label">✅ Corrette</div>
+     <div class="value" id="correct-count">0</div>
+    </div>
+    <div class="score-item">
+     <div class="label">❌ Sbagliate</div>
+     <div class="value" id="wrong-count">0</div>
+    </div>
+   </div>
+
+   <div class="progress-bar-custom">
+    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+   </div>
+
+   <div class="question-section" id="question-section">
+    <div class="question-text" id="question-text"></div>
+    <div id="answers-container"></div>
+   </div>
+
+   <div class="result-section" id="result-section">
+    <div class="result-title" id="result-title"></div>
+    <div class="result-message" id="result-message"></div>
+    <div class="video-container" id="video-container">
+     <video id="result-video" controls autoplay>
+      <source id="video-source" src="" type="video/mp4">
+      Il tuo browser non supporta il tag video.
+     </video>
+    </div>
+    <button class="home-btn" onclick="window.location.href='index.html'">
+     🎄 Torna al Calendario
+    </button>
+   </div>
+  </div>
+ </div>
+
+ <script>
+  const questions = [
+   {
+    question: "Quanti set si giocano in un match maschile del Grande Slam?",
+    answers: ["3 set", "5 set", "7 set"],
+    correct: 1
+   },
+   {
+    question: "Qual è il punteggio dopo aver vinto il primo punto in un game?",
+    answers: ["1-0", "15-0", "10-0"],
+    correct: 1
+   },
+   {
+    question: "Come si chiama il colpo giocato sopra la testa per schiacciare la palla?",
+    answers: ["Smash", "Volée", "Lob"],
+    correct: 0
+   },
+   {
+    question: "Quale superficie è considerata la più veloce nel tennis?",
+    answers: ["Terra battuta", "Erba", "Cemento"],
+    correct: 1
+   },
+   {
+    question: "Quanti game servono per vincere un set in condizioni normali?",
+    answers: ["4 game", "6 game", "8 game"],
+    correct: 1
+   },
+   {
+    question: "Come si chiama il colpo giocato con effetto che fa rimbalzare la palla molto in alto?",
+    answers: ["Topspin", "Slice", "Flat"],
+    correct: 0
+   },
+   {
+    question: "Quale torneo del Grande Slam si gioca su terra battuta?",
+    answers: ["Wimbledon", "Roland Garros", "US Open"],
+    correct: 1
+   },
+   {
+    question: "Cosa significa 'deuce' in un game?",
+    answers: ["40-40", "30-30", "Fine del game"],
+    correct: 0
+   },
+   {
+    question: "Qual è la larghezza del campo da tennis per il singolare?",
+    answers: ["8.23 metri", "10.97 metri", "12.80 metri"],
+    correct: 0
+   },
+   {
+    question: "⚠️ FAI ATTENZIONE A QUELLO CHE DICI ⚠️<br><br>Chi è il miglior giocatore di tennis di tutti i tempi?",
+    answers: ["Roger Federer", "Novak Djokovic", "Rafael Nadal"],
+    correct: 2
+   }
+  ];
+
+  let currentQuestionIndex = 0;
+  let correctAnswers = 0;
+  let wrongAnswers = 0;
+  let isAnswering = false;
+
+  const questionText = document.getElementById('question-text');
+  const answersContainer = document.getElementById('answers-container');
+  const currentQuestionSpan = document.getElementById('current-question');
+  const totalQuestionsSpan = document.getElementById('total-questions');
+  const correctCountSpan = document.getElementById('correct-count');
+  const wrongCountSpan = document.getElementById('wrong-count');
+  const progressFill = document.getElementById('progress-fill');
+  const questionSection = document.getElementById('question-section');
+  const resultSection = document.getElementById('result-section');
+
+  const tennisMusic = document.getElementById('tennis-music');
+  const correctSound = document.getElementById('correct-sound');
+  const wrongSound = document.getElementById('wrong-sound');
+
+  totalQuestionsSpan.textContent = questions.length;
+
+  // Mostra warning per ultima domanda
+  function checkForWarning() {
+   const warningElement = document.querySelector('.warning-text');
+   if (currentQuestionIndex === questions.length - 1) {
+    if (!warningElement) {
+     const warning = document.createElement('div');
+     warning.className = 'warning-text';
+     warning.textContent = '⚠️ FAI MOLTA ATTENZIONE A QUESTA RISPOSTA! ⚠️';
+     questionSection.insertBefore(warning, questionText);
+    }
+   } else {
+    if (warningElement) {
+     warningElement.remove();
+    }
+   }
+  }
+
+  function loadQuestion() {
+   if (currentQuestionIndex >= questions.length) {
+    showResults();
+    return;
+   }
+
+   isAnswering = false;
+   const question = questions[currentQuestionIndex];
+   questionText.innerHTML = question.question;
+   answersContainer.innerHTML = '';
+
+   currentQuestionSpan.textContent = currentQuestionIndex + 1;
+   const progress = ((currentQuestionIndex) / questions.length) * 100;
+   progressFill.style.width = progress + '%';
+
+   checkForWarning();
+
+   question.answers.forEach((answer, index) => {
+    const btn = document.createElement('button');
+    btn.className = 'answer-btn';
+    btn.textContent = answer;
+    btn.onclick = () => checkAnswer(index, btn);
+    answersContainer.appendChild(btn);
+   });
+  }
+
+  function checkAnswer(selectedIndex, btn) {
+   if (isAnswering) return;
+   isAnswering = true;
+
+   const question = questions[currentQuestionIndex];
+   const allButtons = answersContainer.querySelectorAll('.answer-btn');
+   
+   allButtons.forEach(button => button.style.pointerEvents = 'none');
+
+   if (selectedIndex === question.correct) {
+    btn.classList.add('correct');
+    correctAnswers++;
+    correctCountSpan.textContent = correctAnswers;
+    if (correctSound) {
+     correctSound.currentTime = 0;
+     correctSound.play().catch(e => console.error("Error playing correct sound:", e));
+    }
+   } else {
+    btn.classList.add('wrong');
+    wrongAnswers++;
+    wrongCountSpan.textContent = wrongAnswers;
+    allButtons[question.correct].classList.add('correct');
+    if (wrongSound) {
+     wrongSound.currentTime = 0;
+     wrongSound.play().catch(e => console.error("Error playing wrong sound:", e));
+    }
+   }
+
+   setTimeout(() => {
+    currentQuestionIndex++;
+    loadQuestion();
+   }, 1500);
+  }
+
+  function showResults() {
+   questionSection.style.display = 'none';
+   resultSection.classList.add('active');
+   
+   progressFill.style.width = '100%';
+
+   const resultTitle = document.getElementById('result-title');
+   const resultMessage = document.getElementById('result-message');
+   const videoSource = document.getElementById('video-source');
+   const resultVideo = document.getElementById('result-video');
+
+   if (correctAnswers >= 8) {
+    resultTitle.innerHTML = '<span class="emoji-sparkle">🏆</span> FANTASTICO! <span class="emoji-sparkle">🎾</span>';
+    resultMessage.innerHTML = `Hai risposto correttamente a ${correctAnswers} domande su ${questions.length}!<br>Sei diventata una vera esperta di tennis! 🌟`;
+    videoSource.src = 'video/puntobello.mp4';
+   } else {
+    resultTitle.innerHTML = '<span class="emoji-sparkle">😅</span> BUON TENTATIVO! <span class="emoji-sparkle">🎾</span>';
+    resultMessage.innerHTML = `Hai risposto correttamente a ${correctAnswers} domande su ${questions.length}.<br>Devi seguire più attentamente le mie partite! 😬`;
+    videoSource.src = 'video/puntobrutto.mp4';
+   }
+
+   resultVideo.load();
+  }
+
+  function createSnowflake() {
+   const snowflake = document.createElement('div');
+   snowflake.classList.add('snowflake');
+   snowflake.textContent = '❄';
+   snowflake.style.left = Math.random() * 100 + '%';
+   snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+   snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+   snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+   document.body.appendChild(snowflake);
+   
+   setTimeout(() => snowflake.remove(), 8000);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+   loadQuestion();
+   setInterval(createSnowflake, 300);
+   
+   // Avvia la musica
+   if (tennisMusic) {
+    tennisMusic.play().catch(e => {
+     console.log("Autoplay bloccato, la musica partirà con la prima interazione");
+     document.body.addEventListener('click', () => {
+      tennisMusic.play().catch(err => console.error("Error playing music:", err));
+     }, { once: true });
+    });
+   }
+  });
+ </script>
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
+

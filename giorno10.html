@@ -426,16 +426,22 @@
   const totalAssetsToLoad = 1 + rockImages.length + 1 + 1; // background + 2 rock images + lakeImage + playerImage
 
   function updateLoadingProgress() {
-    assetsLoadedCount++;
-    const progressPercentage = Math.floor((assetsLoadedCount / totalAssetsToLoad) * 100);
-    loadingProgress.textContent = `${progressPercentage}%`;
+  assetsLoadedCount++;
+  const progressPercentage = Math.floor((assetsLoadedCount / totalAssetsToLoad) * 100);
+  loadingProgress.textContent = `${progressPercentage}%`;
 
-    if (assetsLoadedCount === totalAssetsToLoad) {
-      loadingScreen.style.display = 'none'; // Hide loading screen
-      startGameButton.disabled = false; // Enable start button
-      console.log("All game assets loaded successfully.");
-    }
+  if (assetsLoadedCount === totalAssetsToLoad) {
+    console.log("All game assets loaded successfully.");
+    // Nascondi loading screen
+    loadingScreen.style.display = 'none';
+    // Abilita il bottone
+    startGameButton.disabled = false;
+    // Assicurati che intro e bottone siano visibili
+    introMessage.style.display = 'block';
+    startGameButton.style.display = 'block';
   }
+}
+
 
   // Set onload and onerror for all images
 mountainBackground.onload = () => { console.log("✓ monti.png loaded"); updateLoadingProgress(); };
@@ -455,18 +461,18 @@ mountainBackground.onload = () => { console.log("✓ monti.png loaded"); updateL
   
   // Game initialization
   function initGame() {
-    // Hide all game-related messages and show intro
-    introMessage.style.display = 'block';
-    startGameButton.style.display = 'block';
-    startGameButton.disabled = true; // Keep disabled until assets load
-    gameCanvas.style.display = 'none';
-    gameOverMessage.style.display = 'none';
-    gameWinMessage.style.display = 'none';
-    backButton.style.display = 'none';
-    gameScoreDisplay.style.display = 'none';
-    gameTimerDisplay.style.display = 'none';
-    gameControls.style.display = 'none';
-    loadingScreen.style.display = 'flex'; // Show loading screen on init
+  // Hide all game-related messages and show intro
+  introMessage.style.display = 'block';
+  startGameButton.style.display = 'block';
+  startGameButton.disabled = true; // Keep disabled until assets load
+  gameCanvas.style.display = 'none';
+  gameOverMessage.style.display = 'none';
+  gameWinMessage.style.display = 'none';
+  backButton.style.display = 'none';
+  gameScoreDisplay.style.display = 'none';
+  gameTimerDisplay.style.display = 'none';
+  gameControls.style.display = 'none';
+
 
     player = {
       x: gameCanvas.width / 2 - PLAYER_WIDTH / 2,
