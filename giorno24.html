@@ -1,2 +1,485 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giorno 24 - Finale</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<!--babbo natale porta una lettera di dedica-->
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            position: relative;
+        }
+
+        /* Neve */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: white;
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+            text-shadow: 0 0 5px #000;
+            animation: fall linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+
+        #cornice-container {
+            position: relative;
+            width: 152vh;
+            height: 85vh;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        #game-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #000;
+        }
+
+        .vignetta {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 30px;
+            border-radius: 15px;
+            border: 3px solid #8B4513;
+            font-size: 1.2em;
+            text-align: center;
+            max-width: 80%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 100;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .clickable {
+            cursor: pointer;
+            position: absolute;
+            transition: transform 0.3s ease;
+        }
+
+        .clickable:hover {
+            transform: scale(1.05);
+        }
+
+        .lettera-iniziale {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 50;
+        }
+
+        .lettera-iniziale:hover {
+            transform: scale(1.1);
+            filter: brightness(1.1);
+        }
+
+        .oggetto {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            z-index: 50;
+        }
+
+        .oggetto:hover {
+            filter: brightness(1.1);
+        }
+
+        .pezzo {
+            position: absolute;
+            cursor: pointer;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.5s ease;
+            animation: apparePezzo 0.2s ease forwards;
+            z-index: 60;
+            user-select: none;
+        }
+
+        @keyframes apparePezzo {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .pezzo:hover {
+            transform: scale(1.15);
+            filter: drop-shadow(0 0 10px gold);
+        }
+
+        .lettera-finale {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 248, 220, 0.98);
+    padding: 50px;
+    border-radius: 20px;
+    border: 4px solid #8B4513;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    z-index: 200;
+    font-family: 'Great Vibes', cursive;
+    font-size: 1.8em;
+    line-height: 1.8;
+    color: #2c1810;
+    opacity: 0;
+    animation: fadeInLetter 1s ease forwards;
+}
+
+        @keyframes fadeInLetter {
+            to { opacity: 1; }
+        }
+
+        .typing-text {
+            overflow: hidden;
+            white-space: pre-wrap;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="cornice-container">
+        <div id="game-container">
+            <!-- Vignetta iniziale -->
+            <div id="vignetta" class="vignetta">
+                È arrivata una lettera, proviamo ad aprirla!
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio -->
+    <audio id="suono-gatto" src="audio/gatto.mp3"></audio>
+    <audio id="sposta-gatto" src="audio/spostagatto.mp3"></audio>
+    <audio id="sposta-poltrona" src="audio/spostapoltrona.mp3"></audio>
+    <audio id="sposta-lampada" src="audio/spostalampada.mp3"></audio>
+    <audio id="sposta-quadretto" src="audio/spostaquadretto.mp3"></audio>
+    <audio id="natale-finale" src="audio/natalefinale.mp3"></audio>
+
+
+    <script>
+        const container = document.getElementById('game-container');
+        const vignetta = document.getElementById('vignetta');
+        const suonoGatto = document.getElementById('suono-gatto');
+        const spostaGatto = document.getElementById('sposta-gatto');
+        const spostaPoltrona = document.getElementById('sposta-poltrona');
+        const spostaLampada = document.getElementById('sposta-lampada');
+        const spostaQuadretto = document.getElementById('sposta-quadretto');
+        const nataleFinale = document.getElementById('natale-finale');
+
+
+        let fase = 1;
+        let pezziTrovati = 0;
+        const oggettiCliccati = {
+            divano: false,
+            poltrona: false,
+            lampada: false,
+            quadretto: false
+        };
+
+        // Variabili per il drag
+        let isDragging = false;
+        let currentPezzo = null;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        // Crea neve
+        function createSnowflakes() {
+            const snowflakeCount = 50;
+            for (let i = 0; i < snowflakeCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.textContent = '❄';
+                snowflake.style.left = Math.random() * 100 + 'vw';
+                snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+                snowflake.style.animationDelay = Math.random() * 5 + 's';
+                snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+                snowflake.style.opacity = Math.random();
+                document.body.appendChild(snowflake);
+            }
+        }
+
+        // FASE 1: Diapositiva 1 con lettera
+        function iniziaFase1() {
+            container.style.backgroundImage = "url('images/giorno24/diapositiva1.png')";
+            
+            // Crea lettera cliccabile (posizionala dove serve)
+            const lettera = document.createElement('img');
+            lettera.src = 'images/giorno24/lettera.png';
+            lettera.className = 'lettera-iniziale';
+            lettera.style.left = '85%';
+            lettera.style.top = '85%';
+            lettera.style.width = '55px';
+            lettera.id = 'lettera-iniziale';
+            
+            lettera.addEventListener('click', () => {
+                suonoGatto.play();
+                lettera.style.opacity = '0';
+                setTimeout(() => {
+                    lettera.remove();
+                    iniziaFase2();
+                }, 300);
+            });
+            
+            container.appendChild(lettera);
+        }
+
+        // FASE 2: Diapositiva 2 - Caccia ai pezzi
+        function iniziaFase2() {
+            fase = 2;
+            container.style.backgroundImage = "url('images/giorno24/diapositiva2.png')";
+            vignetta.textContent = 'Il gatto Briciola ha ridotto la lettera in 4 pezzi... dobbiamo trovarli!';
+            
+            // Crea oggetti immediatamente, anche con vignetta visibile
+            creaOggetti();
+            
+            // Nascondi vignetta dopo 3 secondi
+            setTimeout(() => {
+                vignetta.style.display = 'none';
+            }, 3000);
+        }
+
+        // Crea gli oggetti cliccabili
+        function creaOggetti() {
+            // DIVANO (gatto)
+            const divano = document.createElement('img');
+            divano.src = 'images/giorno24/divano1.png';
+            divano.className = 'oggetto';
+            divano.id = 'divano';
+            divano.style.left = '39%';
+            divano.style.top = '55%';
+            divano.style.width = '360px';
+            divano.addEventListener('click', () => animaDivano(divano));
+            container.appendChild(divano);
+
+            // POLTRONA
+            const poltrona = document.createElement('img');
+            poltrona.src = 'images/giorno24/poltrona1.png';
+            poltrona.className = 'oggetto';
+            poltrona.id = 'poltrona';
+            poltrona.style.left = '3%';
+            poltrona.style.top = '67%';
+            poltrona.style.width = '280px';
+            poltrona.addEventListener('click', () => animaPoltrona(poltrona));
+            container.appendChild(poltrona);
+
+            // LAMPADA
+            const lampada = document.createElement('img');
+            lampada.src = 'images/giorno24/lampada.png';
+            lampada.className = 'oggetto';
+            lampada.id = 'lampada';
+            lampada.style.left = '67%';
+            lampada.style.top = '27%';
+            lampada.style.width = '190px';
+            lampada.addEventListener('click', () => animaLampada(lampada));
+            container.appendChild(lampada);
+
+            // QUADRETTO
+            const quadretto = document.createElement('img');
+            quadretto.src = 'images/giorno24/quadretto.png';
+            quadretto.className = 'oggetto';
+            quadretto.id = 'quadretto';
+            quadretto.style.left = '65%';
+            quadretto.style.top = '42%';
+            quadretto.style.width = '32px';
+            quadretto.addEventListener('click', () => animaQuadretto(quadretto));
+            container.appendChild(quadretto);
+        }
+
+        // Animazioni oggetti
+        function animaDivano(divano) {
+            if (oggettiCliccati.divano) return;
+            oggettiCliccati.divano = true;
+            
+            spostaGatto.play();
+            divano.src = 'images/giorno24/divano2.png';
+            mostraPezzo(1, '54%', '90%');
+        }
+
+        function animaPoltrona(poltrona) {
+            if (oggettiCliccati.poltrona) return;
+            oggettiCliccati.poltrona = true;
+            
+            spostaPoltrona.play();
+            poltrona.src = 'images/giorno24/poltrona2.png';
+            mostraPezzo(2, '25%', '93%');
+        }
+
+        function animaLampada(lampada) {
+            if (oggettiCliccati.lampada) return;
+            oggettiCliccati.lampada = true;
+            
+            spostaLampada.play();
+            lampada.style.transform = 'translateX(-50px)';
+            mostraPezzo(3, '80%', '79%');
+        }
+
+        function animaQuadretto(quadretto) {
+            if (oggettiCliccati.quadretto) return;
+            oggettiCliccati.quadretto = true;
+            
+            spostaQuadretto.play();
+            quadretto.style.opacity = '0';
+            setTimeout(() => quadretto.remove(), 500);
+            mostraPezzo(4, '65%', '43%');
+        }
+
+        // Mostra pezzo di lettera con drag
+        function mostraPezzo(numero, left, top) {
+            const pezzo = document.createElement('img');
+            pezzo.src = `images/giorno24/pezzo1.png`;
+            pezzo.className = 'pezzo';
+            pezzo.style.left = left;
+            pezzo.style.top = top;
+            pezzo.style.width = '30px';
+            pezzo.dataset.numero = numero;
+            
+            // Eventi drag
+            pezzo.addEventListener('mousedown', iniziaDrag);
+            pezzo.addEventListener('dblclick', () => {
+                pezzo.style.opacity = '0';
+                setTimeout(() => pezzo.remove(), 300);
+                pezziTrovati++;
+                
+                if (pezziTrovati === 4) {
+                    setTimeout(mostraLetteraFinale, 1000);
+                }
+            });
+            
+            container.appendChild(pezzo);
+        }
+
+        // Funzioni drag and drop
+        function iniziaDrag(e) {
+            isDragging = true;
+            currentPezzo = e.target;
+            currentPezzo.classList.add('dragging');
+            
+            const rect = currentPezzo.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+            
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+            
+            document.addEventListener('mousemove', trascina);
+            document.addEventListener('mouseup', fineDrag);
+        }
+
+        function trascina(e) {
+            if (!isDragging || !currentPezzo) return;
+            
+            const containerRect = container.getBoundingClientRect();
+            
+            let newX = e.clientX - containerRect.left - offsetX;
+            let newY = e.clientY - containerRect.top - offsetY;
+            
+            // Limiti per mantenere il pezzo dentro il container
+            newX = Math.max(0, Math.min(newX, containerRect.width - currentPezzo.offsetWidth));
+            newY = Math.max(0, Math.min(newY, containerRect.height - currentPezzo.offsetHeight));
+            
+            currentPezzo.style.left = newX + 'px';
+            currentPezzo.style.top = newY + 'px';
+        }
+
+        function fineDrag() {
+            if (currentPezzo) {
+                currentPezzo.classList.remove('dragging');
+            }
+            isDragging = false;
+            currentPezzo = null;
+                        document.removeEventListener('mousemove', trascina);
+            document.removeEventListener('mouseup', fineDrag);
+        }
+
+        // Lettera finale con effetto scrittura
+        function mostraLetteraFinale() {
+            const letteraFinale = document.createElement('div');
+            letteraFinale.className = 'lettera-finale';
+            
+            const testo = `Cara Mapi,
+
+Questo viaggio dell'avvento è giunto al termine.
+Spero ti sia piaciuto, perché a me è piaciuto molto progettarlo per te.
+
+Ogni giorno è stato un'occasione per dirti quanto sei 
+speciale e per farti sorridere.
+
+Sei la persona che rende ogni momento più luminoso,
+quella che trasforma l'ordinario in straordinario.
+
+Grazie per essere come sei, per la tua dolcezza, 
+per ogni sorriso che mi regali 
+e per tutto ciò che condividiamo insieme.
+
+Che questo Natale porti nella nostra vita 
+un po' di magia e che il nuovo anno 
+sia pieno di sogni realizzati, gioia e amore.
+
+Buon Natale, amore mio ❤️
+
+Con tutto il mio cuore`;
+
+            const testoElement = document.createElement('div');
+            testoElement.className = 'typing-text';
+            letteraFinale.appendChild(testoElement);
+            container.appendChild(letteraFinale);
+            nataleFinale.play();
+
+            // Effetto scrittura
+            let i = 0;
+            const velocita = 50; // millisecondi per carattere
+            
+            function scriviCarattere() {
+                if (i < testo.length) {
+                    testoElement.textContent += testo.charAt(i);
+                    i++;
+                    setTimeout(scriviCarattere, velocita);
+                }
+            }
+            
+            setTimeout(scriviCarattere, 500);
+        }
+
+        // Avvia il gioco
+        createSnowflakes();
+        iniziaFase1();
+    </script>
+</body>
+</html>
