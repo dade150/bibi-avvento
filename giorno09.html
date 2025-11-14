@@ -578,9 +578,7 @@
     mainGameImage.src = 'images/foto-nostre/foto0.png';
 
     mainGameImage.onload = () => {
-        // Quando l'immagine principale è caricata, aggiungiamo i punti cliccabili
-        // Le loro posizioni e dimensioni sono calcolate in percentuale
-        // rispetto alle dimensioni originali dell'immagine, rendendoli responsivi.
+        
         currentHiddenItems.forEach(item => {
             const spotDiv = document.createElement('div');
             spotDiv.classList.add('clickable-spot');
