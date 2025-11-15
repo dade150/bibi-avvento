@@ -18,7 +18,7 @@
   
   body {
    font-family: 'Mountains of Christmas', cursive;
-   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+   background: linear-gradient(135deg, #0a1a0a 0%, #1a0a0a 50%, #0a0a1a 100%);
    color: #fff;
    min-height: 100vh;
    display: flex;
@@ -78,16 +78,16 @@
   }
   
   .content-box {
-   background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+   background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 100, 0, 0.85) 100%);
    border: 5px solid;
-   border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
+   border-image: linear-gradient(45deg, gold, #ffed4e, #ff0000, gold) 1;
    border-radius: 25px;
    padding: 3rem;
    max-width: 900px;
    text-align: center;
    box-shadow: 
     0 0 30px rgba(255, 215, 0, 0.3),
-    0 0 60px rgba(255, 215, 0, 0.2),
+    0 0 60px rgba(255, 0, 0, 0.2),
     inset 0 0 50px rgba(0, 0, 0, 0.5);
    position: relative;
    z-index: 1;
@@ -95,8 +95,8 @@
   }
   
   @keyframes glow-pulse {
-   0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
-   50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+   0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+   50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 0, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
   }
   
   h1 {
@@ -104,15 +104,15 @@
    text-shadow: 
     2px 2px 4px black,
     0 0 20px rgba(255, 215, 0, 0.5),
-    0 0 30px rgba(255, 215, 0, 0.3);
+    0 0 30px rgba(255, 0, 0, 0.3);
    font-size: 2.8rem;
    margin-bottom: 2rem;
    animation: title-glow 2s ease-in-out infinite alternate;
   }
   
   @keyframes title-glow {
-   from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
-   to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
+   from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 0, 0, 0.3); }
+   to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 0, 0, 0.5); }
   }
   
   .message-container {
@@ -200,10 +200,10 @@
 
   /* Maze Game Specific Styles */
   #gameCanvas {
-    background-color: #333; /* Dark background for maze */
+    background: linear-gradient(135deg, #1a3a1a 0%, #2a1a1a 100%);
     border: 4px solid gold;
     box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-    display: none; /* Hidden until game starts */
+    display: none;
     margin: 2rem auto;
   }
 
@@ -226,6 +226,15 @@
     font-size: 0.9rem;
     margin-top: 1.5rem;
     display: none;
+  }
+
+  #gameStats {
+    font-family: 'Mountains of Christmas', cursive;
+    color: gold;
+    font-size: 1.3rem;
+    margin-top: 1rem;
+    display: none;
+    text-shadow: 2px 2px 4px black;
   }
 
   /* Loading Screen Styles */
@@ -251,13 +260,13 @@
     font-size: 1.2rem;
     color: #fff;
   }
-  /* Disabled button style */
+
   .btn-game:disabled {
       opacity: 0.6;
       cursor: not-allowed;
       box-shadow: none;
       transform: none;
-      background: linear-gradient(135deg, #888 0%, #aaa 100%); /* Greyed out */
+      background: linear-gradient(135deg, #888 0%, #aaa 100%);
       border-color: #666;
   }
  </style>
@@ -266,13 +275,13 @@
 <body>
  <!-- Audio elements -->
  <audio id="game-music" loop preload="auto">
-  <source src="audio/song1.mp3" type="audio/mpeg"> 
+  <source src="audio/pacman.mp3" type="audio/mpeg"> 
  </audio>
  <audio id="win-sound" preload="auto">
-  <source src="audio/song2.mp3" type="audio/mpeg">
+  <source src="audio/up.mp3" type="audio/mpeg">
  </audio>
  <audio id="lose-sound" preload="auto">
-  <source src="audio/song3.mp3" type="audio/mpeg">
+  <source src="audio/titanic.mp3" type="audio/mpeg">
  </audio>
 
  <!-- Loading Screen -->
@@ -283,41 +292,47 @@
 
  <div class="content-box">
   <h1>
-   <span class="emoji-sparkle">🧩</span> 
-   Il Labirinto Magico! 
-   <span class="emoji-sparkle">✨</span>
+   <span class="emoji-sparkle">🎄</span> 
+   Il Labirinto Natalizio Magico! 
+   <span class="emoji-sparkle">🎅</span>
   </h1>
   
   <div class="message-container" id="intro-message">
    <p>
-    Ciao Mapi! (o Bibi, se preferisci 😉) Benvenuta nel Labirinto Magico!
-    Oggi la sfida è trovare l'uscita da questo intricato percorso.
-    È un labirinto di media difficoltà, quindi dovrai usare tutta la tua astuzia!
+    Ciao Mapi! 🎁 Benvenuta nel Labirinto Natalizio Magico!
+    Oggi la sfida è più difficile: devi evitare gli elfi dispettosi 🧝 che si muovono nel labirinto,
+    e attenzione ai muri magici ✨ che appaiono e scompaiono!
+    Raccogli tutte le stelle ⭐ e raggiungi il regalo finale 🎁!
     Usa le frecce direzionali (↑ ↓ ← →) o i tasti WASD per muoverti.
-    Riuscirai a trovare la via d'uscita e a scoprire la sorpresa? In bocca al lupo! ❤️
+    In bocca al lupo! 🎄❤️
    </p>
   </div>
 
-  <button class="btn btn-game" id="startGameButton" disabled>Inizia il Labirinto ✨</button>
+  <button class="btn btn-game" id="startGameButton" disabled>Inizia il Labirinto 🎄</button>
+
+  <div id="gameStats">
+    ⭐ Stelle: <span id="starCount">0</span>/5 | 
+    ❤️ Vite: <span id="livesCount">3</span>
+  </div>
 
   <canvas id="gameCanvas" width="400" height="400"></canvas>
 
   <div id="gameWinMessage" class="game-message">
-    🎉 Complimenti! Hai trovato l'uscita dal Labirinto Magico! 🎉
+    🎉 Complimenti! Hai completato il Labirinto Natalizio! 🎉
     <p style="font-family: 'Mountains of Christmas', cursive; font-size: 1.2rem; margin-top: 1rem;">
-      Sei stata bravissima! Ecco la tua ricompensa!
+      Hai raccolto <span id="finalStars">0</span> stelle! Sei stata bravissima! 🎁
     </p>
     <button class="btn btn-game" id="playAgainButton">Gioca Ancora</button>
   </div>
   
   <div id="gameOverMessage" class="game-message">
-    Oh no! Non hai trovato l'uscita. Non mollare, riprova!
+    ❄️ Oh no! Gli elfi ti hanno catturato! ❄️
     <button class="btn btn-game" id="retryButton">Riprova</button>
   </div>
 
   <div id="gameControls">
     Sposta: ↑ ↓ ← → o W A S D
-  &lt;/div&gt;
+  </div>
 
   <a href="index.html" class="btn back-button" id="back-to-calendar" style="display: none; margin-top: 2rem;">
    🎄 Torna al Calendario
@@ -325,7 +340,7 @@
  </div>
 
  <script>
-  // Funzione per creare fiocchi di neve (from giorno01)
+  // Funzione per creare fiocchi di neve
   function createSnowflake() {
       const snowflake = document.createElement('div');
       snowflake.classList.add('snowflake');
@@ -355,8 +370,12 @@
   const retryButton = document.getElementById('retryButton');
   const backButton = document.getElementById('back-to-calendar');
   const gameControls = document.getElementById('gameControls');
+  const gameStats = document.getElementById('gameStats');
   const loadingScreen = document.getElementById('loadingScreen');
   const loadingProgress = document.getElementById('loadingProgress');
+  const starCountEl = document.getElementById('starCount');
+  const livesCountEl = document.getElementById('livesCount');
+  const finalStarsEl = document.getElementById('finalStars');
 
   // Maze properties
   // Maze representation (1 = wall, 0 = path) - 20x20 grid
@@ -375,8 +394,8 @@
     [1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1],
     [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1],
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1],
+    [1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1],
     [1,0,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,1,0,1],
     [1,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,1],
     [1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,0,0,0,1], // E (End: row 18, col 18)
@@ -384,21 +403,38 @@
   ];
 
   const CELL_SIZE = 20;
-  const CANVAS_WIDTH = MAZE_GRID[0].length * CELL_SIZE; // 20 * 20 = 400
-  const CANVAS_HEIGHT = MAZE_GRID.length * CELL_SIZE; // 20 * 20 = 400
-  const START_POS = { row: 1, col: 1 }; // Player starts here (Y, X)
-  const END_POS = { row: 18, col: 18 }; // Exit here (Y, X)
+  const CANVAS_WIDTH = MAZE_GRID[0].length * CELL_SIZE;
+  const CANVAS_HEIGHT = MAZE_GRID.length * CELL_SIZE;
+  const START_POS = { row: 1, col: 1 };
+  const END_POS = { row: 18, col: 18 };
 
   // Player properties
   let player = {
     row: START_POS.row,
     col: START_POS.col,
-    size: CELL_SIZE * 0.8, // Player slightly smaller than cell
-    color: 'blue' // Will be replaced by image
+    size: CELL_SIZE * 0.8,
+    lives: 3,
+    invincible: false,
+    invincibleTimer: 0
   };
+
+  // Stars to collect
+  let stars = [];
+  const TOTAL_STARS = 5;
+  let starsCollected = 0;
+
+  // Enemies (elves)
+  let enemies = [];
+  const NUM_ENEMIES = 3;
+
+  // Magic walls (appear/disappear)
+  let magicWalls = [];
+  let wallTimer = 0;
+  const WALL_TOGGLE_INTERVAL = 3000; // 3 seconds
 
   let gameActive = false;
   let animationFrameId;
+  let lastTimestamp = 0;
 
   // Assets
   const playerImage = new Image();
@@ -406,9 +442,7 @@
 
   // Asset loading management
   let assetsLoadedCount = 0;
-  const assetsToLoad = [
-    playerImage // Only player image for this game
-  ];
+  const assetsToLoad = [playerImage];
   const totalAssetsToLoad = assetsToLoad.length;
 
   function updateLoadingProgress() {
@@ -417,13 +451,12 @@
     loadingProgress.textContent = `${progressPercentage}%`;
 
     if (assetsLoadedCount === totalAssetsToLoad) {
-      loadingScreen.style.display = 'none'; // Hide loading screen
-      startGameButton.disabled = false; // Enable start button
+      loadingScreen.style.display = 'none';
+      startGameButton.disabled = false;
       console.log("All game assets loaded successfully.");
     }
   }
 
-  // Attach onload/onerror to all assets
   assetsToLoad.forEach(asset => {
     asset.onload = updateLoadingProgress;
     asset.onerror = (e) => { 
@@ -432,6 +465,71 @@
     };
   });
 
+  // Generate random stars positions
+  function generateStars() {
+    stars = [];
+    let placed = 0;
+    while (placed < TOTAL_STARS) {
+      const row = Math.floor(Math.random() * (MAZE_GRID.length - 2)) + 1;
+      const col = Math.floor(Math.random() * (MAZE_GRID[0].length - 2)) + 1;
+      
+      if (MAZE_GRID[row][col] === 0 && 
+          !(row === START_POS.row && col === START_POS.col) &&
+          !(row === END_POS.row && col === END_POS.col) &&
+          !stars.some(s => s.row === row && s.col === col)) {
+        stars.push({ row, col, collected: false });
+        placed++;
+      }
+    }
+  }
+
+  // Generate random enemies
+  function generateEnemies() {
+    enemies = [];
+    for (let i = 0; i < NUM_ENEMIES; i++) {
+      let row, col;
+      do {
+        row = Math.floor(Math.random() * (MAZE_GRID.length - 2)) + 1;
+        col = Math.floor(Math.random() * (MAZE_GRID[0].length - 2)) + 1;
+      } while (
+        MAZE_GRID[row][col] !== 0 || 
+        (row === START_POS.row && col === START_POS.col) ||
+        (row === END_POS.row && col === END_POS.col) ||
+        (Math.abs(row - START_POS.row) < 3 && Math.abs(col - START_POS.col) < 3)
+      );
+      
+      enemies.push({
+        row,
+        col,
+        size: CELL_SIZE * 0.8,
+        direction: ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)],
+        moveTimer: 0,
+        moveInterval: 500 + Math.random() * 500
+      });
+    }
+  }
+
+  // Generate random magic walls
+  function generateMagicWalls() {
+    magicWalls = [];
+    const numWalls = 5;
+    
+    for (let i = 0; i < numWalls; i++) {
+      let row, col;
+      do {
+        row = Math.floor(Math.random() * (MAZE_GRID.length - 2)) + 1;
+        col = Math.floor(Math.random() * (MAZE_GRID[0].length - 2)) + 1;
+      } while (
+        MAZE_GRID[row][col] !== 0 || 
+        (row === START_POS.row && col === START_POS.col) ||
+        (row === END_POS.row && col === END_POS.col) ||
+        stars.some(s => s.row === row && s.col === col)
+      );
+      
+      magicWalls.push({ row, col, visible: true });
+    }
+  }
+
   // Game initialization
   function initGame() {
     assetsLoadedCount = 0;
@@ -439,17 +537,26 @@
     
     introMessage.style.display = 'block';
     startGameButton.style.display = 'block';
-    startGameButton.disabled = true; // Keep disabled until assets load
+    startGameButton.disabled = true;
     gameCanvas.style.display = 'none';
     gameWinMessage.style.display = 'none';
     gameOverMessage.style.display = 'none';
     backButton.style.display = 'none';
     gameControls.style.display = 'none';
-    loadingScreen.style.display = 'flex'; // Show loading screen on init
+    gameStats.style.display = 'none';
+    loadingScreen.style.display = 'flex';
 
-    // Reset player position
     player.row = START_POS.row;
     player.col = START_POS.col;
+    player.lives = 3;
+    player.invincible = false;
+    player.invincibleTimer = 0;
+    starsCollected = 0;
+    wallTimer = 0;
+
+    generateStars();
+    generateEnemies();
+    generateMagicWalls();
 
     gameActive = false;
     if (animationFrameId) cancelAnimationFrame(animationFrameId);
@@ -458,11 +565,16 @@
     winSound.pause(); winSound.currentTime = 0;
     loseSound.pause(); loseSound.currentTime = 0;
 
-    // Set canvas dimensions
     gameCanvas.width = CANVAS_WIDTH;
     gameCanvas.height = CANVAS_HEIGHT;
 
-    drawMaze(); // Draw initial maze state (player at start)
+    updateUI();
+  }
+
+  // Update UI
+  function updateUI() {
+    starCountEl.textContent = starsCollected;
+    livesCountEl.textContent = player.lives;
   }
 
   // Start the game
@@ -476,20 +588,137 @@
     startGameButton.style.display = 'none';
     gameCanvas.style.display = 'block';
     gameControls.style.display = 'block';
+    gameStats.style.display = 'block';
     gameActive = true;
 
     gameMusic.volume = 0.3;
     gameMusic.play().catch(e => console.log("Game music play prevented:", e));
 
+    lastTimestamp = performance.now();
     animationFrameId = requestAnimationFrame(gameLoop);
   }
 
-  // Main game loop (for drawing, no continuous updates needed for turn-based maze)
-  function gameLoop() {
+  // Main game loop
+  function gameLoop(timestamp) {
+    if (!gameActive) return;
+
+    const deltaTime = timestamp - lastTimestamp;
+    lastTimestamp = timestamp;
+
+    // Update enemies
+    updateEnemies(deltaTime);
+
+    // Update magic walls
+    updateMagicWalls(deltaTime);
+
+    // Update player invincibility
+    if (player.invincible) {
+      player.invincibleTimer -= deltaTime;
+      if (player.invincibleTimer <= 0) {
+        player.invincible = false;
+      }
+    }
+
+    // Check collisions
+    checkStarCollection();
+    checkEnemyCollision();
+
+    // Draw everything
     drawMaze();
+    drawStars();
+    drawMagicWalls();
+    drawEnemies();
     drawPlayer();
-    // No continuous updates here, movement is event-driven
-    // animationFrameId = requestAnimationFrame(gameLoop); // Only if continuous animation is needed
+
+    animationFrameId = requestAnimationFrame(gameLoop);
+  }
+
+  // Update enemies movement
+  function updateEnemies(deltaTime) {
+    enemies.forEach(enemy => {
+      enemy.moveTimer += deltaTime;
+      
+      if (enemy.moveTimer >= enemy.moveInterval) {
+        enemy.moveTimer = 0;
+        
+        // Try to move in current direction
+        let newRow = enemy.row;
+        let newCol = enemy.col;
+        
+        switch (enemy.direction) {
+          case 'up': newRow--; break;
+          case 'down': newRow++; break;
+          case 'left': newCol--; break;
+          case 'right': newCol++; break;
+        }
+        
+        // Check if move is valid
+        if (!isCollision(newRow, newCol) && !isMagicWall(newRow, newCol)) {
+          enemy.row = newRow;
+          enemy.col = newCol;
+        } else {
+          // Change direction randomly if blocked
+          const directions = ['up', 'down', 'left', 'right'];
+          enemy.direction = directions[Math.floor(Math.random() * directions.length)];
+        }
+      }
+    });
+  }
+
+  // Update magic walls
+  function updateMagicWalls(deltaTime) {
+    wallTimer += deltaTime;
+    
+    if (wallTimer >= WALL_TOGGLE_INTERVAL) {
+      wallTimer = 0;
+      magicWalls.forEach(wall => {
+        wall.visible = !wall.visible;
+      });
+    }
+  }
+
+  // Check if position has a magic wall
+  function isMagicWall(row, col) {
+    return magicWalls.some(wall => 
+      wall.row === row && wall.col === col && wall.visible
+    );
+  }
+
+  // Check star collection
+  function checkStarCollection() {
+    stars.forEach(star => {
+      if (!star.collected && star.row === player.row && star.col === player.col) {
+        star.collected = true;
+        starsCollected++;
+        updateUI();
+      }
+    });
+  }
+
+  // Check enemy collision
+  function checkEnemyCollision() {
+    if (player.invincible) return;
+    
+    const collision = enemies.some(enemy => 
+      enemy.row === player.row && enemy.col === player.col
+    );
+    
+    if (collision) {
+      player.lives--;
+      updateUI();
+      
+      if (player.lives <= 0) {
+        endGame(false);
+      } else {
+        // Make player invincible for 2 seconds
+        player.invincible = true;
+        player.invincibleTimer = 2000;
+        
+        // Reset player to start
+        player.row = START_POS.row;
+        player.col = START_POS.col;
+      }
+    }
   }
 
   // Draw maze walls and path
@@ -502,24 +731,91 @@
         const y = r * CELL_SIZE;
 
         if (MAZE_GRID[r][c] === 1) { // Wall
-          ctx.fillStyle = '#444'; // Dark grey
+          // Christmas themed walls - dark green with red tint
+          const gradient = ctx.createLinearGradient(x, y, x + CELL_SIZE, y + CELL_SIZE);
+          gradient.addColorStop(0, '#1a4d1a');
+          gradient.addColorStop(1, '#0d260d');
+          ctx.fillStyle = gradient;
           ctx.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+          
+          // Add border for texture
+          ctx.strokeStyle = '#2d5c2d';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(x, y, CELL_SIZE, CELL_SIZE);
         } else { // Path
-          ctx.fillStyle = '#AAA'; // Light grey
+          // Snowy path
+          ctx.fillStyle = '#e8f4f8';
           ctx.fillRect(x, y, CELL_SIZE, CELL_SIZE);
         }
 
-        // Draw Start and End points
+        // Draw Start point (Christmas tree)
         if (r === START_POS.row && c === START_POS.col) {
-          ctx.fillStyle = 'lightgreen';
+          ctx.fillStyle = '#90EE90';
           ctx.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+          ctx.font = '16px Arial';
+          ctx.fillText('🎄', x + 2, y + 16);
         }
+        
+        // Draw End point (Gift)
         if (r === END_POS.row && c === END_POS.col) {
-          ctx.fillStyle = 'red';
+          ctx.fillStyle = '#FFD700';
           ctx.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+          ctx.font = '16px Arial';
+          ctx.fillText('🎁', x + 2, y + 16);
         }
       }
     }
+  }
+
+  // Draw stars
+  function drawStars() {
+    ctx.font = '16px Arial';
+    stars.forEach(star => {
+      if (!star.collected) {
+        const x = star.col * CELL_SIZE;
+        const y = star.row * CELL_SIZE;
+        
+        // Add glow effect
+        ctx.shadowColor = '#FFD700';
+        ctx.shadowBlur = 10;
+        ctx.fillText('⭐', x + 2, y + 16);
+        ctx.shadowBlur = 0;
+      }
+    });
+  }
+
+  // Draw magic walls
+  function drawMagicWalls() {
+    magicWalls.forEach(wall => {
+      if (wall.visible) {
+        const x = wall.col * CELL_SIZE;
+        const y = wall.row * CELL_SIZE;
+        
+        // Magical purple/blue wall with sparkles
+        const alpha = 0.3 + Math.sin(Date.now() / 200) * 0.2;
+        ctx.fillStyle = `rgba(138, 43, 226, ${alpha})`;
+        ctx.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+        
+        // Add sparkle effect
+        ctx.font = '12px Arial';
+        ctx.fillText('✨', x + 4, y + 14);
+      }
+    });
+  }
+
+  // Draw enemies (elves)
+  function drawEnemies() {
+    ctx.font = '16px Arial';
+    enemies.forEach(enemy => {
+      const x = enemy.col * CELL_SIZE;
+      const y = enemy.row * CELL_SIZE;
+      
+      // Add red glow for danger
+      ctx.shadowColor = '#FF0000';
+      ctx.shadowBlur = 8;
+      ctx.fillText('🧝', x + 2, y + 16);
+      ctx.shadowBlur = 0;
+    });
   }
 
   // Draw player
@@ -527,22 +823,28 @@
     const playerX = player.col * CELL_SIZE + (CELL_SIZE - player.size) / 2;
     const playerY = player.row * CELL_SIZE + (CELL_SIZE - player.size) / 2;
 
-    if (playerImage.complete && playerImage.naturalWidth > 0) {
-        ctx.drawImage(playerImage, playerX, playerY, player.size, player.size);
-    } else {
-        // Fallback if image not loaded
-        ctx.fillStyle = player.color;
-        ctx.fillRect(playerX, playerY, player.size, player.size);
+    // If invincible, make player blink
+    if (player.invincible && Math.floor(Date.now() / 200) % 2 === 0) {
+      ctx.globalAlpha = 0.5;
     }
+
+    if (playerImage.complete && playerImage.naturalWidth > 0) {
+      ctx.drawImage(playerImage, playerX, playerY, player.size, player.size);
+    } else {
+      // Fallback
+      ctx.fillStyle = 'blue';
+      ctx.fillRect(playerX, playerY, player.size, player.size);
+    }
+
+    ctx.globalAlpha = 1.0;
   }
 
   // Check for wall collision
   function isCollision(row, col) {
-    // Ensure coordinates are within grid bounds
     if (row < 0 || row >= MAZE_GRID.length || col < 0 || col >= MAZE_GRID[0].length) {
-      return true; // Treat out-of-bounds as a wall
+      return true;
     }
-    return MAZE_GRID[row][col] === 1; // 1 means wall
+    return MAZE_GRID[row][col] === 1;
   }
 
   // Move player
@@ -552,39 +854,36 @@
     let newRow = player.row;
     let newCol = player.col;
 
-    switch (e.key) {
-      case 'ArrowUp':
+    switch (e.key.toLowerCase()) {
+      case 'arrowup':
       case 'w':
         newRow--;
         break;
-      case 'ArrowDown':
+      case 'arrowdown':
       case 's':
         newRow++;
         break;
-      case 'ArrowLeft':
+      case 'arrowleft':
       case 'a':
         newCol--;
         break;
-      case 'ArrowRight':
+      case 'arrowright':
       case 'd':
         newCol++;
         break;
       default:
-        return; // Ignore other keys
+        return;
     }
 
-    if (!isCollision(newRow, newCol)) {
+    // Check if move is valid (no wall and no visible magic wall)
+    if (!isCollision(newRow, newCol) && !isMagicWall(newRow, newCol)) {
       player.row = newRow;
       player.col = newCol;
-      drawMaze(); // Redraw maze with player in new position
-      drawPlayer();
 
+      // Check if reached the end
       if (player.row === END_POS.row && player.col === END_POS.col) {
-        endGame(true); // Player reached the end
+        endGame(true);
       }
-    } else {
-        // Optional: play a "bump" sound if hitting a wall
-        // console.log("Hit a wall!");
     }
   }
 
@@ -598,13 +897,15 @@
 
     gameCanvas.style.display = 'none';
     gameControls.style.display = 'none';
+    gameStats.style.display = 'none';
 
     if (win) {
       winSound.volume = 0.7;
       winSound.play().catch(e => console.log("Win audio play prevented:", e));
+      finalStarsEl.textContent = starsCollected;
       gameWinMessage.style.display = 'block';
     } else {
-      loseSound.volume = 0.7; // Play lose sound for retry/fail
+      loseSound.volume = 0.7;
       loseSound.play().catch(e => console.log("Lose audio play prevented:", e));
       gameOverMessage.style.display = 'block';
     }
@@ -613,14 +914,14 @@
 
   // Event Listeners
   startGameButton.addEventListener('click', startGame);
-  playAgainButton.addEventListener('click', initGame); // Play again button resets game
-  retryButton.addEventListener('click', initGame); // Retry button resets game
+  playAgainButton.addEventListener('click', initGame);
+  retryButton.addEventListener('click', initGame);
   document.addEventListener('keydown', movePlayer);
 
   // Initialize the game and snow when the page loads
   document.addEventListener('DOMContentLoaded', () => {
-    initGame(); // This will trigger the loading process
-    setInterval(createSnowflake, 300); // Start snow
+    initGame();
+    setInterval(createSnowflake, 300);
   });
  </script>
 
@@ -628,3 +929,5 @@
 
 </body>
 </html>
+
+

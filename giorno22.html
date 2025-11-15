@@ -1,6 +1,1060 @@
-<!--16. “Playlist dell’amore” 🎧
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Quo Vado? - L'Avventura del Posto Fisso 🇮🇹</title>
 
-Una pagina con pulsanti “🎵” che aprono brani o clip audio (Spotify, YouTube o mp3 brevi).
-Puoi scrivere:
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+ <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&family=Press+Start+2P&display=swap" rel="stylesheet">
 
-“Le 3 canzoni che mi fanno pensare a te ❤️”-->
+ <style>
+  * {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+  }
+  
+  body {
+   font-family: 'Press Start 2P', cursive;
+   background: linear-gradient(135deg, #009246 0%, #ffffff 50%, #ce2b37 100%);
+   color: #fff;
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   padding: 2rem;
+   position: relative;
+   overflow: hidden;
+  }
+  
+  .content-box {
+   background: rgba(0, 0, 0, 0.85);
+   border: 5px solid gold;
+   border-radius: 15px;
+   padding: 2rem;
+   max-width: 900px;
+   text-align: center;
+   box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+   position: relative;
+   z-index: 1;
+  }
+  
+  h1 {
+   color: gold;
+   text-shadow: 3px 3px 0px #000;
+   font-size: 1.8rem;
+   margin-bottom: 1.5rem;
+   line-height: 1.4;
+  }
+  
+  .message-container {
+   background: rgba(255, 255, 255, 0.1);
+   border-radius: 10px;
+   padding: 1.5rem;
+   margin: 1rem 0;
+   border: 2px solid rgba(255, 215, 0, 0.3);
+   font-size: 0.9rem;
+   line-height: 1.6;
+  }
+  
+  .btn-game { 
+   margin: 0.5rem;
+   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+   color: #000;
+   border: 3px solid #000;
+   font-weight: bold;
+   font-size: 1rem;
+   padding: 0.8rem 2rem;
+   border-radius: 10px;
+   transition: all 0.2s ease;
+   box-shadow: 0 4px 0 #666;
+   cursor: pointer;
+   font-family: 'Press Start 2P', cursive;
+  }
+  
+  .btn-game:hover { 
+   transform: translateY(-2px);
+   box-shadow: 0 6px 0 #666;
+  }
+
+  .btn-game:active { 
+   transform: translateY(2px);
+   box-shadow: 0 2px 0 #666;
+  }
+  
+  .btn-game:disabled {
+   opacity: 0.5;
+   cursor: not-allowed;
+   transform: none;
+   box-shadow: 0 4px 0 #666;
+  }
+
+  #gameCanvas {
+   background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%);
+   border: 4px solid #000;
+   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+   display: none;
+   margin: 1.5rem auto;
+   image-rendering: pixelated;
+  }
+
+  .game-message {
+   font-family: 'Press Start 2P', cursive;
+   color: #fff;
+   background: rgba(0, 0, 0, 0.9);
+   padding: 1.5rem;
+   border: 3px solid gold;
+   border-radius: 10px;
+   margin-top: 1rem;
+   display: none;
+   font-size: 1rem;
+   text-shadow: 2px 2px 0px #000;
+   line-height: 1.6;
+  }
+
+  #gameControls {
+   font-family: 'Press Start 2P', cursive;
+   color: #FFD700;
+   font-size: 0.8rem;
+   margin-top: 1rem;
+   display: none;
+   line-height: 1.8;
+  }
+
+  #gameStats {
+   font-family: 'Press Start 2P', cursive;
+   color: #fff;
+   font-size: 0.9rem;
+   margin-top: 1rem;
+   display: none;
+   text-shadow: 2px 2px 0px #000;
+   background: rgba(0, 0, 0, 0.7);
+   padding: 0.8rem;
+   border-radius: 8px;
+   border: 2px solid gold;
+  }
+
+  #loadingScreen {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background-color: rgba(0, 0, 0, 0.95);
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   color: gold;
+   font-size: 1.5rem;
+   z-index: 1000;
+   text-shadow: 3px 3px 0px #000;
+  }
+
+  #loadingScreen span {
+   margin-top: 1rem;
+   font-size: 1rem;
+   color: #fff;
+  }
+
+  .back-button {
+   margin-top: 1.5rem;
+   background: #ce2b37;
+   color: #fff;
+   border: 3px solid #000;
+   font-weight: bold;
+   font-size: 0.9rem;
+   padding: 0.7rem 1.5rem;
+   border-radius: 10px;
+   text-decoration: none;
+   display: inline-block;
+   box-shadow: 0 4px 0 #666;
+   font-family: 'Press Start 2P', cursive;
+  }
+
+  .back-button:hover {
+   transform: translateY(-2px);
+   box-shadow: 0 6px 0 #666;
+   color: #fff;
+  }
+ </style>
+</head>
+
+<body>
+ <audio id="game-music" loop preload="auto">
+  <source src="audio/song1.mp3" type="audio/mpeg"> 
+ </audio>
+ <audio id="jump-sound" preload="auto">
+  <source src="audio/jump.mp3" type="audio/mpeg">
+ </audio>
+ <audio id="coin-sound" preload="auto">
+  <source src="audio/coin.mp3" type="audio/mpeg">
+ </audio>
+ <audio id="powerup-sound" preload="auto">
+  <source src="audio/powerup.mp3" type="audio/mpeg">
+ </audio>
+ <audio id="stomp-sound" preload="auto">
+  <source src="audio/stomp.mp3" type="audio/mpeg">
+ </audio>
+ <audio id="horn-sound" preload="auto">
+  <source src="audio/horn.mp3" type="audio/mpeg">
+ </audio>
+
+ <div id="loadingScreen">
+   🇮🇹 Caricamento Quo Vado? 🇮🇹
+   <span id="loadingProgress">0%</span>
+ </div>
+
+ <div class="content-box">
+  <h1>
+   🏛️ QUO VADO? 🏛️<br>
+   L'AVVENTURA DEL POSTO FISSO
+  </h1>
+  
+  <div class="message-container" id="intro-message">
+   <p>
+    Aiuta Checco a mantenere il suo posto fisso! 🇮🇹<br><br>
+    
+    <strong>CONTROLLI:</strong><br>
+    W = Salta | A = Sinistra | D = Destra<br>
+    SPAZIO = Clacson (vicino ai semafori)<br><br>
+    
+    <strong>OBIETTIVI:</strong><br>
+    🔖 Raccogli TIMBRI<br>
+    📝 Raccogli CONTRATTI (5 punti!)<br>
+    🧹 Prendi l'ASPIRAPOLVERE per l'invincibilità!<br>
+    🚦 Suona il clacson ai semafori rossi!<br><br>
+    
+    <strong>ATTENZIONE:</strong><br>
+    Evita la DOTTORESSA e il PAPA!<br>
+    Salta sulla loro testa per eliminarli!<br><br>
+    
+    "IO MICA MI MUOVO!" 😄
+   </p>
+  </div>
+
+  <button class="btn btn-game" id="startGameButton" disabled>INIZIA PARTITA 🚀</button>
+
+  <div id="gameStats">
+    💰 PUNTI: <span id="scoreCount">0</span> | 
+    ❤️ VITE: <span id="livesCount">3</span>
+  </div>
+
+  <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+  <div id="gameWinMessage" class="game-message">
+    🎉 COMPLIMENTI! 🎉<br><br>
+    HAI MANTENUTO IL POSTO FISSO!<br>
+    PUNTI FINALI: <span id="finalScore">0</span><br><br>
+    <button class="btn btn-game" id="playAgainButton">GIOCA ANCORA</button>
+  </div>
+  
+  <div id="gameOverMessage" class="game-message">
+    💼 GAME OVER 💼<br><br>
+    SEI STATO LICENZIATO!<br>
+    PUNTI: <span id="gameOverScore">0</span><br><br>
+    <button class="btn btn-game" id="retryButton">RIPROVA</button>
+  </div>
+
+  <div id="gameControls">
+    W = SALTA | A/D = MUOVI<br>
+    SPAZIO = CLACSON
+  </div>
+
+  <a href="index.html" class="btn back-button" id="back-to-calendar" style="display: none;">
+   🎄 TORNA AL CALENDARIO
+  </a>
+ </div>
+
+ <script>
+  // Game UI elements
+  const startGameButton = document.getElementById('startGameButton');
+  const introMessage = document.getElementById('intro-message');
+  const gameCanvas = document.getElementById('gameCanvas');
+  const ctx = gameCanvas.getContext('2d');
+  const gameWinMessage = document.getElementById('gameWinMessage');
+  const gameOverMessage = document.getElementById('gameOverMessage');
+  const playAgainButton = document.getElementById('playAgainButton');
+  const retryButton = document.getElementById('retryButton');
+  const backButton = document.getElementById('back-to-calendar');
+  const gameControls = document.getElementById('gameControls');
+  const gameStats = document.getElementById('gameStats');
+  const loadingScreen = document.getElementById('loadingScreen');
+  const loadingProgress = document.getElementById('loadingProgress');
+  const scoreCountEl = document.getElementById('scoreCount');
+  const livesCountEl = document.getElementById('livesCount');
+  const finalScoreEl = document.getElementById('finalScore');
+  const gameOverScoreEl = document.getElementById('gameOverScore');
+
+  // Audio elements
+  const gameMusic = document.getElementById('game-music');
+  const jumpSound = document.getElementById('jump-sound');
+  const coinSound = document.getElementById('coin-sound');
+  const powerupSound = document.getElementById('powerup-sound');
+  const stompSound = document.getElementById('stomp-sound');
+  const hornSound = document.getElementById('horn-sound');
+
+  // Game constants
+  const CANVAS_WIDTH = 800;
+  const CANVAS_HEIGHT = 400;
+  const GRAVITY = 0.6;
+  const JUMP_STRENGTH = -12;
+  const MOVE_SPEED = 2.5;
+  const GROUND_Y = 350;
+  const PLAYER_SIZE = 40;
+  const ENEMY_SIZE = 35;
+  const COLLECTIBLE_SIZE = 25;
+  const PLATFORM_HEIGHT = 20;
+
+  // Game state
+  let gameActive = false;
+  let score = 0;
+  let lives = 3;
+  let cameraX = 0;
+  let levelWidth = 3000;
+  let keys = {};
+  let lastTimestamp = 0;
+
+  // Player
+  let player = {
+    x: 100,
+    y: GROUND_Y - PLAYER_SIZE,
+    width: PLAYER_SIZE,
+    height: PLAYER_SIZE,
+    velocityY: 0,
+    velocityX: 0,
+    onGround: false,
+    invincible: false,
+    invincibleTimer: 0,
+    facingRight: true
+  };
+
+  // Game objects
+  let platforms = [];
+  let enemies = [];
+  let collectibles = [];
+  let semaphores = [];
+
+  // Images
+  const images = {
+    zalone: new Image(),
+    papa: new Image(),
+    dottoressa: new Image(),
+    contratto: new Image(),
+    timbro: new Image(),
+    aspirapolvere: new Image(),
+    semrosso: new Image(),
+    semverde: new Image()
+  };
+
+  // Asset loading
+  let assetsLoadedCount = 0;
+  const totalAssets = Object.keys(images).length;
+
+  function updateLoadingProgress() {
+    assetsLoadedCount++;
+    const progressPercentage = Math.floor((assetsLoadedCount / totalAssets) * 100);
+    loadingProgress.textContent = `${progressPercentage}%`;
+
+    if (assetsLoadedCount === totalAssets) {
+      setTimeout(() => {
+        loadingScreen.style.display = 'none';
+        startGameButton.disabled = false;
+      }, 500);
+    }
+  }
+
+  // Load all images
+  images.zalone.src = 'images/checco/zalone.png';
+  images.papa.src = 'images/checco/papa.png';
+  images.dottoressa.src = 'images/checco/dottoressa.png';
+  images.contratto.src = 'images/checco/contratto.png';
+  images.timbro.src = 'images/checco/timbro.png';
+  images.aspirapolvere.src = 'images/checco/aspirapolvere.png';
+  images.semrosso.src = 'images/checco/semrosso.png';
+  images.semverde.src = 'images/checco/semverde.png';
+
+  Object.values(images).forEach(img => {
+    img.onload = updateLoadingProgress;
+    img.onerror = () => {
+      console.error(`Failed to load: ${img.src}`);
+      updateLoadingProgress();
+    };
+  });
+
+  // Generate level
+  function generateLevel() {
+    platforms = [];
+    enemies = [];
+    collectibles = [];
+    semaphores = [];
+
+    // Ground platforms
+    for (let x = 0; x < levelWidth; x += 100) {
+      platforms.push({
+        x: x,
+        y: GROUND_Y,
+        width: 100,
+        height: PLATFORM_HEIGHT,
+        color: '#8B4513'
+      
+});
+    }
+
+    // Floating platforms
+    platforms.push(
+      { x: 300, y: 250, width: 150, height: PLATFORM_HEIGHT, color: '#D2691E' },
+      { x: 550, y: 200, width: 120, height: PLATFORM_HEIGHT, color: '#D2691E' },
+      { x: 800, y: 250, width: 150, height: PLATFORM_HEIGHT, color: '#D2691E' },
+      { x: 1100, y: 180, width: 130, height: PLATFORM_HEIGHT, color: '#D2691E' },
+      { x: 1350, y: 250, width: 140, height: PLATFORM_HEIGHT, color: '#D2691E' },
+      { x: 1600, y: 200, width: 150, height: PLATFORM_HEIGHT, color: '#D2691E' },
+      { x: 1900, y: 250, width: 120, height: PLATFORM_HEIGHT, color: '#D2691E' },
+      { x: 2150, y: 180, width: 150, height: PLATFORM_HEIGHT, color: '#D2691E' },
+      { x: 2450, y: 250, width: 140, height: PLATFORM_HEIGHT, color: '#D2691E' }
+    );
+
+    // Enemies - Dottoressa (Goomba type)
+    enemies.push(
+      { x: 400, y: GROUND_Y - ENEMY_SIZE, type: 'dottoressa', velocityX: -1, alive: true },
+      { x: 700, y: GROUND_Y - ENEMY_SIZE, type: 'dottoressa', velocityX: 1, alive: true },
+      { x: 1200, y: GROUND_Y - ENEMY_SIZE, type: 'dottoressa', velocityX: -1, alive: true },
+      { x: 1700, y: GROUND_Y - ENEMY_SIZE, type: 'dottoressa', velocityX: 1, alive: true },
+      { x: 2300, y: GROUND_Y - ENEMY_SIZE, type: 'dottoressa', velocityX: -1, alive: true }
+    );
+
+    // Enemies - Papa (Koopa type with shell)
+    enemies.push(
+      { x: 600, y: GROUND_Y - ENEMY_SIZE, type: 'papa', velocityX: -1, alive: true, isShell: false, shellTimer: 0 },
+      { x: 1000, y: GROUND_Y - ENEMY_SIZE, type: 'papa', velocityX: 1, alive: true, isShell: false, shellTimer: 0 },
+      { x: 1500, y: GROUND_Y - ENEMY_SIZE, type: 'papa', velocityX: -1, alive: true, isShell: false, shellTimer: 0 },
+      { x: 2000, y: GROUND_Y - ENEMY_SIZE, type: 'papa', velocityX: 1, alive: true, isShell: false, shellTimer: 0 }
+    );
+
+    // Collectibles - Timbri (coins)
+    for (let i = 0; i < 30; i++) {
+      const x = 200 + i * 90 + Math.random() * 50;
+      const y = GROUND_Y - 50 - Math.random() * 100;
+      collectibles.push({ x, y, type: 'timbro', collected: false, points: 1 });
+    }
+
+    // Collectibles - Contratti (special coins)
+    collectibles.push(
+      { x: 500, y: 180, type: 'contratto', collected: false, points: 5 },
+      { x: 900, y: 150, type: 'contratto', collected: false, points: 5 },
+      { x: 1400, y: 180, type: 'contratto', collected: false, points: 5 },
+      { x: 1800, y: 150, type: 'contratto', collected: false, points: 5 },
+      { x: 2300, y: 180, type: 'contratto', collected: false, points: 5 }
+    );
+
+    // Power-ups - Aspirapolvere
+    collectibles.push(
+      { x: 750, y: 170, type: 'aspirapolvere', collected: false, points: 0 },
+      { x: 1600, y: 170, type: 'aspirapolvere', collected: false, points: 0 }
+    );
+
+    // Semaphores
+    semaphores.push(
+      { x: 850, y: GROUND_Y - 60, red: true, width: 30, height: 60 },
+      { x: 1650, y: GROUND_Y - 60, red: true, width: 30, height: 60 },
+      { x: 2400, y: GROUND_Y - 60, red: true, width: 30, height: 60 }
+    );
+  }
+
+  // Initialize game
+  function initGame() {
+    score = 0;
+    lives = 3;
+    cameraX = 0;
+    player.x = 100;
+    player.y = GROUND_Y - PLAYER_SIZE;
+    player.velocityY = 0;
+    player.velocityX = 0;
+    player.invincible = false;
+    player.invincibleTimer = 0;
+    player.facingRight = true;
+
+    generateLevel();
+    updateUI();
+
+    introMessage.style.display = 'block';
+    startGameButton.style.display = 'block';
+    gameCanvas.style.display = 'none';
+    gameWinMessage.style.display = 'none';
+    gameOverMessage.style.display = 'none';
+    backButton.style.display = 'none';
+    gameControls.style.display = 'none';
+    gameStats.style.display = 'none';
+    gameActive = false;
+
+    gameMusic.pause();
+    gameMusic.currentTime = 0;
+  }
+
+  // Update UI
+  function updateUI() {
+    scoreCountEl.textContent = score;
+    livesCountEl.textContent = lives;
+  }
+
+  // Start game
+  function startGame() {
+    introMessage.style.display = 'none';
+    startGameButton.style.display = 'none';
+    gameCanvas.style.display = 'block';
+    gameControls.style.display = 'block';
+    gameStats.style.display = 'block';
+    gameActive = true;
+
+    gameMusic.volume = 0.3;
+    gameMusic.play().catch(e => console.log("Music play prevented:", e));
+
+    lastTimestamp = performance.now();
+    requestAnimationFrame(gameLoop);
+  }
+
+  // Game loop
+  function gameLoop(timestamp) {
+    if (!gameActive) return;
+
+    const deltaTime = timestamp - lastTimestamp;
+    lastTimestamp = timestamp;
+
+    update(deltaTime);
+    draw();
+
+    requestAnimationFrame(gameLoop);
+  }
+
+  // Update game state
+  function update(deltaTime) {
+    // Player movement
+    if (keys['a'] || keys['ArrowLeft']) {
+      player.velocityX = -MOVE_SPEED;
+      player.facingRight = false;
+    } else if (keys['d'] || keys['ArrowRight']) {
+      player.velocityX = MOVE_SPEED;
+      player.facingRight = true;
+    } else {
+      player.velocityX = 0;
+    }
+
+    // Jump
+    if ((keys['w'] || keys['ArrowUp']) && player.onGround) {
+      player.velocityY = JUMP_STRENGTH;
+      player.onGround = false;
+      playSound(jumpSound);
+    }
+
+    // Apply gravity
+    player.velocityY += GRAVITY;
+    player.y += player.velocityY;
+    player.x += player.velocityX;
+
+    // Keep player in bounds
+    if (player.x < 0) player.x = 0;
+    if (player.x > levelWidth - player.width) player.x = levelWidth - player.width;
+
+    // Camera follow
+    cameraX = player.x - CANVAS_WIDTH / 3;
+    if (cameraX < 0) cameraX = 0;
+    if (cameraX > levelWidth - CANVAS_WIDTH) cameraX = levelWidth - CANVAS_WIDTH;
+
+    // Platform collision
+    player.onGround = false;
+    platforms.forEach(platform => {
+      if (player.x + player.width > platform.x &&
+          player.x < platform.x + platform.width &&
+          player.y + player.height >= platform.y &&
+          player.y + player.height <= platform.y + PLATFORM_HEIGHT + 10 &&
+          player.velocityY >= 0) {
+        player.y = platform.y - player.height;
+        player.velocityY = 0;
+        player.onGround = true;
+      }
+    });
+
+    // Update enemies
+    updateEnemies(deltaTime);
+
+    // Check collisions
+    checkCollectibles();
+    checkEnemyCollisions();
+    checkSemaphores();
+
+    // Update invincibility
+    if (player.invincible) {
+      player.invincibleTimer -= deltaTime;
+      if (player.invincibleTimer <= 0) {
+        player.invincible = false;
+      }
+    }
+
+    // Check win condition
+    if (player.x >= levelWidth - 200) {
+      endGame(true);
+    }
+
+    // Check fall death
+    if (player.y > CANVAS_HEIGHT + 100) {
+      loseLife();
+    }
+  }
+
+  // Update enemies
+  function updateEnemies(deltaTime) {
+    enemies.forEach(enemy => {
+      if (!enemy.alive) return;
+
+      // Move enemy
+      enemy.x += enemy.velocityX;
+
+      // Enemy gravity
+      let enemyOnGround = false;
+      platforms.forEach(platform => {
+        if (enemy.x + ENEMY_SIZE > platform.x &&
+            enemy.x < platform.x + platform.width &&
+            enemy.y + ENEMY_SIZE >= platform.y &&
+            enemy.y + ENEMY_SIZE <= platform.y + PLATFORM_HEIGHT + 10) {
+          enemy.y = platform.y - ENEMY_SIZE;
+          enemyOnGround = true;
+        }
+      });
+
+      // Turn around at edges
+      if (enemyOnGround) {
+        let atEdge = true;
+        platforms.forEach(platform => {
+          if (enemy.velocityX > 0) {
+            if (enemy.x + ENEMY_SIZE + 10 >= platform.x &&
+                enemy.x + ENEMY_SIZE + 10 <= platform.x + platform.width &&
+                enemy.y + ENEMY_SIZE + 10 >= platform.y) {
+              atEdge = false;
+            }
+          } else {
+            if (enemy.x - 10 >= platform.x &&
+                enemy.x - 10 <= platform.x + platform.width &&
+                enemy.y + ENEMY_SIZE + 10 >= platform.y) {
+              atEdge = false;
+            }
+          }
+        });
+
+        if (atEdge) {
+          enemy.velocityX *= -1;
+        }
+      }
+
+      // Papa shell timer
+      if (enemy.type === 'papa' && enemy.isShell) {
+        enemy.shellTimer -= deltaTime;
+        if (enemy.shellTimer <= 0 && enemy.velocityX === 0) {
+          // Shell stops being dangerous
+          enemy.alive = false;
+        }
+      }
+    });
+  }
+
+  // Check collectibles
+  function checkCollectibles() {
+    collectibles.forEach(item => {
+      if (item.collected) return;
+
+      if (player.x + player.width > item.x &&
+          player.x < item.x + COLLECTIBLE_SIZE &&
+          player.y + player.height > item.y &&
+          player.y < item.y + COLLECTIBLE_SIZE) {
+        
+        item.collected = true;
+
+        if (item.type === 'aspirapolvere') {
+          player.invincible = true;
+          player.invincibleTimer = 5000; // 5 seconds
+          playSound(powerupSound);
+        } else {
+          score += item.points;
+          updateUI();
+          playSound(coinSound);
+        }
+      }
+    });
+  }
+
+  // Check enemy collisions
+  function checkEnemyCollisions() {
+    if (player.invincible) return;
+
+    enemies.forEach(enemy => {
+      if (!enemy.alive) return;
+
+      if (player.x + player.width > enemy.x &&
+          player.x < enemy.x + ENEMY_SIZE &&
+          player.y + player.height > enemy.y &&
+          player.y < enemy.y + ENEMY_SIZE) {
+        
+        // Check if jumping on enemy
+        if (player.velocityY > 0 && player.y + player.height - 10 < enemy.y + ENEMY_SIZE / 2) {
+          // Stomp enemy
+          player.velocityY = JUMP_STRENGTH / 2; // Bounce
+          playSound(stompSound);
+
+          if (enemy.type === 'dottoressa') {
+            enemy.alive = false; // Dottoressa dies
+          } else if (enemy.type === 'papa') {
+            if (!enemy.isShell) {
+              // Turn into shell
+              enemy.isShell = true;
+              enemy.velocityX = 0;
+              enemy.shellTimer = 10000; // 10 seconds
+            } else {
+              // Kick shell
+              enemy.velocityX = player.facingRight ? 8 : -8;
+              enemy.shellTimer = 10000;
+            }
+          }
+        } else {
+          // Hit by enemy
+          if (enemy.type === 'papa' && enemy.isShell && enemy.velocityX === 0) {
+            // Kick stationary shell
+            enemy.velocityX = player.facingRight ? 8 : -8;
+            enemy.shellTimer = 10000;
+          } else {
+            loseLife();
+          }
+        }
+      }
+    });
+  }
+
+  // Check semaphores
+  function checkSemaphores() {
+    keys.spaceUsedForHorn = false;
+
+    semaphores.forEach(sem => {
+      if (!sem.red) return;
+
+      // Check if player is near semaphore
+      const distance = Math.abs(player.x - sem.x);
+      
+      if (distance < 80 && keys[' ']) {
+        // Honk horn
+        sem.red = false;
+        playSound(hornSound);
+        keys.spaceUsedForHorn = true;
+      }
+
+      // Block player if semaphore is red
+      if (sem.red) {
+        if (player.x + player.width > sem.x - 10 &&
+            player.x < sem.x + sem.width + 10 &&
+            player.y + player.height > sem.y) {
+          if (player.facingRight) {
+            player.x = sem.x - player.width - 10;
+          } else {
+            player.x = sem.x + sem.width + 10;
+          }
+          player.velocityX = 0;
+        }
+      }
+    });
+  }
+
+  // Lose life
+  function loseLife() {
+    lives--;
+    updateUI();
+
+    if (lives <= 0) {
+      endGame(false);
+    } else {
+      // Reset player position
+      player.x = 100;
+      player.y = GROUND_Y - PLAYER_SIZE;
+      player.velocityY = 0;
+      player.invincible = true;
+      player.invincibleTimer = 3000; // 3 seconds invincibility
+    }
+  }
+
+  // Draw everything
+  function draw() {
+    // Clear canvas
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+    // Draw sky
+    const gradient = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT);
+    gradient.addColorStop(0, '#87CEEB');
+    gradient.addColorStop(1, '#E0F6FF');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+    // Draw clouds
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    for (let i = 0; i < 5; i++) {
+      const cloudX = (i * 200 - cameraX * 0.5) % (CANVAS_WIDTH + 200);
+      ctx.beginPath();
+      ctx.arc(cloudX, 50 + i * 20, 30, 0, Math.PI * 2);
+      ctx.arc(cloudX + 25, 50 + i * 20, 35, 0, Math.PI * 2);
+      ctx.arc(cloudX + 50, 50 + i * 20, 30, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    ctx.save();
+    ctx.translate(-cameraX, 0);
+
+    // Draw platforms
+    platforms.forEach(platform => {
+      // Platform shadow
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+      ctx.fillRect(platform.x + 3, platform.y + 3, platform.width, platform.height);
+      
+      // Platform
+      ctx.fillStyle = platform.color;
+      ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+      
+      // Platform border
+      ctx.strokeStyle = '#654321';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(platform.x, platform.y, platform.width, platform.height);
+    });
+
+    // Draw collectibles
+    collectibles.forEach(item => {
+      if (item.collected) return;
+
+      // Floating animation
+      const floatOffset = Math.sin(Date.now() / 300 + item.x) * 5;
+      
+      // Shadow
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+      ctx.beginPath();
+      ctx.ellipse(item.x + COLLECTIBLE_SIZE / 2, GROUND_Y + 5, COLLECTIBLE_SIZE / 2, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw image
+      const img = images[item.type];
+      if (img.complete) {
+        ctx.drawImage(img, item.x, item.y + floatOffset, COLLECTIBLE_SIZE, COLLECTIBLE_SIZE);
+      }
+
+      // Glow effect for aspirapolvere
+      if (item.type === 'aspirapolvere') {
+        ctx.shadowColor = '#FFD700';
+        ctx.shadowBlur = 15;
+        ctx.drawImage(img, item.x, item.y + floatOffset, COLLECTIBLE_SIZE, COLLECTIBLE_SIZE);
+        ctx.shadowBlur = 0;
+      }
+    });
+
+    // Draw semaphores
+    semaphores.forEach(sem => {
+      const img = sem.red ? images.semrosso : images.semverde;
+      
+      // Semaphore pole
+      ctx.fillStyle = '#333';
+      ctx.fillRect(sem.x + sem.width / 2 - 3, sem.y, 6, sem.height);
+      
+      // Semaphore light
+      if (img.complete) {
+        ctx.drawImage(img, sem.x, sem.y, sem.width, sem.height);
+      }
+
+      // Show horn icon if player is near and semaphore is red
+      if (sem.red) {
+        const distance = Math.abs(player.x - sem.x);
+        if (distance < 80) {
+          ctx.font = '20px Arial';
+          ctx.fillText('📯', sem.x + sem.width / 2 - 10, sem.y - 20);
+          ctx.font = '12px Press Start 2P';
+          ctx.fillStyle = '#fff';
+          ctx.strokeStyle = '#000';
+          ctx.lineWidth = 3;
+          ctx.strokeText('SPAZIO', sem.x - 20, sem.y - 35);
+          ctx.fillText('SPAZIO', sem.x - 20, sem.y - 35);
+        }
+      }
+    });
+
+    // Draw enemies
+    enemies.forEach(enemy => {
+      if (!enemy.alive) return;
+
+      // Shadow
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+      ctx.beginPath();
+      ctx.ellipse(enemy.x + ENEMY_SIZE / 2, enemy.y + ENEMY_SIZE + 2, ENEMY_SIZE / 2, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (enemy.type === 'papa' && enemy.isShell) {
+        // Draw shell (simple brown rectangle)
+        ctx.fillStyle = '#8B4513';
+        ctx.fillRect(enemy.x, enemy.y + ENEMY_SIZE / 2, ENEMY_SIZE, ENEMY_SIZE / 2);
+        ctx.strokeStyle = '#654321';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(enemy.x, enemy.y + ENEMY_SIZE / 2, ENEMY_SIZE, ENEMY_SIZE / 2);
+        
+        // Shell pattern
+        ctx.fillStyle = '#A0522D';
+        for (let i = 0; i < 3; i++) {
+          ctx.fillRect(enemy.x + 5 + i * 10, enemy.y + ENEMY_SIZE / 2 + 5, 8, ENEMY_SIZE / 2 - 10);
+        }
+      } else {
+        // Draw enemy image
+        const img = enemy.type === 'dottoressa' ? images.dottoressa : images.papa;
+        if (img.complete) {
+          ctx.save();
+          if (enemy.velocityX < 0) {
+            ctx.scale(-1, 1);
+            ctx.drawImage(img, -enemy.x - ENEMY_SIZE, enemy.y, ENEMY_SIZE, ENEMY_SIZE);
+          } else {
+            ctx.drawImage(img, enemy.x, enemy.y, ENEMY_SIZE, ENEMY_SIZE);
+          }
+          ctx.restore();
+        }
+      }
+    });
+
+    // Draw player
+    // Shadow
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+    ctx.beginPath();
+    ctx.ellipse(player.x + player.width / 2, player.y + player.height + 2, player.width / 2, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Invincibility effect
+    if (player.invincible && Math.floor(Date.now() / 100) % 2 === 0) {
+      ctx.globalAlpha = 0.5;
+    }
+
+    // Draw player image
+    if (images.zalone.complete) {
+      ctx.save();
+      if (!player.facingRight) {
+        ctx.scale(-1, 1);
+        ctx.drawImage(images.zalone, -player.x - player.width, player.y, player.width, player.height);
+      } else {
+        ctx.drawImage(images.zalone, player.x, player.y, player.width, player.height);
+      }
+      ctx.restore();
+    }
+
+    ctx.globalAlpha = 1.0;
+
+    // Draw finish line
+    const finishX = levelWidth - 100;
+    ctx.fillStyle = '#FFD700';
+    ctx.fillRect(finishX, GROUND_Y - 100, 50, 100);
+    ctx.font = '30px Arial';
+    ctx.fillText('🏛️', finishX + 10, GROUND_Y - 50);
+
+    ctx.restore();
+
+    // Draw UI overlay
+    drawUI();
+  }
+
+  // Draw UI overlay
+  function drawUI() {
+    // Progress bar
+    const progress = player.x / levelWidth;
+    const barWidth = CANVAS_WIDTH - 40;
+    const barHeight = 20;
+    const barX = 20;
+    const barY = 20;
+
+    // Progress bar background
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillRect(barX, barY, barWidth, barHeight);
+
+    // Progress bar fill
+    const gradient = ctx.createLinearGradient(barX, 0, barX + barWidth, 0);
+    gradient.addColorStop(0, '#009246');
+    gradient.addColorStop(0.5, '#ffffff');
+    gradient.addColorStop(1, '#ce2b37');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(barX, barY, barWidth * progress, barHeight);
+
+    // Progress bar border
+    ctx.strokeStyle = '#FFD700';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(barX, barY, barWidth, barHeight);
+
+    // Progress text
+    ctx.font = '12px Press Start 2P';
+    ctx.fillStyle = '#fff';
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 3;
+    const progressText = Math.floor(progress * 100) + '%';
+    ctx.strokeText(progressText, barX + barWidth / 2 - 30, barY + 15);
+    ctx.fillText(progressText, barX + barWidth / 2 - 30, barY + 15);
+
+    // Invincibility indicator
+    if (player.invincible) {
+      ctx.font = '16px Press Start 2P';
+      ctx.fillStyle = '#FFD700';
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 3;
+      const invincText = '🧹 INVINCIBILE!';
+      ctx.strokeText(invincText, CANVAS_WIDTH / 2 - 100, 60);
+      ctx.fillText(invincText, CANVAS_WIDTH / 2 - 100, 60);
+    }
+  }
+
+  // Play sound helper
+  function playSound(sound) {
+    if (sound) {
+      sound.currentTime = 0;
+      sound.volume = 0.3;
+      sound.play().catch(e => console.log("Sound play prevented:", e));
+    }
+  }
+
+  // End game
+  function endGame(win) {
+    gameActive = false;
+    gameMusic.pause();
+    gameMusic.currentTime = 0;
+
+    gameCanvas.style.display = 'none';
+    gameControls.style.display = 'none';
+    gameStats.style.display = 'none';
+
+    if (win) {
+      finalScoreEl.textContent = score;
+      gameWinMessage.style.display = 'block';
+    } else {
+      gameOverScoreEl.textContent = score;
+      gameOverMessage.style.display = 'block';
+    }
+
+    backButton.style.display = 'inline-block';
+  }
+
+  // Keyboard controls
+  document.addEventListener('keydown', (e) => {
+    keys[e.key.toLowerCase()] = true;
+  });
+
+  document.addEventListener('keyup', (e) => {
+    keys[e.key.toLowerCase()] = false;
+  });
+
+  // Event listeners
+  startGameButton.addEventListener('click', startGame);
+  playAgainButton.addEventListener('click', initGame);
+  retryButton.addEventListener('click', initGame);
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', () => {
+    initGame();
+  });
+ </script>
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
+
