@@ -128,7 +128,6 @@
    text-shadow: 1px 1px 3px black;
   }
 
-  /* Splash Screen */
   #splashScreen {
    display: flex;
    flex-direction: column;
@@ -178,7 +177,6 @@
    animation: none;
   }
 
-  /* Main Game */
   #mainGame {
    display: none;
    width: 100%;
@@ -199,7 +197,6 @@
    margin: 0;
   }
 
-  /* Premi Tabellone */
   .prizes-board {
    display: grid;
    grid-template-columns: repeat(2, 1fr);
@@ -230,7 +227,6 @@
    border-color: #666;
   }
 
-  /* Pacchi Grid */
   .packages-grid {
    display: grid;
    grid-template-columns: repeat(5, 1fr);
@@ -296,7 +292,6 @@
    opacity: 0.5;
   }
 
-  /* Doctor Modal */
   .doctor-modal {
    display: none;
    position: fixed;
@@ -406,9 +401,8 @@
    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
   }
 
-  /* Final Result */
   .final-result {
-      display: none;
+   display: none;
    text-align: center;
    padding: 2rem;
    background: rgba(0, 0, 0, 0.7);
@@ -470,7 +464,6 @@
    background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
   }
 
-  /* Swap Modal */
   .swap-modal {
    display: none;
    position: fixed;
@@ -551,7 +544,6 @@
 
  <div class="game-container">
   
-  <!-- Splash Screen -->
   <div id="splashScreen">
    <div class="game-header">
     <h1>
@@ -577,7 +569,6 @@
    </div>
   </div>
 
-  <!-- Main Game -->
   <div id="mainGame">
    <div class="game-header">
     <h1>
@@ -591,13 +582,10 @@
     <p>Scegli il tuo pacco fortunato!</p>
    </div>
 
-   <!-- Prizes Board -->
    <div class="prizes-board" id="prizesBoard"></div>
 
-   <!-- Packages Grid -->
    <div class="packages-grid" id="packagesGrid"></div>
 
-   <!-- Final Result -->
    <div class="final-result" id="finalResult">
     <h2>🎉 Hai Vinto! 🎉</h2>
     <div class="final-prize" id="finalPrize"></div>
@@ -611,7 +599,6 @@
 
  </div>
 
- <!-- Doctor Modal -->
  <div class="doctor-modal" id="doctorModal">
   <div class="doctor-bubble">
    <h3 class="doctor-title">👔 IL DOTTORE</h3>
@@ -630,7 +617,6 @@
   </div>
  </div>
 
- <!-- Swap Modal -->
  <div class="swap-modal" id="swapModal">
   <h2>🔄 Momento della Verità!</h2>
   <p>Vuoi tenere il tuo pacco o cambiarlo con l'ultimo rimasto?</p>
@@ -654,13 +640,7 @@
   </div>
  </div>
 
- <!-- Audio nascosto -->
- <audio id="bgMusic" loop>
-  <source src="audio/bowl.mp3" type="audio/mpeg">
- </audio>
-
  <script>
-  // Game Data
   const prizes = [
    { id: 1, emoji: '💋', text: '10 Baci', value: 1 },
    { id: 2, emoji: '☕', text: 'Colazione a Letto', value: 2 },
@@ -687,32 +667,22 @@
    openedPackages: [],
    eliminatedPrizes: [],
    packagesData: [],
-   phase: 'selection', // selection, opening, offer, swap, final
+   phase: 'selection',
    packagesToOpen: 3,
    offersGiven: 0,
    currentOffer: null,
    gameEnded: false
   };
 
-  // Audio elements
-  const audioUp = new Audio('audio/up.mp3');
-  const audioDown = new Audio('audio/down.mp3');
-
-  // Initialize game
   function startGame() {
    document.getElementById('splashScreen').style.display = 'none';
    document.getElementById('mainGame').style.display = 'block';
-   
-   // Start background music
-   const bgMusic = document.getElementById('bgMusic');
-   bgMusic.play().catch(e => console.log('Autoplay blocked'));
 
    initializePackages();
    renderPrizesBoard();
    renderPackages();
   }
 
-  // Initialize packages with random prizes
   function initializePackages() {
    const shuffledPrizes = [...prizes].sort(() => Math.random() - 0.5);
    gameState.packagesData = shuffledPrizes.map((prize, index) => ({
@@ -722,82 +692,78 @@
    }));
   }
 
-  // Render prizes board
   function renderPrizesBoard() {
    const board = document.getElementById('prizesBoard');
    board.innerHTML = prizes.map(prize => `
-    <div class="prize-item" id="prize-\${prize.id}">
-     <span>\${prize.emoji}</span>
-     <span>\${prize.text}</span>
+    <div class="prize-item" id="prize-${prize.id}">
+     <span>${prize.emoji}</span>
+     <span>${prize.text}</span>
     </div>
    `).join('');
   }
 
-  // Render packages
   function renderPackages() {
    const grid = document.getElementById('packagesGrid');
-   grid.innerHTML = gameState.packagesData.map(pkg => `
-    <div class="package ${pkg.opened ? 'opened' : ''} ${gameState.selectedPackage === pkg.number ? 'selected' : ''} \${gameState.phase !== 'selection' && gameState.selectedPackage !== pkg.number && !pkg.opened ? '' : (gameState.phase === 'selection' ? '' : 'disabled')}"
-         onclick="handlePackageClick(\${pkg.number})">
-     <div class="package-number">\${pkg.number}</div>
-     <div class="package-icon">\${pkg.opened ? '📭' : '🎁'}</div>
-    </div>
-   `).join('');
+   grid.innerHTML = gameState.packagesData.map(pkg => {
+    let classes = 'package';
+    if (pkg.opened) classes += ' opened';
+    if (gameState.selectedPackage === pkg.number) classes += ' selected';
+    if (gameState.phase !== 'selection' && gameState.selectedPackage !== pkg.number && !pkg.opened) {
+     // Can be clicked
+    } else if (gameState.phase !== 'selection') {
+     classes += ' disabled';
+    }
+    
+    return `
+     <div class="${classes}" onclick="handlePackageClick(${pkg.number})">
+      <div class="package-number">${pkg.number}</div>
+      <div class="package-icon">${pkg.opened ? '📭' : '🎁'}</div>
+     </div>
+    `;
+   }).join('');
   }
 
-  // Handle package click
   function handlePackageClick(packageNum) {
    const pkg = gameState.packagesData.find(p => p.number === packageNum);
    
    if (pkg.opened) return;
 
    if (gameState.phase === 'selection') {
-    // Select initial package
     gameState.selectedPackage = packageNum;
     gameState.phase = 'opening';
     updateGameInfo('Ora apri 3 pacchi!');
     renderPackages();
-    audioUp.play().catch(e => {});
    } else if (gameState.phase === 'opening' && packageNum !== gameState.selectedPackage) {
-    // Open a package
     openPackage(packageNum);
    }
   }
 
-  // Open package
   function openPackage(packageNum) {
    const pkg = gameState.packagesData.find(p => p.number === packageNum);
    pkg.opened = true;
    gameState.openedPackages.push(packageNum);
    gameState.eliminatedPrizes.push(pkg.prize.id);
 
-   // Eliminate prize from board
    document.getElementById(`prize-${pkg.prize.id}`).classList.add('eliminated');
 
-   audioDown.play().catch(e => {});
    renderPackages();
 
    gameState.packagesToOpen--;
 
    if (gameState.packagesToOpen === 0) {
-    // Check if offer should be made
     if (gameState.offersGiven < 2 && gameState.openedPackages.length < 8) {
-      setTimeout(() => showDoctorOffer(), 1000);
+     setTimeout(() => showDoctorOffer(), 1000);
     } else if (gameState.openedPackages.length === 8) {
-     // Time for swap
      setTimeout(() => showSwapModal(), 1000);
     } else {
-     // Continue opening
      gameState.packagesToOpen = gameState.openedPackages.length === 6 ? 2 : 3;
      updateGameInfo(`Apri altri ${gameState.packagesToOpen} pacchi!`);
     }
    } else {
-    updateGameInfo(`Apri altri \${gameState.packagesToOpen} pacchi!`);
+    updateGameInfo(`Apri altri ${gameState.packagesToOpen} pacchi!`);
    }
   }
 
-  // Show doctor offer
-    // Show doctor offer
   function showDoctorOffer() {
    const randomOffer = doctorOffers[Math.floor(Math.random() * doctorOffers.length)];
    gameState.currentOffer = randomOffer;
@@ -812,22 +778,16 @@
     `${randomOffer.emoji} ${randomOffer.text}`;
 
    document.getElementById('doctorModal').style.display = 'block';
-   audioUp.play().catch(e => {});
   }
 
-  // Accept offer
-  function acceptOffer() {
+   function acceptOffer() {
    document.getElementById('doctorModal').style.display = 'none';
    gameState.gameEnded = true;
    
-   // Show final result with offer
    showFinalResult(gameState.currentOffer.emoji, gameState.currentOffer.text, 
     'Hai accettato l\'offerta del Dottore! 🎉');
-   
-   audioUp.play().catch(e => {});
   }
 
-  // Refuse offer
   function refuseOffer() {
    document.getElementById('doctorModal').style.display = 'none';
    
@@ -838,30 +798,23 @@
    }
    
    updateGameInfo(`Hai rifiutato! Apri altri ${gameState.packagesToOpen} pacchi!`);
-   audioDown.play().catch(e => {});
   }
 
-  // Show swap modal
   function showSwapModal() {
    const lastPackage = gameState.packagesData.find(p => !p.opened && p.number !== gameState.selectedPackage);
    
    document.getElementById('yourPackageNum').textContent = gameState.selectedPackage;
    document.getElementById('lastPackageNum').textContent = lastPackage.number;
    document.getElementById('swapModal').style.display = 'block';
-   
-   audioUp.play().catch(e => {});
   }
 
-  // Keep package
   function keepPackage() {
    document.getElementById('swapModal').style.display = 'none';
    const selectedPkg = gameState.packagesData.find(p => p.number === gameState.selectedPackage);
    showFinalResult(selectedPkg.prize.emoji, selectedPkg.prize.text, 
     `Hai tenuto il pacco ${gameState.selectedPackage}! Ecco cosa c'era dentro:`);
-   audioUp.play().catch(e => {});
   }
 
-  // Swap package
   function swapPackage() {
    document.getElementById('swapModal').style.display = 'none';
    const lastPackage = gameState.packagesData.find(p => !p.opened && p.number !== gameState.selectedPackage);
@@ -869,10 +822,8 @@
    
    showFinalResult(lastPackage.prize.emoji, lastPackage.prize.text, 
     `Hai cambiato! Ecco cosa c'era nel pacco ${lastPackage.number}:`);
-   audioUp.play().catch(e => {});
   }
 
-  // Show final result
   function showFinalResult(emoji, text, message) {
    gameState.gameEnded = true;
    document.getElementById('packagesGrid').style.display = 'none';
@@ -881,19 +832,12 @@
    document.getElementById('finalPrize').innerHTML = `${emoji}<br>${text}`;
    document.getElementById('finalMessage').textContent = message;
    document.getElementById('finalResult').style.display = 'block';
-   
-   // Play celebration sound
-   setTimeout(() => {
-    audioUp.play().catch(e => {});
-   }, 500);
   }
 
-  // Update game info
   function updateGameInfo(text) {
    document.getElementById('gameInfo').innerHTML = `<p>${text}</p>`;
   }
 
-  // Snowflake generation
   function createSnowflake() {
    const snowflake = document.createElement('div');
    snowflake.classList.add('snowflake');
@@ -907,7 +851,6 @@
    setTimeout(() => snowflake.remove(), 8000);
   }
 
-  // Initialize
   document.addEventListener('DOMContentLoaded', () => {
    setInterval(createSnowflake, 300);
   });
@@ -917,5 +860,3 @@
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
