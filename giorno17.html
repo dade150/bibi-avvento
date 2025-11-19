@@ -1,3 +1,655 @@
-<!-- caccia al tesoro reale, nascondo qualcosa un bigliettino a casa sua e a poco a poco le do degli indizi per trovarlo magari un indizio ogni ora
- 
-potrei nascondelo dentro il puzzle-->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>Giorno X - Le Nostre Liste</title>
+
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+ <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+ <style>
+  * {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+  }
+  
+  body {
+   font-family: 'Mountains of Christmas', cursive;
+   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+   color: #fff;
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   padding: 2rem;
+   position: relative;
+   overflow-x: hidden;
+   overflow-y: auto;
+  }
+  
+  body::before {
+   content: '';
+   position: fixed;
+   width: 100%;
+   height: 100%;
+   background-image: 
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 60% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent),
+    radial-gradient(2px 2px at 90% 60%, white, transparent),
+    radial-gradient(1px 1px at 33% 80%, white, transparent),
+    radial-gradient(1px 1px at 75% 40%, white, transparent);
+   background-size: 200% 200%;
+   animation: float 20s ease-in-out infinite;
+   opacity: 0.3;
+   z-index: 0;
+  }
+  
+  @keyframes float {
+   0%, 100% { transform: translateY(0); }
+   50% { transform: translateY(-20px); }
+  }
+
+  .snowflake {
+   position: fixed;
+   top: -10px;
+   color: white;
+   font-size: 1em;
+   font-family: Arial, sans-serif;
+   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+   z-index: 0;
+   user-select: none;
+   pointer-events: none;
+   animation: fall linear infinite;
+  }
+  
+  @keyframes fall {
+   to {
+    transform: translateY(100vh) translateX(100px);
+    opacity: 0;
+   }
+  }
+
+  .lists-container {
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   width: 100%;
+   max-width: 1200px;
+   z-index: 1;
+   padding: 2rem;
+   background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+   border: 5px solid;
+   border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
+   border-radius: 25px;
+   box-shadow: 
+    0 0 30px rgba(255, 215, 0, 0.3),
+    0 0 60px rgba(255, 215, 0, 0.2),
+    inset 0 0 50px rgba(0, 0, 0, 0.5);
+   animation: glow-pulse 3s ease-in-out infinite;
+   margin-bottom: 2rem;
+  }
+  
+  @keyframes glow-pulse {
+   0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+   50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+  }
+
+  .lists-header {
+   text-align: center;
+   margin-bottom: 2rem;
+  }
+
+  .lists-header h1 {
+   color: gold;
+   font-size: 2.8rem;
+   text-shadow: 
+    2px 2px 4px black,
+    0 0 20px rgba(255, 215, 0, 0.5),
+    0 0 30px rgba(255, 215, 0, 0.3);
+   margin-bottom: 0.5rem;
+   animation: title-glow 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes title-glow {
+   from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
+   to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
+  }
+
+  .lists-subtitle {
+   color: #ffed4e;
+   font-size: 1.3rem;
+   text-shadow: 1px 1px 3px black;
+  }
+
+  /* Splash Screen */
+  #splashScreen {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   text-align: center;
+  }
+
+  .splash-content h2 {
+   color: gold;
+   font-size: 2rem;
+   margin-bottom: 1.5rem;
+   text-shadow: 2px 2px 4px black, 0 0 15px rgba(255, 215, 0, 0.5);
+  }
+
+  .splash-content p {
+   color: #fff;
+   font-size: 1.3rem;
+   line-height: 1.8;
+   margin-bottom: 2rem;
+   text-shadow: 1px 1px 3px black;
+  }
+
+  .start-btn {
+   padding: 1.5rem 3rem;
+   font-size: 1.5rem;
+   font-family: 'Mountains of Christmas', cursive;
+   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+   color: darkred;
+   border: 2px solid rgba(139, 0, 0, 0.5);
+   border-radius: 50px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   font-weight: bold;
+   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+   border: none;
+   animation: pulse-btn 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-btn {
+   0%, 100% { transform: scale(1); }
+   50% { transform: scale(1.05); }
+  }
+
+  .start-btn:hover {
+   transform: translateY(-3px) scale(1.1);
+   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+   animation: none;
+  }
+
+  /* Main Content - Hidden Initially */
+  #mainContent {
+   display: none;
+   width: 100%;
+  }
+
+  /* Categories Grid */
+  .categories-grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+   gap: 2rem;
+   width: 100%;
+   margin-bottom: 2rem;
+  }
+
+  .category-card {
+   background: rgba(0, 0, 0, 0.6);
+   border: 3px solid gold;
+   border-radius: 20px;
+   padding: 1.5rem;
+   box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+   transition: all 0.3s ease;
+  }
+
+  .category-card:hover {
+   transform: translateY(-5px);
+   box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  }
+
+  .category-header {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin-bottom: 1rem;
+   gap: 0.5rem;
+  }
+
+  .category-icon {
+   font-size: 2rem;
+  }
+
+  .category-title {
+   color: gold;
+   font-size: 1.8rem;
+   text-shadow: 2px 2px 3px black;
+   margin: 0;
+  }
+
+  .category-list {
+   list-style: none;
+   margin-bottom: 1rem;
+  }
+
+  .list-item {
+   display: flex;
+   align-items: center;
+   gap: 0.8rem;
+   padding: 0.8rem;
+   background: rgba(139, 0, 0, 0.3);
+   border-radius: 10px;
+   margin-bottom: 0.5rem;
+   transition: all 0.3s ease;
+  }
+
+  .list-item:hover {
+   background: rgba(139, 0, 0, 0.5);
+  }
+
+  .list-item.completed {
+   opacity: 0.6;
+   text-decoration: line-through;
+  }
+
+  .list-checkbox {
+   width: 24px;
+   height: 24px;
+   cursor: pointer;
+   accent-color: gold;
+  }
+
+  .list-text {
+   flex: 1;
+   color: #fff;
+   font-size: 1.1rem;
+   text-shadow: 1px 1px 2px black;
+  }
+
+  .delete-btn {
+   background: none;
+   border: none;
+   color: #ff6b6b;
+   font-size: 1.2rem;
+   cursor: pointer;
+   opacity: 0.6;
+   transition: all 0.3s ease;
+  }
+
+  .delete-btn:hover {
+   opacity: 1;
+   transform: scale(1.2);
+  }
+
+  /* Add Item Form */
+  .add-item-form {
+   display: flex;
+   gap: 0.5rem;
+   margin-top: 1rem;
+  }
+
+  .add-item-input {
+   flex: 1;
+   padding: 0.8rem;
+   font-family: 'Mountains of Christmas', cursive;
+   font-size: 1rem;
+   background: rgba(0, 0, 0, 0.5);
+   border: 2px solid gold;
+   border-radius: 10px;
+   color: #fff;
+   outline: none;
+  }
+
+  .add-item-input::placeholder {
+   color: rgba(255, 255, 255, 0.5);
+  }
+
+  .add-item-input:focus {
+   border-color: #ffed4e;
+   box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+  }
+
+  .add-btn {
+   padding: 0.8rem 1.5rem;
+   font-family: 'Mountains of Christmas', cursive;
+   font-size: 1rem;
+   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+   color: darkred;
+   border: none;
+   border-radius: 10px;
+   cursor: pointer;
+   font-weight: bold;
+   transition: all 0.3s ease;
+   box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+  }
+
+  .add-btn:hover {
+   transform: translateY(-2px);
+   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
+  }
+
+  /* Audio Player */
+  .audio-player {
+   width: 100%;
+   max-width: 600px;
+   margin: 2rem auto;
+   padding: 1rem;
+   background: rgba(0, 0, 0, 0.6);
+   border: 3px solid gold;
+   border-radius: 15px;
+   text-align: center;
+  }
+
+  .audio-player p {
+   color: gold;
+   font-size: 1.1rem;
+   margin-bottom: 0.8rem;
+   text-shadow: 1px 1px 2px black;
+  }
+
+  .audio-player audio {
+   width: 100%;
+   outline: none;
+  }
+
+  .home-btn {
+   padding: 1rem 2rem;
+   font-size: 1.2rem;
+   font-family: 'Mountains of Christmas', cursive;
+   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+   color: darkred;
+   border: 2px solid rgba(139, 0, 0, 0.5);
+   border-radius: 50px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   font-weight: bold;
+   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+   margin-top: 2rem;
+   border: none;
+  }
+
+  .home-btn:hover {
+   transform: translateY(-3px) scale(1.05);
+   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+  }
+
+  @media (max-width: 768px) {
+   .lists-header h1 {
+    font-size: 2rem;
+   }
+   .categories-grid {
+    grid-template-columns: 1fr;
+   }
+   .category-title {
+    font-size: 1.5rem;
+   }
+   .list-text {
+    font-size: 1rem;
+   }
+  }
+
+ </style>
+</head>
+
+<body>
+
+ <div class="lists-container">
+  
+  <!-- Splash Screen -->
+  <div id="splashScreen">
+   <div class="lists-header">
+    <h1>
+     <span class="emoji-sparkle">📝</span>
+     Le Nostre Liste
+     <span class="emoji-sparkle">✨</span>
+    </h1>
+    <p class="lists-subtitle">Sogni, desideri e progetti da realizzare insieme</p>
+   </div>
+
+   <div class="splash-content">
+    <h2>💕 Un Progetto da Costruire Insieme 💕</h2>
+    <p>
+     Qui possiamo aggiungere tutti i nostri desideri, sogni e progetti.<br>
+     Spuntiamo quelli che realizziamo, aggiungiamone di nuovi...<br>
+     Questa è la nostra lista condivisa che crescerà con noi! ❤️
+    </p>
+    <button class="start-btn" onclick="startActivity()">
+     🎯 Inizia l'Attività
+    </button>
+   </div>
+  </div>
+
+  <!-- Main Content -->
+  <div id="mainContent">
+   <div class="lists-header">
+    <h1>
+     <span class="emoji-sparkle">📝</span>
+     Le Nostre Liste
+     <span class="emoji-sparkle">✨</span>
+    </h1>
+   </div>
+
+   <div class="categories-grid">
+    
+    <!-- Categoria 1: Luoghi da Visitare -->
+    <div class="category-card">
+     <div class="category-header">
+      <span class="category-icon">✈️</span>
+      <h3 class="category-title">Luoghi da Visitare</h3>
+     </div>
+     <ul class="category-list" id="list-viaggi"></ul>
+     <div class="add-item-form">
+      <input type="text" class="add-item-input" id="input-viaggi" placeholder="Aggiungi un luogo...">
+      <button class="add-btn" onclick="addItem('viaggi')">
+       <i class="fas fa-plus"></i>
+      </button>
+     </div>
+    </div>
+
+    <!-- Categoria 2: Ricette da Provare -->
+    <div class="category-card">
+     <div class="category-header">
+      <span class="category-icon">👨‍🍳</span>
+      <h3 class="category-title">Ricette da Provare</h3>
+     </div>
+     <ul class="category-list" id="list-ricette"></ul>
+     <div class="add-item-form">
+      <input type="text" class="add-item-input" id="input-ricette" placeholder="Aggiungi una ricetta...">
+      <button class="add-btn" onclick="addItem('ricette')">
+       <i class="fas fa-plus"></i>
+      </button>
+     </div>
+    </div>
+
+    <!-- Categoria 3: Regali/Cose da Comprare -->
+    <div class="category-card">
+     <div class="category-header">
+      <span class="category-icon">🎁</span>
+      <h3 class="category-title">Regali & Cose</h3>
+     </div>
+     <ul class="category-list" id="list-regali"></ul>
+     <div class="add-item-form">
+      <input type="text" class="add-item-input" id="input-regali" placeholder="Aggiungi un'idea...">
+      <button class="add-btn" onclick="addItem('regali')">
+       <i class="fas fa-plus"></i>
+      </button>
+     </div>
+    </div>
+
+    <!-- Categoria 4: Film/Serie da Vedere -->
+    <div class="category-card">
+     <div class="category-header">
+      <span class="category-icon">🎬</span>
+      <h3 class="category-title">Film & Serie</h3>
+     </div>
+     <ul class="category-list" id="list-film"></ul>
+     <div class="add-item-form">
+      <input type="text" class="add-item-input" id="input-film" placeholder="Aggiungi un titolo...">
+      <button class="add-btn" onclick="addItem('film')">
+       <i class="fas fa-plus"></i>
+      </button>
+     </div>
+    </div>
+
+    <!-- Categoria 5: Esperienze da Fare -->
+    <div class="category-card">
+     <div class="category-header">
+      <span class="category-icon">🌟</span>
+      <h3 class="category-title">Esperienze</h3>
+     </div>
+     <ul class="category-list" id="list-esperienze"></ul>
+     <div class="add-item-form">
+      <input type="text" class="add-item-input" id="input-esperienze" placeholder="Aggiungi un'esperienza...">
+      <button class="add-btn" onclick="addItem('esperienze')">
+       <i class="fas fa-plus"></i>
+      </button>
+     </div>
+    </div>
+
+   </div>
+
+   <button class="home-btn" onclick="window.location.href='index.html'">
+     🎄 Torna al Calendario
+   </button>
+  </div>
+
+</div>
+
+<audio id="bgMusic" loop>
+ <source src="audio/bowl.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  // Categories data structure
+  const categories = ['viaggi', 'ricette', 'regali', 'film', 'esperienze'];
+
+  // Load data from localStorage
+  function loadLists() {
+   categories.forEach(category => {
+    const listData = JSON.parse(localStorage.getItem(`list-${category}`)) || [];
+    renderList(category, listData);
+   });
+  }
+
+  // Render list for a category
+  function renderList(category, items) {
+   const listElement = document.getElementById(`list-${category}`);
+   listElement.innerHTML = '';
+
+   if (items.length === 0) {
+    listElement.innerHTML = '<li class="list-item" style="justify-content: center; opacity: 0.5;">Nessun elemento ancora...</li>';
+    return;
+   }
+
+   items.forEach((item, index) => {
+    const li = document.createElement('li');
+    li.className = `list-item ${item.completed ? 'completed' : ''}`;
+    li.innerHTML = `
+     <input type="checkbox" class="list-checkbox" ${item.completed ? 'checked' : ''} 
+            onchange="toggleItem('${category}', ${index})">
+     <span class="list-text">${item.text}</span>
+     <button class="delete-btn" onclick="deleteItem('${category}', ${index})">
+      <i class="fas fa-trash"></i>
+     </button>
+    `;
+    listElement.appendChild(li);
+   });
+  }
+
+  // Add new item
+  function addItem(category) {
+   const input = document.getElementById(`input-${category}`);
+   const text = input.value.trim();
+
+   if (text === '') {
+    alert('Scrivi qualcosa prima di aggiungere!');
+    return;
+   }
+
+   const listData = JSON.parse(localStorage.getItem(`list-${category}`)) || [];
+   listData.push({ text: text, completed: false });
+   localStorage.setItem(`list-${category}`, JSON.stringify(listData));
+
+   input.value = '';
+   renderList(category, listData);
+
+   // Play sound effect
+   const audio = new Audio('audio/up.mp3');
+   audio.play().catch(e => console.log('Audio play failed'));
+  }
+
+  // Toggle item completion
+  function toggleItem(category, index) {
+   const listData = JSON.parse(localStorage.getItem(`list-${category}`)) || [];
+   listData[index].completed = !listData[index].completed;
+   localStorage.setItem(`list-${category}`, JSON.stringify(listData));
+   renderList(category, listData);
+
+   // Play sound effect
+   const audio = new Audio(listData[index].completed ? 'audio/up.mp3' : 'audio/down.mp3');
+   audio.play().catch(e => console.log('Audio play failed'));
+  }
+
+  // Delete item
+  function deleteItem(category, index) {
+   if (!confirm('Sei sicuro di voler eliminare questo elemento?')) {
+    return;
+   }
+
+   const listData = JSON.parse(localStorage.getItem(`list-${category}`)) || [];
+   listData.splice(index, 1);
+   localStorage.setItem(`list-${category}`, JSON.stringify(listData));
+   renderList(category, listData);
+
+   // Play sound effect
+   const audio = new Audio('audio/down.mp3');
+   audio.play().catch(e => console.log('Audio play failed'));
+  }
+
+  // Start activity
+  function startActivity() {
+   document.getElementById('splashScreen').style.display = 'none';
+   document.getElementById('mainContent').style.display = 'block';
+  }
+
+  // Allow Enter key to add items
+  categories.forEach(category => {
+   document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById(`input-${category}`);
+    if (input) {
+     input.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+       addItem(category);
+      }
+     });
+    }
+   });
+  });
+
+  // Snowflake generation
+  function createSnowflake() {
+   const snowflake = document.createElement('div');
+   snowflake.classList.add('snowflake');
+   snowflake.textContent = '❄';
+   snowflake.style.left = Math.random() * 100 + '%';
+   snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+   snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+   snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+   document.body.appendChild(snowflake);
+   
+   setTimeout(() => snowflake.remove(), 8000);
+  }
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', () => {
+   loadLists();
+   setInterval(createSnowflake, 300);
+  });
+
+ </script>
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

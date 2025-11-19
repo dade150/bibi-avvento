@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>Giorno X - La Nostra Storia</title>
+
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+ <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
+
+ <style>
+  * {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+  }
+  
+  body {
+   font-family: 'Mountains of Christmas', cursive;
+   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+   color: #fff;
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   padding: 2rem;
+   position: relative;
+   overflow-x: hidden;
+   overflow-y: auto;
+  }
+  
+  body::before {
+   content: '';
+   position: fixed;
+   width: 100%;
+   height: 100%;
+   background-image: 
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 60% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent),
+    radial-gradient(2px 2px at 90% 60%, white, transparent),
+    radial-gradient(1px 1px at 33% 80%, white, transparent),
+    radial-gradient(1px 1px at 75% 40%, white, transparent);
+   background-size: 200% 200%;
+   animation: float 20s ease-in-out infinite;
+   opacity: 0.3;
+   z-index: 0;
+  }
+  
+  @keyframes float {
+   0%, 100% { transform: translateY(0); }
+   50% { transform: translateY(-20px); }
+  }
+
+  .snowflake {
+   position: fixed;
+   top: -10px;
+   color: white;
+   font-size: 1em;
+   font-family: Arial, sans-serif;
+   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+   z-index: 0;
+   user-select: none;
+   pointer-events: none;
+   animation: fall linear infinite;
+  }
+  
+  @keyframes fall {
+   to {
+    transform: translateY(100vh) translateX(100px);
+    opacity: 0;
+   }
+  }
+
+  .timeline-container {
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   width: 100%;
+   max-width: 1000px;
+   z-index: 1;
+   padding: 2rem;
+   background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+   border: 5px solid;
+   border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
+   border-radius: 25px;
+   box-shadow: 
+    0 0 30px rgba(255, 215, 0, 0.3),
+    0 0 60px rgba(255, 215, 0, 0.2),
+    inset 0 0 50px rgba(0, 0, 0, 0.5);
+   animation: glow-pulse 3s ease-in-out infinite;
+   margin-bottom: 2rem;
+  }
+  
+  @keyframes glow-pulse {
+   0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+   50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+  }
+
+  .timeline-header {
+   text-align: center;
+   margin-bottom: 3rem;
+  }
+
+  .timeline-header h1 {
+   color: gold;
+   font-size: 2.8rem;
+   text-shadow: 
+    2px 2px 4px black,
+    0 0 20px rgba(255, 215, 0, 0.5),
+    0 0 30px rgba(255, 215, 0, 0.3);
+   margin-bottom: 0.5rem;
+   animation: title-glow 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes title-glow {
+   from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
+   to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
+  }
+
+  .timeline-subtitle {
+   color: #ffed4e;
+   font-size: 1.3rem;
+   text-shadow: 1px 1px 3px black;
+  }
+
+  /* Timeline verticale */
+  .timeline {
+   position: relative;
+   width: 100%;
+   max-width: 800px;
+   margin: 0 auto;
+   padding: 2rem 0;
+  }
+
+  /* Linea centrale */
+  .timeline::before {
+   content: '';
+   position: absolute;
+   left: 50%;
+   transform: translateX(-50%);
+   width: 4px;
+   height: 100%;
+   background: linear-gradient(to bottom, gold, #ffed4e, gold);
+   box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  }
+
+  /* Ogni momento della timeline */
+  .timeline-item {
+   position: relative;
+   width: 100%;
+   margin-bottom: 3rem;
+   opacity: 0;
+   animation: fadeInUp 0.8s ease forwards;
+  }
+
+  .timeline-item:nth-child(1) { animation-delay: 0.2s; }
+  .timeline-item:nth-child(2) { animation-delay: 0.4s; }
+  .timeline-item:nth-child(3) { animation-delay: 0.6s; }
+  .timeline-item:nth-child(4) { animation-delay: 0.8s; }
+  .timeline-item:nth-child(5) { animation-delay: 1s; }
+  .timeline-item:nth-child(6) { animation-delay: 1.2s; }
+  .timeline-item:nth-child(7) { animation-delay: 1.4s; }
+  .timeline-item:nth-child(8) { animation-delay: 1.6s; }
+
+  @keyframes fadeInUp {
+   from {
+    opacity: 0;
+    transform: translateY(30px);
+   }
+   to {
+    opacity: 1;
+    transform: translateY(0);
+   }
+  }
+
+  /* Contenuto alternato sinistra/destra */
+  .timeline-content {
+   width: 45%;
+   padding: 1.5rem;
+   background: rgba(0, 0, 0, 0.7);
+   border: 3px solid gold;
+   border-radius: 15px;
+   box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+   position: relative;
+   transition: all 0.3s ease;
+  }
+
+  .timeline-content:hover {
+   transform: scale(1.05);
+   box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+  }
+
+  /* Sinistra */
+  .timeline-item:nth-child(odd) .timeline-content {
+   margin-left: 0;
+   text-align: right;
+  }
+
+  /* Destra */
+  .timeline-item:nth-child(even) .timeline-content {
+   margin-left: 55%;
+   text-align: left;
+  }
+
+  /* Pallino centrale */
+  .timeline-dot {
+   position: absolute;
+   left: 50%;
+   top: 50%;
+   transform: translate(-50%, -50%);
+   width: 30px;
+   height: 30px;
+   background: gold;
+   border: 5px solid darkred;
+   border-radius: 50%;
+   box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+   z-index: 2;
+   animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+   0%, 100% { transform: translate(-50%, -50%) scale(1); }
+   50% { transform: translate(-50%, -50%) scale(1.2); }
+  }
+
+  /* Data */
+  .timeline-date {
+   font-size: 1.1rem;
+   color: #ffed4e;
+   font-weight: bold;
+   margin-bottom: 0.5rem;
+   text-shadow: 1px 1px 2px black;
+  }
+
+  /* Titolo evento */
+  .timeline-title {
+   font-size: 1.5rem;
+   color: gold;
+   margin-bottom: 0.8rem;
+   text-shadow: 2px 2px 3px black;
+  }
+
+  /* Descrizione */
+  .timeline-description {
+   font-size: 1.1rem;
+   color: #fff;
+   line-height: 1.6;
+   text-shadow: 1px 1px 2px black;
+  }
+
+  /* Emoji grande */
+  .timeline-emoji {
+   font-size: 2.5rem;
+   margin-bottom: 0.5rem;
+   display: block;
+  }
+
+  /* Finale speciale */
+  .timeline-final {
+   text-align: center;
+   margin-top: 3rem;
+   padding: 2rem;
+   background: rgba(139, 0, 0, 0.8);
+   border: 3px solid gold;
+   border-radius: 20px;
+   box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  }
+
+  .timeline-final h2 {
+   color: gold;
+   font-size: 2.5rem;
+   margin-bottom: 1rem;
+   text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5);
+  }
+
+  .timeline-final p {
+   font-size: 1.4rem;
+   color: #fff;
+   line-height: 1.8;
+   text-shadow: 1px 1px 3px black;
+  }
+
+  .home-btn {
+   padding: 1rem 2rem;
+   font-size: 1.2rem;
+   font-family: 'Mountains of Christmas', cursive;
+   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+   color: darkred;
+   border: 2px solid rgba(139, 0, 0, 0.5);
+   border-radius: 50px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   font-weight: bold;
+   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+   margin-top: 2rem;
+   border: none;
+  }
+
+  .home-btn:hover {
+   transform: translateY(-3px) scale(1.05);
+   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+   .timeline::before {
+    left: 30px;
+   }
+
+   .timeline-content {
+    width: calc(100% - 80px);
+    margin-left: 60px !important;
+    text-align: left !important;
+   }
+
+   .timeline-dot {
+    left: 30px;
+   }
+
+   .timeline-header h1 {
+    font-size: 2rem;
+   }
+
+   .timeline-title {
+    font-size: 1.3rem;
+   }
+
+   .timeline-description {
+    font-size: 1rem;
+   }
+  }
+
+ </style>
+</head>
+
+<body>
+
+ <div class="timeline-container">
+  <div class="timeline-header">
+   <h1>
+    <span class="emoji-sparkle">💕</span>
+    La Nostra Storia
+    <span class="emoji-sparkle">💕</span>
+   </h1>
+   <p class="timeline-subtitle">Il viaggio più bello... insieme a te</p>
+  </div>
+
+  <div class="timeline">
+   
+   <!-- Momento 1 - PERSONALIZZA CON LE TUE DATE E RICORDI -->
+   <div class="timeline-item">
+    <div class="timeline-dot"></div>
+    <div class="timeline-content">
+     <span class="timeline-emoji">✨</span>
+     <div class="timeline-date">Gennaio 2023</div>
+     <div class="timeline-title">Il Primo Incontro</div>
+     <div class="timeline-description">
+      Quel giorno in cui i nostri sguardi si sono incrociati per la prima volta. Non sapevo che sarebbe stato l'inizio di qualcosa di speciale.
+     </div>
+    </div>
+   </div>
+
+   <!-- Momento 2 -->
+   <div class="timeline-item">
+    <div class="timeline-dot"></div>
+    <div class="timeline-content">
+     <span class="timeline-emoji">❤️</span>
+     <div class="timeline-date">Marzo 2023</div>
+     <div class="timeline-title">Il Primo Bacio</div>
+     <div class="timeline-description">
+      Sotto le stelle, con il cuore che batteva forte. Un momento che non dimenticherò mai.
+     </div>
+    </div>
+   </div>
+
+   <!-- Momento 3 -->
+   <div class="timeline-item">
+    <div class="timeline-dot"></div>
+    <div class="timeline-content">
+     <span class="timeline-emoji">🏔️</span>
+     <div class="timeline-date">Giugno 2023</div>
+     <div class="timeline-title">Primo Viaggio in Trentino</div>
+     <div class="timeline-description">
+      Le montagne, i laghi, e noi due mano nella mano. Il tuo posto del cuore è diventato anche il mio.
+     </div>
+    </div>
+   </div>
+
+   <!--
+   <!-- Momento 4 -->
+   <div class="timeline-item">
+    <div class="timeline-dot"></div>
+    <div class="timeline-content">
+     <span class="timeline-emoji">🎬</span>
+     <div class="timeline-date">Agosto 2023</div>
+     <div class="timeline-title">Maratona Grey's Anatomy</div>
+     <div class="timeline-description">
+      Notti sul divano, coperta, popcorn e tu che piangevi ad ogni episodio. Io che ti abbracciavo e ridevo di te (con amore!).
+     </div>
+    </div>
+   </div>
+
+   <!-- Momento 5 -->
+   <div class="timeline-item">
+    <div class="timeline-dot"></div>
+    <div class="timeline-content">
+     <span class="timeline-emoji">🍕</span>
+     <div class="timeline-date">Ottobre 2023</div>
+     <div class="timeline-title">Weekend a Napoli</div>
+     <div class="timeline-description">
+      La pizza più buona del mondo, il mare, e quella passeggiata romantica sul lungomare al tramonto.
+     </div>
+    </div>
+   </div>
+
+   <!-- Momento 6 -->
+   <div class="timeline-item">
+    <div class="timeline-dot"></div>
+    <div class="timeline-content">
+     <span class="timeline-emoji">😂</span>
+     <div class="timeline-date">Novembre 2023</div>
+     <div class="timeline-title">Serata Checco Zalone</div>
+     <div class="timeline-description">
+      Abbiamo riso fino alle lacrime guardando i suoi film. Tu che ripetevi le battute per giorni. "Che bella giornata!"
+     </div>
+    </div>
+   </div>
+
+   <!-- Momento 7 -->
+   <div class="timeline-item">
+    <div class="timeline-dot"></div>
+    <div class="timeline-content">
+     <span class="timeline-emoji">🔬</span>
+     <div class="timeline-date">Febbraio 2024</div>
+     <div class="timeline-title">La Tua Laurea</div>
+     <div class="timeline-description">
+      Così orgoglioso di te, della tua passione per il laboratorio, della tua dedizione. Sei incredibile in tutto quello che fai.
+     </div>
+    </div>
+   </div>
+
+   <!-- Momento 8 -->
+   <div class="timeline-item">
+    <div class="timeline-dot"></div>
+    <div class="timeline-content">
+     <span class="timeline-emoji">🎄</span>
+     <div class="timeline-date">Dicembre 2024</div>
+     <div class="timeline-title">Questo Natale Insieme</div>
+     <div class="timeline-description">
+      Il nostro primo Natale speciale. Ogni giorno di questo calendario è un modo per dirti quanto sei importante per me.
+     </div>
+    </div>
+   </div>
+
+  </div>
+
+  <!-- Messaggio finale -->
+  <div class="timeline-final">
+   <h2>...e questa è solo l'inizio 💫</h2>
+   <p>
+    Ogni momento con te è un ricordo prezioso che custodisco nel cuore.<br>
+    Non vedo l'ora di scrivere insieme tutti i capitoli futuri della nostra storia.<br><br>
+    Ti amo ❤️
+   </p>
+  </div>
+
+  <button class="home-btn" onclick="window.location.href='index.html'">
+    🎄 Torna al Calendario
+  </button>
+ </div>
+
+ <script>
+  // Snowflake generation
+  function createSnowflake() {
+   const snowflake = document.createElement('div');
+   snowflake.classList.add('snowflake');
+   snowflake.textContent = '❄';
+   snowflake.style.left = Math.random() * 100 + '%';
+   snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+   snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+   snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+   document.body.appendChild(snowflake);
+   
+   setTimeout(() => snowflake.remove(), 8000);
+  }
+
+  // Initialize snowflakes
+  document.addEventListener('DOMContentLoaded', () => {
+   setInterval(createSnowflake, 300);
+  });
+
+ </script>
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

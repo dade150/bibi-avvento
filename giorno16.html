@@ -1,1 +1,921 @@
-<!--conta le stelle cadenti-->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>Giorno X - Affari Tuoi dell'Amore</title>
+
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+ <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+ <style>
+  * {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+  }
+  
+  body {
+   font-family: 'Mountains of Christmas', cursive;
+   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+   color: #fff;
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   padding: 2rem;
+   position: relative;
+   overflow-x: hidden;
+   overflow-y: auto;
+  }
+  
+  body::before {
+   content: '';
+   position: fixed;
+   width: 100%;
+   height: 100%;
+   background-image: 
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 60% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent),
+    radial-gradient(2px 2px at 90% 60%, white, transparent),
+    radial-gradient(1px 1px at 33% 80%, white, transparent),
+    radial-gradient(1px 1px at 75% 40%, white, transparent);
+   background-size: 200% 200%;
+   animation: float 20s ease-in-out infinite;
+   opacity: 0.3;
+   z-index: 0;
+  }
+  
+  @keyframes float {
+   0%, 100% { transform: translateY(0); }
+   50% { transform: translateY(-20px); }
+  }
+
+  .snowflake {
+   position: fixed;
+   top: -10px;
+   color: white;
+   font-size: 1em;
+   font-family: Arial, sans-serif;
+   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+   z-index: 0;
+   user-select: none;
+   pointer-events: none;
+   animation: fall linear infinite;
+  }
+  
+  @keyframes fall {
+   to {
+    transform: translateY(100vh) translateX(100px);
+    opacity: 0;
+   }
+  }
+
+  .game-container {
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   width: 100%;
+   max-width: 1200px;
+   z-index: 1;
+   padding: 2rem;
+   background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+   border: 5px solid;
+   border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
+   border-radius: 25px;
+   box-shadow: 
+    0 0 30px rgba(255, 215, 0, 0.3),
+    0 0 60px rgba(255, 215, 0, 0.2),
+    inset 0 0 50px rgba(0, 0, 0, 0.5);
+   animation: glow-pulse 3s ease-in-out infinite;
+   margin-bottom: 2rem;
+  }
+  
+  @keyframes glow-pulse {
+   0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+   50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+  }
+
+  .game-header {
+   text-align: center;
+   margin-bottom: 2rem;
+  }
+
+  .game-header h1 {
+   color: gold;
+   font-size: 2.8rem;
+   text-shadow: 
+    2px 2px 4px black,
+    0 0 20px rgba(255, 215, 0, 0.5),
+    0 0 30px rgba(255, 215, 0, 0.3);
+   margin-bottom: 0.5rem;
+   animation: title-glow 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes title-glow {
+   from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
+   to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
+  }
+
+  .game-subtitle {
+   color: #ffed4e;
+   font-size: 1.3rem;
+   text-shadow: 1px 1px 3px black;
+  }
+
+  /* Splash Screen */
+  #splashScreen {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   text-align: center;
+  }
+
+  .splash-content h2 {
+   color: gold;
+   font-size: 2rem;
+   margin-bottom: 1.5rem;
+   text-shadow: 2px 2px 4px black, 0 0 15px rgba(255, 215, 0, 0.5);
+  }
+
+  .splash-content p {
+   color: #fff;
+   font-size: 1.3rem;
+   line-height: 1.8;
+   margin-bottom: 2rem;
+   text-shadow: 1px 1px 3px black;
+  }
+
+  .start-btn {
+   padding: 1.5rem 3rem;
+   font-size: 1.5rem;
+   font-family: 'Mountains of Christmas', cursive;
+   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+   color: darkred;
+   border: none;
+   border-radius: 50px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   font-weight: bold;
+   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+   animation: pulse-btn 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-btn {
+   0%, 100% { transform: scale(1); }
+   50% { transform: scale(1.05); }
+  }
+
+  .start-btn:hover {
+   transform: translateY(-3px) scale(1.1);
+   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+   animation: none;
+  }
+
+  /* Main Game */
+  #mainGame {
+   display: none;
+   width: 100%;
+  }
+
+  .game-info {
+   text-align: center;
+   margin-bottom: 2rem;
+   padding: 1rem;
+   background: rgba(0, 0, 0, 0.5);
+   border-radius: 15px;
+   border: 2px solid gold;
+  }
+
+  .game-info p {
+   color: #ffed4e;
+   font-size: 1.2rem;
+   margin: 0;
+  }
+
+  /* Premi Tabellone */
+  .prizes-board {
+   display: grid;
+   grid-template-columns: repeat(2, 1fr);
+   gap: 0.5rem;
+   margin-bottom: 2rem;
+   padding: 1rem;
+   background: rgba(0, 0, 0, 0.5);
+   border-radius: 15px;
+   border: 2px solid gold;
+  }
+
+  .prize-item {
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+   padding: 0.5rem 1rem;
+   background: rgba(139, 0, 0, 0.6);
+   border-radius: 10px;
+   border: 2px solid gold;
+   font-size: 1rem;
+   color: #fff;
+   transition: all 0.3s ease;
+  }
+
+  .prize-item.eliminated {
+   opacity: 0.3;
+   text-decoration: line-through;
+   border-color: #666;
+  }
+
+  /* Pacchi Grid */
+  .packages-grid {
+   display: grid;
+   grid-template-columns: repeat(5, 1fr);
+   gap: 1rem;
+   margin-bottom: 2rem;
+  }
+
+  .package {
+   aspect-ratio: 1;
+   background: linear-gradient(135deg, darkred 0%, #8b0000 100%);
+   border: 3px solid gold;
+   border-radius: 15px;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   position: relative;
+   box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+  }
+
+  .package:hover:not(.opened):not(.selected):not(.disabled) {
+   transform: translateY(-10px) scale(1.05);
+   box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+  }
+
+  .package-number {
+   font-size: 2.5rem;
+   color: gold;
+   font-weight: bold;
+   text-shadow: 2px 2px 4px black;
+  }
+
+  .package-icon {
+   font-size: 1.5rem;
+   margin-top: 0.5rem;
+  }
+
+  .package.selected {
+   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+   border-color: darkred;
+   animation: pulse-selected 1.5s ease-in-out infinite;
+  }
+
+  .package.selected .package-number {
+   color: darkred;
+  }
+
+  @keyframes pulse-selected {
+   0%, 100% { transform: scale(1); }
+   50% { transform: scale(1.05); }
+  }
+
+  .package.opened {
+   opacity: 0.3;
+   cursor: not-allowed;
+   transform: rotateY(180deg);
+  }
+
+  .package.disabled {
+   cursor: not-allowed;
+   opacity: 0.5;
+  }
+
+  /* Doctor Modal */
+  .doctor-modal {
+   display: none;
+   position: fixed;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   z-index: 1000;
+   width: 90%;
+   max-width: 600px;
+   background: linear-gradient(135deg, rgba(139, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.98) 100%);
+   border: 5px solid gold;
+   border-radius: 25px;
+   padding: 2rem;
+   box-shadow: 0 0 50px rgba(255, 215, 0, 0.8);
+   animation: modalAppear 0.5s ease;
+  }
+
+  @keyframes modalAppear {
+   from { transform: translate(-50%, -50%) scale(0.7); opacity: 0; }
+   to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  }
+
+  .doctor-bubble {
+   background: rgba(0, 0, 0, 0.8);
+   border: 3px solid gold;
+   border-radius: 20px;
+   padding: 2rem;
+   margin-bottom: 1.5rem;
+   position: relative;
+  }
+
+  .doctor-bubble::after {
+   content: '';
+   position: absolute;
+   bottom: -20px;
+   left: 50%;
+   transform: translateX(-50%);
+   width: 0;
+   height: 0;
+   border-left: 20px solid transparent;
+   border-right: 20px solid transparent;
+   border-top: 20px solid gold;
+  }
+
+  .doctor-title {
+   color: gold;
+   font-size: 1.8rem;
+   text-align: center;
+   margin-bottom: 1rem;
+   text-shadow: 2px 2px 4px black;
+  }
+
+  .doctor-text {
+   color: #fff;
+   font-size: 1.3rem;
+   text-align: center;
+   line-height: 1.8;
+   margin-bottom: 1rem;
+  }
+
+  .doctor-offer {
+   background: rgba(255, 215, 0, 0.2);
+   border: 2px solid gold;
+   border-radius: 15px;
+   padding: 1.5rem;
+   text-align: center;
+   margin-top: 1rem;
+  }
+
+  .doctor-offer-text {
+   color: gold;
+   font-size: 1.8rem;
+   font-weight: bold;
+   text-shadow: 2px 2px 4px black;
+  }
+
+  .doctor-buttons {
+   display: flex;
+   gap: 1rem;
+   justify-content: center;
+  }
+
+  .doctor-btn {
+   padding: 1rem 2rem;
+   font-size: 1.3rem;
+   font-family: 'Mountains of Christmas', cursive;
+   border: none;
+   border-radius: 15px;
+   cursor: pointer;
+   font-weight: bold;
+   transition: all 0.3s ease;
+   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+
+  .doctor-btn.accept {
+   background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+   color: white;
+  }
+
+  .doctor-btn.refuse {
+   background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
+   color: white;
+  }
+
+  .doctor-btn:hover {
+   transform: translateY(-3px) scale(1.05);
+   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Final Result */
+  .final-result {
+      display: none;
+   text-align: center;
+   padding: 2rem;
+   background: rgba(0, 0, 0, 0.7);
+   border: 3px solid gold;
+   border-radius: 20px;
+   margin-bottom: 2rem;
+   animation: resultAppear 0.8s ease;
+  }
+
+  @keyframes resultAppear {
+   from { transform: scale(0.5); opacity: 0; }
+   to { transform: scale(1); opacity: 1; }
+  }
+
+  .final-result h2 {
+   color: gold;
+   font-size: 2.5rem;
+   margin-bottom: 1rem;
+   text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5);
+  }
+
+  .final-prize {
+   font-size: 3rem;
+   margin: 1.5rem 0;
+   animation: prizeReveal 1s ease;
+  }
+
+  @keyframes prizeReveal {
+   0% { transform: scale(0); }
+   50% { transform: scale(1.2); }
+   100% { transform: scale(1); }
+  }
+
+  .final-message {
+   color: #fff;
+   font-size: 1.4rem;
+   line-height: 1.8;
+   text-shadow: 1px 1px 3px black;
+  }
+
+  .home-btn {
+   padding: 1rem 2rem;
+   font-size: 1.2rem;
+   font-family: 'Mountains of Christmas', cursive;
+   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+   color: darkred;
+   border: none;
+   border-radius: 50px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   font-weight: bold;
+   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+   margin-top: 2rem;
+  }
+
+  .home-btn:hover {
+   transform: translateY(-3px) scale(1.05);
+   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+  }
+
+  /* Swap Modal */
+  .swap-modal {
+   display: none;
+   position: fixed;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   z-index: 1000;
+   width: 90%;
+   max-width: 600px;
+   background: linear-gradient(135deg, rgba(139, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.98) 100%);
+   border: 5px solid gold;
+   border-radius: 25px;
+   padding: 2rem;
+   box-shadow: 0 0 50px rgba(255, 215, 0, 0.8);
+   animation: modalAppear 0.5s ease;
+   text-align: center;
+  }
+
+  .swap-modal h2 {
+   color: gold;
+   font-size: 2rem;
+   margin-bottom: 1.5rem;
+   text-shadow: 2px 2px 4px black;
+  }
+
+  .swap-modal p {
+   color: #fff;
+   font-size: 1.3rem;
+   margin-bottom: 2rem;
+   line-height: 1.8;
+  }
+
+  .swap-packages {
+   display: flex;
+   justify-content: center;
+   gap: 2rem;
+   margin-bottom: 2rem;
+  }
+
+  .swap-package-display {
+   padding: 1.5rem;
+   background: rgba(0, 0, 0, 0.6);
+   border: 3px solid gold;
+   border-radius: 15px;
+  }
+
+  .swap-package-display .package-number {
+   font-size: 3rem;
+   color: gold;
+  }
+
+  @media (max-width: 768px) {
+   .game-header h1 {
+    font-size: 2rem;
+   }
+   .packages-grid {
+    grid-template-columns: repeat(3, 1fr);
+   }
+   .package-number {
+    font-size: 2rem;
+   }
+   .prizes-board {
+    grid-template-columns: 1fr;
+   }
+   .doctor-buttons {
+    flex-direction: column;
+   }
+   .swap-packages {
+    flex-direction: column;
+    gap: 1rem;
+   }
+  }
+
+ </style>
+</head>
+
+<body>
+
+ <div class="game-container">
+  
+  <!-- Splash Screen -->
+  <div id="splashScreen">
+   <div class="game-header">
+    <h1>
+     <span class="emoji-sparkle">🎁</span>
+     Affari Tuoi dell'Amore
+     <span class="emoji-sparkle">💕</span>
+    </h1>
+    <p class="game-subtitle">Scegli il tuo pacco fortunato e scopri il premio!</p>
+   </div>
+
+   <div class="splash-content">
+    <h2>🎲 Come Si Gioca 🎲</h2>
+    <p>
+     1. Scegli il tuo pacco fortunato<br>
+     2. Apri gli altri pacchi uno alla volta<br>
+     3. Il Dottore ti farà delle offerte... accetti o rifiuti?<br>
+     4. Puoi cambiare il tuo pacco alla fine<br>
+     5. Scopri quale premio hai vinto! ❤️
+    </p>
+    <button class="start-btn" onclick="startGame()">
+     🎯 Inizia il Gioco
+    </button>
+   </div>
+  </div>
+
+  <!-- Main Game -->
+  <div id="mainGame">
+   <div class="game-header">
+    <h1>
+     <span class="emoji-sparkle">🎁</span>
+     Affari Tuoi dell'Amore
+     <span class="emoji-sparkle">💕</span>
+    </h1>
+   </div>
+
+   <div class="game-info" id="gameInfo">
+    <p>Scegli il tuo pacco fortunato!</p>
+   </div>
+
+   <!-- Prizes Board -->
+   <div class="prizes-board" id="prizesBoard"></div>
+
+   <!-- Packages Grid -->
+   <div class="packages-grid" id="packagesGrid"></div>
+
+   <!-- Final Result -->
+   <div class="final-result" id="finalResult">
+    <h2>🎉 Hai Vinto! 🎉</h2>
+    <div class="final-prize" id="finalPrize"></div>
+    <p class="final-message" id="finalMessage"></p>
+   </div>
+
+   <button class="home-btn" onclick="window.location.href='index.html'">
+     🎄 Torna al Calendario
+   </button>
+  </div>
+
+ </div>
+
+ <!-- Doctor Modal -->
+ <div class="doctor-modal" id="doctorModal">
+  <div class="doctor-bubble">
+   <h3 class="doctor-title">👔 IL DOTTORE</h3>
+   <p class="doctor-text" id="doctorText"></p>
+   <div class="doctor-offer">
+    <p class="doctor-offer-text" id="doctorOffer"></p>
+   </div>
+  </div>
+  <div class="doctor-buttons">
+   <button class="doctor-btn accept" onclick="acceptOffer()">
+    ✅ ACCETTO
+   </button>
+   <button class="doctor-btn refuse" onclick="refuseOffer()">
+    ❌ RIFIUTO
+   </button>
+  </div>
+ </div>
+
+ <!-- Swap Modal -->
+ <div class="swap-modal" id="swapModal">
+  <h2>🔄 Momento della Verità!</h2>
+  <p>Vuoi tenere il tuo pacco o cambiarlo con l'ultimo rimasto?</p>
+  <div class="swap-packages">
+   <div class="swap-package-display">
+    <p style="color: gold; font-size: 1.2rem; margin-bottom: 0.5rem;">Il Tuo Pacco</p>
+    <div class="package-number" id="yourPackageNum"></div>
+   </div>
+   <div class="swap-package-display">
+    <p style="color: gold; font-size: 1.2rem; margin-bottom: 0.5rem;">Ultimo Pacco</p>
+    <div class="package-number" id="lastPackageNum"></div>
+   </div>
+  </div>
+  <div class="doctor-buttons">
+   <button class="doctor-btn accept" onclick="keepPackage()">
+    💼 TENGO IL MIO
+   </button>
+   <button class="doctor-btn refuse" onclick="swapPackage()">
+    🔄 CAMBIO
+   </button>
+  </div>
+ </div>
+
+ <!-- Audio nascosto -->
+ <audio id="bgMusic" loop>
+  <source src="audio/bowl.mp3" type="audio/mpeg">
+ </audio>
+
+ <script>
+  // Game Data
+  const prizes = [
+   { id: 1, emoji: '💋', text: '10 Baci', value: 1 },
+   { id: 2, emoji: '☕', text: 'Colazione a Letto', value: 2 },
+   { id: 3, emoji: '🫂', text: 'Giornata Coccole', value: 3 },
+   { id: 4, emoji: '🍿', text: 'Serata Popcorn', value: 4 },
+   { id: 5, emoji: '🎬', text: 'Maratona Grey\'s', value: 5 },
+   { id: 6, emoji: '🍕', text: 'Pizza & Dessert', value: 6 },
+   { id: 7, emoji: '💆‍♀️', text: 'Massaggio 30min', value: 7 },
+   { id: 8, emoji: '🎨', text: 'Attività Insieme', value: 8 },
+   { id: 9, emoji: '🍽️', text: 'Cena Romantica', value: 9 },
+   { id: 10, emoji: '🏔️', text: 'Weekend Trentino', value: 10 }
+  ];
+
+  const doctorOffers = [
+   { emoji: '🌹', text: 'Bouquet di Rose + Biglietto' },
+   { emoji: '📸', text: 'Album Fotografico dei Ricordi' },
+   { emoji: '🎵', text: 'Playlist Personalizzata 50 Canzoni' },
+   { emoji: '🛁', text: 'Serata Spa Casalinga' },
+   { emoji: '🎁', text: 'Buono Amazon 50€' }
+  ];
+
+  let gameState = {
+   selectedPackage: null,
+   openedPackages: [],
+   eliminatedPrizes: [],
+   packagesData: [],
+   phase: 'selection', // selection, opening, offer, swap, final
+   packagesToOpen: 3,
+   offersGiven: 0,
+   currentOffer: null,
+   gameEnded: false
+  };
+
+  // Audio elements
+  const audioUp = new Audio('audio/up.mp3');
+  const audioDown = new Audio('audio/down.mp3');
+
+  // Initialize game
+  function startGame() {
+   document.getElementById('splashScreen').style.display = 'none';
+   document.getElementById('mainGame').style.display = 'block';
+   
+   // Start background music
+   const bgMusic = document.getElementById('bgMusic');
+   bgMusic.play().catch(e => console.log('Autoplay blocked'));
+
+   initializePackages();
+   renderPrizesBoard();
+   renderPackages();
+  }
+
+  // Initialize packages with random prizes
+  function initializePackages() {
+   const shuffledPrizes = [...prizes].sort(() => Math.random() - 0.5);
+   gameState.packagesData = shuffledPrizes.map((prize, index) => ({
+    number: index + 1,
+    prize: prize,
+    opened: false
+   }));
+  }
+
+  // Render prizes board
+  function renderPrizesBoard() {
+   const board = document.getElementById('prizesBoard');
+   board.innerHTML = prizes.map(prize => `
+    <div class="prize-item" id="prize-\${prize.id}">
+     <span>\${prize.emoji}</span>
+     <span>\${prize.text}</span>
+    </div>
+   `).join('');
+  }
+
+  // Render packages
+  function renderPackages() {
+   const grid = document.getElementById('packagesGrid');
+   grid.innerHTML = gameState.packagesData.map(pkg => `
+    <div class="package ${pkg.opened ? 'opened' : ''} ${gameState.selectedPackage === pkg.number ? 'selected' : ''} \${gameState.phase !== 'selection' && gameState.selectedPackage !== pkg.number && !pkg.opened ? '' : (gameState.phase === 'selection' ? '' : 'disabled')}"
+         onclick="handlePackageClick(\${pkg.number})">
+     <div class="package-number">\${pkg.number}</div>
+     <div class="package-icon">\${pkg.opened ? '📭' : '🎁'}</div>
+    </div>
+   `).join('');
+  }
+
+  // Handle package click
+  function handlePackageClick(packageNum) {
+   const pkg = gameState.packagesData.find(p => p.number === packageNum);
+   
+   if (pkg.opened) return;
+
+   if (gameState.phase === 'selection') {
+    // Select initial package
+    gameState.selectedPackage = packageNum;
+    gameState.phase = 'opening';
+    updateGameInfo('Ora apri 3 pacchi!');
+    renderPackages();
+    audioUp.play().catch(e => {});
+   } else if (gameState.phase === 'opening' && packageNum !== gameState.selectedPackage) {
+    // Open a package
+    openPackage(packageNum);
+   }
+  }
+
+  // Open package
+  function openPackage(packageNum) {
+   const pkg = gameState.packagesData.find(p => p.number === packageNum);
+   pkg.opened = true;
+   gameState.openedPackages.push(packageNum);
+   gameState.eliminatedPrizes.push(pkg.prize.id);
+
+   // Eliminate prize from board
+   document.getElementById(`prize-${pkg.prize.id}`).classList.add('eliminated');
+
+   audioDown.play().catch(e => {});
+   renderPackages();
+
+   gameState.packagesToOpen--;
+
+   if (gameState.packagesToOpen === 0) {
+    // Check if offer should be made
+    if (gameState.offersGiven < 2 && gameState.openedPackages.length < 8) {
+      setTimeout(() => showDoctorOffer(), 1000);
+    } else if (gameState.openedPackages.length === 8) {
+     // Time for swap
+     setTimeout(() => showSwapModal(), 1000);
+    } else {
+     // Continue opening
+     gameState.packagesToOpen = gameState.openedPackages.length === 6 ? 2 : 3;
+     updateGameInfo(`Apri altri ${gameState.packagesToOpen} pacchi!`);
+    }
+   } else {
+    updateGameInfo(`Apri altri \${gameState.packagesToOpen} pacchi!`);
+   }
+  }
+
+  // Show doctor offer
+    // Show doctor offer
+  function showDoctorOffer() {
+   const randomOffer = doctorOffers[Math.floor(Math.random() * doctorOffers.length)];
+   gameState.currentOffer = randomOffer;
+   gameState.offersGiven++;
+
+   document.getElementById('doctorText').textContent = 
+    gameState.offersGiven === 1 
+     ? 'Cara concorrente, ho un\'offerta speciale per te!' 
+     : 'Ecco un\'altra proposta interessante...';
+   
+   document.getElementById('doctorOffer').innerHTML = 
+    `${randomOffer.emoji} ${randomOffer.text}`;
+
+   document.getElementById('doctorModal').style.display = 'block';
+   audioUp.play().catch(e => {});
+  }
+
+  // Accept offer
+  function acceptOffer() {
+   document.getElementById('doctorModal').style.display = 'none';
+   gameState.gameEnded = true;
+   
+   // Show final result with offer
+   showFinalResult(gameState.currentOffer.emoji, gameState.currentOffer.text, 
+    'Hai accettato l\'offerta del Dottore! 🎉');
+   
+   audioUp.play().catch(e => {});
+  }
+
+  // Refuse offer
+  function refuseOffer() {
+   document.getElementById('doctorModal').style.display = 'none';
+   
+   if (gameState.openedPackages.length === 6) {
+    gameState.packagesToOpen = 2;
+   } else {
+    gameState.packagesToOpen = 3;
+   }
+   
+   updateGameInfo(`Hai rifiutato! Apri altri ${gameState.packagesToOpen} pacchi!`);
+   audioDown.play().catch(e => {});
+  }
+
+  // Show swap modal
+  function showSwapModal() {
+   const lastPackage = gameState.packagesData.find(p => !p.opened && p.number !== gameState.selectedPackage);
+   
+   document.getElementById('yourPackageNum').textContent = gameState.selectedPackage;
+   document.getElementById('lastPackageNum').textContent = lastPackage.number;
+   document.getElementById('swapModal').style.display = 'block';
+   
+   audioUp.play().catch(e => {});
+  }
+
+  // Keep package
+  function keepPackage() {
+   document.getElementById('swapModal').style.display = 'none';
+   const selectedPkg = gameState.packagesData.find(p => p.number === gameState.selectedPackage);
+   showFinalResult(selectedPkg.prize.emoji, selectedPkg.prize.text, 
+    `Hai tenuto il pacco ${gameState.selectedPackage}! Ecco cosa c'era dentro:`);
+   audioUp.play().catch(e => {});
+  }
+
+  // Swap package
+  function swapPackage() {
+   document.getElementById('swapModal').style.display = 'none';
+   const lastPackage = gameState.packagesData.find(p => !p.opened && p.number !== gameState.selectedPackage);
+   gameState.selectedPackage = lastPackage.number;
+   
+   showFinalResult(lastPackage.prize.emoji, lastPackage.prize.text, 
+    `Hai cambiato! Ecco cosa c'era nel pacco ${lastPackage.number}:`);
+   audioUp.play().catch(e => {});
+  }
+
+  // Show final result
+  function showFinalResult(emoji, text, message) {
+   gameState.gameEnded = true;
+   document.getElementById('packagesGrid').style.display = 'none';
+   document.getElementById('gameInfo').style.display = 'none';
+   
+   document.getElementById('finalPrize').innerHTML = `${emoji}<br>${text}`;
+   document.getElementById('finalMessage').textContent = message;
+   document.getElementById('finalResult').style.display = 'block';
+   
+   // Play celebration sound
+   setTimeout(() => {
+    audioUp.play().catch(e => {});
+   }, 500);
+  }
+
+  // Update game info
+  function updateGameInfo(text) {
+   document.getElementById('gameInfo').innerHTML = `<p>${text}</p>`;
+  }
+
+  // Snowflake generation
+  function createSnowflake() {
+   const snowflake = document.createElement('div');
+   snowflake.classList.add('snowflake');
+   snowflake.textContent = '❄';
+   snowflake.style.left = Math.random() * 100 + '%';
+   snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+   snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+   snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+   document.body.appendChild(snowflake);
+   
+   setTimeout(() => snowflake.remove(), 8000);
+  }
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', () => {
+   setInterval(createSnowflake, 300);
+  });
+
+ </script>
+
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
