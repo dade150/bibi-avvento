@@ -3,11 +3,9 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1">
- <title>Giorno 2 - Quiz di Natale</title>
-
+ <title>Giorno 2 - Lab Quiz</title>
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
  <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
-
  <style>
   * {
    margin: 0;
@@ -26,14 +24,13 @@
    align-items: center;
    padding: 2rem;
    position: relative;
-   overflow-x: hidden; /* Added to prevent horizontal scroll from snowflakes */
+   overflow-x: hidden;
    overflow-y: auto;
   }
   
-  /* Particelle fluttuanti di sfondo (already present) */
   body::before {
    content: '';
-   position: fixed; /* Changed to fixed to cover the whole viewport */
+   position: fixed;
    width: 100%;
    height: 100%;
    background-image: 
@@ -47,7 +44,7 @@
    background-size: 200% 200%;
    animation: float 20s ease-in-out infinite;
    opacity: 0.3;
-   z-index: 0; /* Ensures it stays behind quiz content */
+   z-index: 0;
   }
   
   @keyframes float {
@@ -55,7 +52,6 @@
    50% { transform: translateY(-20px); }
   }
 
-  /* Neve animata (added from giorno01) */
   .snowflake {
    position: fixed;
    top: -10px;
@@ -63,7 +59,7 @@
    font-size: 1em;
    font-family: Arial, sans-serif;
    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-   z-index: 0; /* Stays behind quiz content */
+   z-index: 0;
    user-select: none;
    pointer-events: none;
    animation: fall linear infinite;
@@ -82,7 +78,7 @@
    align-items: center;
    justify-content: center;
    width: 100%;
-   z-index: 1; /* Ensures quiz content is above snow */
+   z-index: 1;
   }
 
   .quiz-card {
@@ -124,6 +120,36 @@
   @keyframes title-glow {
    from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
    to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
+  }
+
+  .intro-section {
+   text-align: center;
+  }
+
+  .intro-section p {
+   font-size: 1.4rem;
+   line-height: 1.8;
+   min-height: 100px;
+  }
+
+  .btn-choice {
+   margin: 0.5rem;
+   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+   color: darkred;
+   border: 2px solid rgba(139, 0, 0, 0.5);
+   font-weight: bold;
+   font-size: 1.2rem;
+   padding: 0.7rem 2rem;
+   border-radius: 50px;
+   transition: all 0.3s ease;
+   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+   cursor: pointer;
+  }
+  
+  .btn-choice:hover {
+   transform: translateY(-3px) scale(1.05);
+   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
   }
 
   .score-display {
@@ -317,7 +343,6 @@
    background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
   }
 
-  /* Emoji animate - VIBRAZIONE invece di rotazione */
   .emoji-sparkle {
    display: inline-block;
    animation: gentle-shake 3s ease-in-out infinite;
@@ -332,7 +357,6 @@
    50%, 90% { transform: translate(0, 0) rotate(0deg); }
   }
 
-  /* Decorazioni tematiche lab - VIBRAZIONE invece di float */
   .lab-icon {
    font-size: 2rem;
    margin: 0 0.3rem;
@@ -353,6 +377,9 @@
 
 <body>
 
+ <audio id="song-sound">
+  <source src="audio/ronette.mp3" type="audio/mpeg">
+ </audio>
  <audio id="correct-sound" src="audio/corretta.mp3" preload="auto"></audio>
  <audio id="wrong-sound" src="audio/wrong.mp3" preload="auto"></audio>
  <audio id="victory-sound" src="audio/natale.mp3" preload="auto"></audio>
@@ -362,33 +389,42 @@
    <div class="quiz-header">
     <h1>
      <span class="emoji-sparkle">🧪</span>
-     Quiz del Lab
+     Giorno 2 - Lab Quiz
      <span class="emoji-sparkle">🔬</span>
     </h1>
    </div>
 
-   <div class="score-display">
-    <div class="score-item">
-     <div class="label">Domanda</div>
-     <div class="value"><span id="current-question">1</span>/<span id="total-questions">5</span></div>
-    </div>
-    <div class="score-item">
-     <div class="label">✅ Corrette</div>
-     <div class="value" id="correct-count">0</div>
-    </div>
-    <div class="score-item">
-     <div class="label">❌ Sbagliate</div>
-     <div class="value" id="wrong-count">0</div>
-    </div>
+   <!-- Intro Section -->
+   <div class="intro-section" id="intro-section">
+    <p id="intro-text">Benvenuta al secondo giorno del Lab dell'Avvento! Oggi metteremo alla prova le tue conoscenze con un quiz speciale sulle tecniche di laboratorio. Vediamo quanto sei brava... 🎄❤️</p>
+    <button id="startButton" class="btn btn-choice" onclick="startQuiz()">Inizia il Quiz! ✨</button>
    </div>
 
-   <div class="progress-bar-custom">
-    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
-   </div>
+   <!-- Quiz Sections (hidden initially) -->
+   <div id="quiz-content" style="display: none;">
+    <div class="score-display">
+     <div class="score-item">
+      <div class="label">Domanda</div>
+      <div class="value"><span id="current-question">1</span>/<span id="total-questions">5</span></div>
+     </div>
+     <div class="score-item">
+      <div class="label">✅ Corrette</div>
+      <div class="value" id="correct-count">0</div>
+     </div>
+     <div class="score-item">
+      <div class="label">❌ Sbagliate</div>
+      <div class="value" id="wrong-count">0</div>
+     </div>
+    </div>
 
-   <div class="question-section" id="question-section">
-    <div class="question-text" id="question-text"></div>
-        <div id="answers-container"></div>
+    <div class="progress-bar-custom">
+     <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+    </div>
+
+    <div class="question-section" id="question-section">
+     <div class="question-text" id="question-text"></div>
+     <div id="answers-container"></div>
+    </div>
    </div>
 
    <div class="result-section" id="result-section">
@@ -458,6 +494,10 @@
   let wrongAnswers = 0;
   let isAnswering = false;
 
+  const introSection = document.getElementById('intro-section');
+  const quizContent = document.getElementById('quiz-content');
+  const songSound = document.getElementById('song-sound');
+  
   const questionText = document.getElementById('question-text');
   const answersContainer = document.getElementById('answers-container');
   const currentQuestionSpan = document.getElementById('current-question');
@@ -468,12 +508,24 @@
   const questionSection = document.getElementById('question-section');
   const resultSection = document.getElementById('result-section');
 
-  // Updated sound elements
   const correctSound = document.getElementById('correct-sound');
   const wrongSound = document.getElementById('wrong-sound');
   const victorySound = document.getElementById('victory-sound');
 
   totalQuestionsSpan.textContent = questions.length;
+
+  function startQuiz() {
+   if (songSound) {
+    songSound.currentTime = 0;
+    songSound.play().catch(e => console.error("Error playing song:", e));
+   }
+   
+   setTimeout(() => {
+    introSection.style.display = 'none';
+    quizContent.style.display = 'block';
+    loadQuestion();
+   }, 500);
+  }
 
   function loadQuestion() {
    if (currentQuestionIndex >= questions.length) {
@@ -512,9 +564,8 @@
     btn.classList.add('correct');
     correctAnswers++;
     correctCountSpan.textContent = correctAnswers;
-    // Play correct sound
     if (correctSound) {
-        correctSound.currentTime = 0; // Rewind to start
+        correctSound.currentTime = 0;
         correctSound.play().catch(e => console.error("Error playing correct sound:", e));
     }
    } else {
@@ -522,9 +573,8 @@
     wrongAnswers++;
     wrongCountSpan.textContent = wrongAnswers;
     allButtons[question.correct].classList.add('correct');
-    // Play wrong sound
     if (wrongSound) {
-        wrongSound.currentTime = 0; // Rewind to start
+        wrongSound.currentTime = 0;
         wrongSound.play().catch(e => console.error("Error playing wrong sound:", e));
     }
    }
@@ -541,9 +591,12 @@
    
    progressFill.style.width = '100%';
 
-   // Play victory sound (natale.mp3)
+   if (songSound) {
+    songSound.pause();
+    songSound.currentTime = 0;
+   }
    if (victorySound) {
-       victorySound.currentTime = 0; // Rewind to start
+       victorySound.currentTime = 0;
        victorySound.play().catch(e => console.error("Error playing victory sound:", e));
    }
 
@@ -555,7 +608,7 @@
 
    if (percentage === 100) {
     resultTitle.innerHTML = '<span class="emoji-sparkle">🏆</span> PERFETTO! <span class="emoji-sparkle">🏆</span>';
-    resultMessage.textContent = `Hai risposto correttamente a tutte le ${correctAnswers} domande! Sei un vero esperto del laboratorio!`;
+    resultMessage.textContent = `Hai risposto correttamente a tutte le ${correctAnswers} domande! Sei una vera esperta del laboratorio!`;
     prizeText.innerHTML = '<span class="lab-icon">🌟</span> Una cioccolata calda premium con panna e marshmallow + biscotti natalizi artigianali! <span class="lab-icon">🍪</span>';
    } else if (percentage >= 80) {
     resultTitle.innerHTML = '<span class="emoji-sparkle">⭐</span> OTTIMO! <span class="emoji-sparkle">⭐</span>';
@@ -576,7 +629,6 @@
    }
   }
 
-  /* New: Snowflake generation JavaScript from giorno01 */
   function createSnowflake() {
     const snowflake = document.createElement('div');
     snowflake.classList.add('snowflake');
@@ -590,10 +642,7 @@
     setTimeout(() => snowflake.remove(), 8000);
   }
 
-  // Avvia il quiz al caricamento della pagina
   document.addEventListener('DOMContentLoaded', () => {
-    loadQuestion();
-    // Start the actual falling snowflakes
     setInterval(createSnowflake, 300);
   });
  </script>

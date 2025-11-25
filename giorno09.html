@@ -1,721 +1,682 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1">
- <title>Giorno 9 - Caccia alle Foto Modificate</title>
-
- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
- <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
-
- <style>
-  * {
-   margin: 0;
-   padding: 0;
-   box-sizing: border-box;
-  }
-  
-  body {
-   font-family: 'Mountains of Christmas', cursive;
-   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
-   color: #fff;
-   min-height: 100vh;
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-   align-items: center;
-   padding: 2rem;
-   position: relative;
-   overflow-x: hidden; /* Added to prevent horizontal scroll from snowflakes */
-   overflow-y: auto;
-  }
-  
-  /* Particelle fluttuanti di sfondo */
-  body::before {
-   content: '';
-   position: fixed; /* Changed to fixed to cover the whole viewport */
-   width: 100%;
-   height: 100%;
-   background-image: 
-    radial-gradient(2px 2px at 20% 30%, white, transparent),
-    radial-gradient(2px 2px at 60% 70%, white, transparent),
-    radial-gradient(1px 1px at 50% 50%, white, transparent),
-    radial-gradient(1px 1px at 80% 10%, white, transparent),
-    radial-gradient(2px 2px at 90% 60%, white, transparent),
-    radial-gradient(1px 1px at 33% 80%, white, transparent),
-    radial-gradient(1px 1px at 75% 40%, white, transparent);
-   background-size: 200% 200%;
-   animation: float 20s ease-in-out infinite;
-   opacity: 0.3;
-   z-index: 0; /* Ensures it stays behind game content */
-  }
-  
-  @keyframes float {
-   0%, 100% { transform: translateY(0); }
-   50% { transform: translateY(-20px); }
-  }
-
-  /* New: Animated snowflakes CSS */
-  .snowflake {
-   position: fixed;
-   top: -10px;
-   color: white;
-   font-size: 1em;
-   font-family: Arial, sans-serif;
-   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-   z-index: 0; /* Stays behind game content */
-   user-select: none;
-   pointer-events: none;
-   animation: fall linear infinite;
-  }
-  
-  @keyframes fall {
-   to {
-    transform: translateY(100vh) translateX(100px);
-    opacity: 0;
-   }
-  }
-  
-  .content-box {
-   background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
-   border: 5px solid;
-   border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
-   border-radius: 25px;
-   padding: 3rem;
-   max-width: 900px;
-   text-align: center;
-   box-shadow: 
-    0 0 30px rgba(255, 215, 0, 0.3),
-    0 0 60px rgba(255, 215, 0, 0.2),
-    inset 0 0 50px rgba(0, 0, 0, 0.5);
-   position: relative;
-   z-index: 1; /* Ensure game content is above snow */
-   animation: glow-pulse 3s ease-in-out infinite;
-  }
-  
-  @keyframes glow-pulse {
-   0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
-   50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
-  }
-  
-  h1 {
-   color: gold;
-   text-shadow: 
-    2px 2px 4px black,
-    0 0 20px rgba(255, 215, 0, 0.5),
-    0 0 30px rgba(255, 215, 0, 0.3);
-   font-size: 2.8rem;
-   margin-bottom: 2rem;
-   animation: title-glow 2s ease-in-out infinite alternate;
-  }
-  
-  @keyframes title-glow {
-   from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
-   to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
-  }
-  
-  .message-container {
-   background: rgba(0, 0, 0, 0.4);
-   border-radius: 15px;
-   padding: 2rem;
-   margin: 1.5rem 0;
-   border: 2px solid rgba(255, 215, 0, 0.3);
-  }
-  
-  p {
-   font-size: 1.4rem;
-   line-height: 1.8;
-   min-height: 100px;
-  }
-  
-  .back-button, .btn-game { 
-   margin: 0.5rem;
-   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
-   color: darkred;
-   border: 2px solid rgba(139, 0, 0, 0.5);
-   font-weight: bold;
-   font-size: 1.2rem;
-   padding: 0.7rem 2rem;
-   border-radius: 50px;
-   transition: all 0.3s ease;
-   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-   cursor: pointer;
-  }
-  
-  .back-button:hover, .btn-game:hover { 
-   transform: translateY(-3px) scale(1.05);
-   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
-   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
-  }
-  
-  .btn-game:active { 
-   transform: translateY(-1px);
-  }
-  
-  /* Centering the start game button */
-  #startGameButton {
-    display: block;
-    margin: 1.5rem auto 2rem auto; /* Adjusted margin for centering */
-  }
-
-  #result-area {
-   margin-top: 2rem;
-   min-height: 100px;
-  }
-  
-  .emoji-sparkle {
-   display: inline-block;
-   animation: sparkle 1.5s ease-in-out infinite;
-  }
-  
-  @keyframes sparkle {
-   0%, 100% { transform: scale(1) rotate(0deg); }
-   50% { transform: scale(1.2) rotate(180deg); }
-  }
-  
-  .result-message {
-   font-size: 1.6rem;
-   padding: 1.5rem;
-   border-radius: 15px;
-   margin-top: 1rem;
-   animation: fadeInUp 0.5s ease-out;
-  }
-  
-  @keyframes fadeInUp {
-   from { opacity: 0; transform: translateY(20px); }
-   to { opacity: 1; transform: translateY(0); }
-  }
-  
-  .success-message {
-   color: #90EE90;
-   text-shadow: 0 0 10px rgba(144, 238, 144, 0.5);
-  }
-  
-  .lab-icon {
-   font-size: 2rem;
-   margin: 0 0.3rem;
-   display: inline-block;
-   animation: float-icon 3s ease-in-out infinite;
-  }
-  
-  @keyframes float-icon {
-   0%, 100% { transform: translateY(0); }
-   50% { transform: translateY(-10px); }
-  }
-
-  /* Specific styles for the "Find the Photos" game */
-  .game-area {
-      position: relative;
-      width: 100%;
-      max-width: 800px; /* Base width for coordinate calculations */
-      margin: 2rem auto;
-      border: 3px solid gold;
-      border-radius: 15px;
-      overflow: hidden; 
-      display: none;
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewport="0 0 100 100" style="fill:white;font-size:18px;"><text y="50%">🔍</text></svg>') 15 15, auto;
-  }
-
-  .game-area img { /* Styles for the main game image */
-      width: 100%;
-      height: auto; /* Allow image to dictate height */
-      display: block;
-  }
-
-  .clickable-spot {
-      position: absolute;
-      background-color: transparent;
-      border: 2px solid transparent;
-      transition: border 0.3s ease, background-color 0.3s ease;
-      z-index: 10;
-  }
-
-  .clickable-spot:hover {
-      background-color: rgba(255, 215, 0, 0.1);
-  }
-
-  .clickable-spot.found {
-      border: 2px solid #90EE90;
-      background-color: rgba(144, 238, 144, 0.2);
-      pointer-events: none;
-  }
-
-  /* DEBUG_STYLES: Rendi i punti cliccabili visibili per il debug. Cambia 'display: none;' a 'display: block;' per attivarli. */
-  .clickable-spot-debug {
-      border: 2px dashed red !important; /* Forza il bordo rosso */
-      background-color: rgba(255, 0, 0, 0.2) !important; /* Sfondo semitrasparente rosso */
-      display: none; /* Cambia a 'block' per visualizzare i punti di debug */
-  }
-  /* FINE DEBUG_STYLES */
-
-
-  .photos-found-counter {
-      color: gold;
-      font-size: 1.5rem;
-      margin-top: 1rem;
-      display: flex; /* Changed to flex for centering progress bar */
-      flex-direction: column;
-      align-items: center;
-      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-      width: 100%; /* Ensure it spans full width for centering */
-      max-width: 800px; /* Match game-area max-width */
-      margin-left: auto;
-      margin-right: auto;
-  }
-
-  /* Progress bar styling */
-  .progress-bar-custom {
-    width: 80%; /* Adjust width of the progress bar */
-    height: 25px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    overflow: hidden;
-    margin-top: 10px;
-    border: 1px solid rgba(255, 215, 0, 0.3);
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, gold, #ffed4e);
-    width: 0%;
-    transition: width 0.5s ease-in-out;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-    color: #333;
-    font-weight: bold;
-    text-shadow: none; /* Remove text-shadow from progress text */
-  }
-
-  /* Modal overlay per la foto grande */
-  .photo-modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.9);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      animation: fadeInModal 0.3s ease-out;
-      flex-direction: column; /* Added to stack image and button */
-  }
-
-  @keyframes fadeInModal {
-      from { opacity: 0; }
-      to { opacity: 1; }
-  }
-
-  .photo-modal-overlay.active {
-      display: flex;
-  }
-
-  .modal-photo {
-      max-width: 90vw;
-      max-height: 80vh; /* Adjusted to make space for button */
-      border: 5px solid gold;
-      border-radius: 20px;
-      box-shadow: 0 0 40px rgba(255, 215, 0, 0.8);
-      animation: popInPhoto 0.4s ease-out;
-      margin-bottom: 20px; /* Space between image and button */
-  }
-
-  @keyframes popInPhoto {
-      from {
-          opacity: 0;
-          transform: scale(0.3) rotate(-5deg);
-      }
-      to {
-          opacity: 1;
-          transform: scale(1) rotate(0deg);
-      }
-  }
-
-  /* Carousel finale */
-  .carousel-container {
-      display: none;
-      text-align: center;
-  }
-
-  .carousel-container.active {
-      display: block;
-  }
-
-  #finalCarousel {
-      max-width: 600px;
-      margin: 2rem auto;
-  }
-
-  .carousel-item img {
-      max-height: 400px;
-      object-fit: contain;
-      border: 3px solid gold;
-      border-radius: 15px;
-  }
-
-  .carousel-caption {
-      background: rgba(0, 0, 0, 0.7);
-      padding: 1rem;
-      border-radius: 10px;
-  }
-
-  .carousel-caption h5 {
-      color: gold;
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-  }
-
-  .carousel-caption p {
-      color: #fff;
-      font-size: 1.4rem;
-  }
-
-  .carousel-control-prev, .carousel-control-next {
-      width: 5%;
-  }
-
-  .carousel-control-prev-icon, .carousel-control-next-icon {
-      filter: invert(1);
-  }
- </style>
-</head>
-
-<body>
- <!-- Background Music -->
- <audio id="background-music" loop preload="auto">
-  <source src="audio/sound-track0.mp3" type="audio/mpeg"> 
- </audio>
- <!-- Sound when an item is found -->
- <audio id="found-sound" preload="auto">
-  <source src="audio/herewego.mp3" type="audio/mpeg">
- </audio>
- <!-- Final sound at the end of the game -->
- <audio id="final-sound" preload="auto">
-  <source src="audio/maialino.mp3" type="audio/mpeg">
- </audio>
- <!-- New: Intro Music -->
- <audio id="intro-music" preload="auto">
-  <source src="audio/song.mp3" type="audio/mpeg">
- </audio>
-
- <div class="photo-modal-overlay" id="photoModal">
-  <img id="modalPhoto" class="modal-photo" src="" alt="Foto rivelata">
-  <button class="btn btn-game" id="closePhotoModalButton">Continua la Caccia</button>
- </div>
-
- <div class="content-box">
-  <h1>
-   <span class="emoji-sparkle">🕵️‍♀️</span> 
-   Caccia al Dettaglio! 
-   <span class="emoji-sparkle">📸</span>
-  </h1>
-  
-  <div class="message-container" id="intro-message">
-   <p>
-    Ciao Mapi! Ho preparato un'immagine speciale... ma qualcosa non torna! 
-    Sembra che ci siano delle modifiche, dei dettagli nascosti che hanno a che fare con delle foto.
-    Riesci a scovarli tutti e a rivelare le sorprese che ti aspettano?
-    Clicca su "Inizia la Caccia" e buona fortuna! ❤️
-   </p>
-  </div>
-
-  <button class="btn btn-game" id="startGameButton">Inizia la Caccia ✨</button>
-
-  <div class="game-area" id="gameArea">
-    <img id="mainGameImage" src="images/foto-nostre/foto0.png" alt="Scena di gioco principale">
-  </div>
-
-  <div class="photos-found-counter" id="foundCounter">
-   Dettagli trovati: <span id="currentFound">0</span> / <span id="totalPhotos">5</span>
-   <div class="progress-bar-custom">
-        <div class="progress-fill" id="progressBarFill">0%</div>
-   </div>
-  </div>
-
-  <div class="carousel-container" id="carouselContainer">
-   <h1 style="color: gold; margin-bottom: 1.5rem;">
-    <span class="emoji-sparkle">💖</span> Ci vediamo domani! <span class="emoji-sparkle">💖</span>
-   </h1>
-   <div id="finalCarousel" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner" id="carouselInner">
-     <!-- Carousel items will be added here by JavaScript -->
-    </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#finalCarousel" data-bs-slide="prev">
-     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#finalCarousel" data-bs-slide="next">
-     <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    </button>
-   </div>
-  </div>
-
-  <div id="result-area"></div>
-
-  <a href="index.html" class="btn back-button" id="back-to-calendar" style="display: none;">
-   🎄 Torna al Calendario
-  </a>
- </div>
-
- <script>
-  // Funzione per creare fiocchi di neve (from giorno01)
-  function createSnowflake() {
-      const snowflake = document.createElement('div');
-      snowflake.classList.add('snowflake');
-      snowflake.textContent = '❄';
-      snowflake.style.left = Math.random() * 100 + '%';
-      snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
-      snowflake.style.opacity = Math.random() * 0.5 + 0.5;
-      snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
-      document.body.appendChild(snowflake);
-      
-      setTimeout(() => snowflake.remove(), 8000);
-  }
-
-  const backgroundMusic = document.getElementById('background-music');
-  const foundSound = document.getElementById('found-sound');
-  const finalSound = document.getElementById('final-sound');
-  const introMusic = document.getElementById('intro-music');
-  const startGameButton = document.getElementById('startGameButton');
-  const gameArea = document.getElementById('gameArea');
-  const mainGameImage = document.getElementById('mainGameImage');
-  const introMessage = document.getElementById('intro-message');
-  const foundCounter = document.getElementById('foundCounter');
-  const currentFoundSpan = document.getElementById('currentFound');
-  const totalPhotosSpan = document.getElementById('totalPhotos');
-  const progressBarFill = document.getElementById('progressBarFill');
-  const resultArea = document.getElementById('result-area');
-  const backButton = document.getElementById('back-to-calendar');
-  const photoModal = document.getElementById('photoModal');
-  const modalPhoto = document.getElementById('modalPhoto');
-  const closePhotoModalButton = document.getElementById('closePhotoModalButton');
-  const carouselContainer = document.getElementById('carouselContainer');
-  const carouselInner = document.getElementById('carouselInner');
-
-  // ** COME CALCOLARE LE COORDINATE PER GLI INDIZI (x, y, width, height): **
-  // 1. Apri la tua immagine 'images/foto-nostre/foto0.png' in un editor di immagini (es. Paint, GIMP, Photoshop, o anche un visualizzatore online che mostri le coordinate).
-  // 2. Annota le dimensioni originali in pixel dell'immagine.
-  //    - Imposta `originalImageWidth` e `originalImageHeight` qui sotto con le dimensioni reali della tua immagine.
-  //      NELL'ESEMPIO SOTTO, HO IMPOSTATO 800x500 COME DIMENSIONI ORIGINALI.
-  // 3. Per ogni indizio:
-  //    - Trova l'angolo in alto a sinistra dell'indizio e annota le sue coordinate X e Y in pixel.
-  //    - Trova la larghezza (width) e l'altezza (height) in pixel dell'area dell'indizio.
-  // 4. Inserisci questi valori in `hiddenItemsData` per ogni oggetto.
-  // Il codice JavaScript farà automaticamente il ridimensionamento proporzionale per adattarsi a schermi diversi.
-
-  const originalImageWidth = 800; // <<< MODIFICA QUESTO con la larghezza reale in pixel della tua 'foto0.png'
-  const originalImageHeight = 500; // <<< MODIFICA QUESTO con l'altezza reale in pixel della tua 'foto0.png'
-
-  const hiddenItemsData = [
-    { 
-      id: 'spot1', 
-      x: 174, y: 183, width: 35, height: 52, // Esempio: Coordinate basate su 800x500
-      revealedPhotoSrc: 'images/foto-nostre/foto1.jpg', 
-      found: false 
-    },
-    { 
-      id: 'spot2', 
-      x: 15, y: 439, width: 57, height: 27,
-      revealedPhotoSrc: 'images/foto-nostre/foto2.jpg', 
-      found: false 
-    },
-    { 
-      id: 'spot3', 
-      x: 115, y: 280, width: 30, height: 19,
-      revealedPhotoSrc: 'images/foto-nostre/foto3.jpg', 
-      found: false 
-    },
-    { 
-      id: 'spot4', 
-      x: 582, y: 203, width: 42, height: 30,
-      revealedPhotoSrc: 'images/foto-nostre/foto4.jpg', 
-      found: false 
-    },
-    { 
-      id: 'spot5', 
-      x: 720, y: 455, width: 70, height: 20,
-      revealedPhotoSrc: 'images/foto-nostre/foto5.jpg', 
-      found: false 
-    }
-  ];
-
-  let currentHiddenItems = [];
-  let foundCount = 0;
-  let gameActive = false;
-  let revealedPhotos = [];
-
-  totalPhotosSpan.textContent = hiddenItemsData.length;
-
-  function updateProgressBar() {
-      const percentage = (foundCount / hiddenItemsData.length) * 100;
-      progressBarFill.style.width = `${percentage}%`;
-      progressBarFill.textContent = `${Math.round(percentage)}%`;
-  }
-
-  function initializeGame() {
-    currentHiddenItems = JSON.parse(JSON.stringify(hiddenItemsData));
-    foundCount = 0;
-    gameActive = false;
-    revealedPhotos = [];
-
-    currentFoundSpan.textContent = foundCount;
-    updateProgressBar(); // Initialize progress bar
-    resultArea.innerHTML = '';
-    backButton.style.display = 'none';
-    carouselContainer.classList.remove('active');
-
-    const existingSpots = gameArea.querySelectorAll('.clickable-spot');
-    existingSpots.forEach(spot => spot.remove());
-
-    gameArea.style.display = 'none';
-    foundCounter.style.display = 'none';
-    introMessage.style.display = 'block';
-    startGameButton.style.display = 'block';
-
-    mainGameImage.src = 'images/foto-nostre/foto0.png';
-
-    mainGameImage.onload = () => {
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giorno 9 - Indovina le Canzoni Natalizie</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
+    <style>
+        body::before {
+            content: '';
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(2px 2px at 60% 70%, white, transparent),
+                radial-gradient(1px 1px at 50% 50%, white, transparent),
+                radial-gradient(1px 1px at 80% 10%, white, transparent),
+                radial-gradient(2px 2px at 90% 60%, white, transparent),
+                radial-gradient(1px 1px at 33% 80%, white, transparent),
+                radial-gradient(1px 1px at 75% 40%, white, transparent);
+            background-size: 200% 200%;
+            animation: float 20s ease-in-out infinite;
+            opacity: 0.3;
+            z-index: 0;
+        }
         
-        currentHiddenItems.forEach(item => {
-            const spotDiv = document.createElement('div');
-            spotDiv.classList.add('clickable-spot');
-            // Aggiungi la classe di debug qui, se vuoi visualizzare i punti
-            // spotDiv.classList.add('clickable-spot-debug'); // <-- ATTIVA/DISATTIVA QUESTA RIGA PER IL DEBUG
-            spotDiv.id = `spot-${item.id}`;
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: white;
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            z-index: 0;
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        body {
+            font-family: 'Mountains of Christmas', cursive;
+            background: linear-gradient(100deg, #000000 0%, #f83030 50%, #000000 100%);
+            color: gold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        .game-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 5px solid gold;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            max-width: 700px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+
+        .intro-section {
+            text-align: center;
+        }
+
+        .intro-section p {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            min-height: 100px;
+            margin-bottom: 1.5rem;
+            color: #fff;
+        }
+
+        .btn-choice {
+            margin: 0.5rem;
+            background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+            color: darkred;
+            border: 2px solid rgba(139, 0, 0, 0.5);
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding: 0.7rem 2rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            cursor: pointer;
+        }
+        
+        .btn-choice:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+            background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+        }
+
+        .clue-section {
+            margin-bottom: 25px;
+        }
+        .btn-primary {
+            background-color: gold;
+            border-color: gold;
+            color: #333;
+            font-size: 1.3rem;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #ffd700;
+            border-color: #ffd700;
+            color: #000;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.9);
+        }
+        .btn-outline-light {
+            color: #fff;
+            border-color: #fff;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin: 5px;
+            width: 100%;
+        }
+        .btn-outline-light:hover:not(:disabled) {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: #fff;
+            color: #fff;
+        }
+        #feedback {
+            font-size: 1.3rem;
+            margin-top: 20px;
+            font-weight: bold;
+            min-height: 1.5em;
+        }
+        .dedication-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            display: none;
+        }
+        .dedication-section h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        #dedicationMessage {
+            font-size: 1.5rem;
+            margin-top: 25px;
+            color: #fff;
+        }
+        .btn-secondary {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: #fff;
+            font-size: 1.3rem;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-left: 15px;
+        }
+        .btn-secondary:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(220, 53, 69, 0.7);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid gold;
+            color: #fff;
+            font-size: 1.2rem;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: inset 0 0 5px rgba(255, 215, 0, 0.3);
+        }
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .form-control:focus {
+            background-color: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            color: #fff;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: #fff;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: #fff;
+        }
+        .round-info {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        #roundProgressBar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            height: 20px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 215, 0, 0.5);
+        }
+        .round-step {
+            flex-grow: 1;
+            height: 100%;
+            background-color: transparent;
+            border-left: 1px solid rgba(255, 215, 0, 0.3);
+            transition: all 0.5s ease;
+            transform: scale(1);
+            opacity: 1;
+        }
+        .round-step:first-child {
+            border-left: none;
+        }
+
+        .round-step.active-step.round-1 { background-color: #28a745; }
+        .round-step.active-step.round-2 { background-color: #ffc107; }
+        .round-step.active-step.round-3 { background-color: #dc3545; }
+        .round-step.active-step.round-4 { background-color: #8A2BE2; }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .round-step.pulsing {
+            animation-name: pulse;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+        }
+
+        .round-step.pulsing.speed-1 { animation-duration: 2s; }
+        .round-step.pulsing.speed-2 { animation-duration: 1.5s; }
+        .round-step.pulsing.speed-3 { animation-duration: 1s; }
+        .round-step.pulsing.speed-4 { animation-duration: 0.7s; }
+
+        #scoreMessage {
+            font-size: 1.4rem;
+            margin-top: 15px;
+            color: #fff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <audio id="backgroundMusic" src="audio/clair.mp3" loop preload="auto"></audio>
+    <audio id="endGameMusic" src="audio/canzoni-natale/canzone5.mp3" preload="auto"></audio>
+
+    <div class="game-container">
+        <h1>🎶 Giorno 9 - Indovina le Canzoni Natalizie!</h1>
+        
+        <!-- Intro Section -->
+        <div class="intro-section" id="intro-section">
+            <p id="intro-text">Benvenuta al nono giorno del Lab dell'Avvento! Oggi ti aspetta una sfida musicale: ascolta 4 canzoni natalizie e indovina i titoli. Metti alla prova la tua conoscenza della musica di Natale! 🎄🎵</p>
+            <button id="startButton" class="btn btn-choice" onclick="startGame()">Inizia il Gioco! ✨</button>
+        </div>
+
+        <!-- Game Content (hidden initially) -->
+        <div id="game-content" style="display: none;">
+            <p id="roundInfo" class="round-info">Round 0 di 4</p>
+
+            <div id="roundProgressBar" class="mb-3">
+            </div>
+            <br><br>
+            <div class="clue-section">
+                <button id="playSnippetButton" class="btn btn-primary mb-3">Ascolta
+                </button>
+                <audio id="audioPlayer" src="" preload="auto"></audio>
+            </div>
+
+            <div id="optionsContainer" class="d-grid gap-2 col-10 mx-auto mb-4">
+                <!-- Option buttons will be inserted here by JavaScript -->
+            </div>
             
-            spotDiv.style.left = `${(item.x / originalImageWidth) * 100}%`;
-            spotDiv.style.top = `${(item.y / originalImageHeight) * 100}%`;
-            spotDiv.style.width = `${(item.width / originalImageWidth) * 100}%`;
-            spotDiv.style.height = `${(item.height / originalImageHeight) * 100}%`;
+            <button id="skipButton" class="btn btn-secondary">Salta / Rivela</button>
+
+            <p id="feedback"></p>
+        </div>
+
+        <div id="dedicationSection" class="dedication-section">
+            <h3>Il tuo punteggio finale: <span id="finalScore">0</span> / 4</h3>
+            <p id="scoreMessage"></p>
+            <h3>Ora puoi mandare una can zone a chi vuoi tu!</h3>
+            <div class="form-group">
+                <input type="text" id="dedicateSongInput" class="form-control" placeholder="Nome della canzone da dedicare">
+            </div>
+            <div class="form-group">
+                <input type="text" id="dedicateRecipientInput" class="form-control" placeholder="A chi la dedichi? (Nome)">
+            </div>
+            <div class="form-group">
+                <textarea id="personalMessageInput" class="form-control" rows="3" placeholder="Aggiungi un messaggio personale (opzionale)"></textarea>
+            </div>
+            <button id="generateShareMessageButton" class="btn btn-primary">Genera Messaggio per Condividere</button>
             
-            spotDiv.addEventListener('click', () => handleSpotClick(item, spotDiv));
-            gameArea.appendChild(spotDiv);
+            <div id="shareOutput" style="margin-top: 20px; display: none;">
+                <textarea id="generatedMessageTextarea" class="form-control mb-2" rows="5" readonly></textarea>
+                <button id="copyMessageButton" class="btn btn-info me-2">Copia Messaggio</button>
+                <button id="shareWhatsappButton" class="btn btn-success">Condividi su WhatsApp</button>
+            </div>
+            <p id="dedicationMessage" class="mt-3"></p>
+            <button id="playAgainButton" class="btn btn-primary mt-3">Gioca di nuovo</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const allSongs = [
+                { id: 1, title: "All I Want for Christmas Is You", artist: "Mariah Carey", track: "audio/canzoni-natale/canzone1.mp3" },
+                { id: 2, title: "Feliz Navidad", artist: "José Feliciano", track: "audio/canzoni-natale/canzone2.mp3" },
+                { id: 3, title: "Last Christmas", artist: "Wham!", track: "audio/canzoni-natale/canzone3.mp3" },
+                { id: 4, title: "White Christmas", artist: "Bing Crosby", track: "audio/canzoni-natale/canzone4.mp3" },
+                { id: 5, title: "Jingle Bell Rock", artist: "Bobby Helms", track: "audio/canzoni-natale/canzone5.mp3" },
+                { id:6, title: "Let It Snow! Let It Snow! Let It Snow!", artist: "Dean Martin", track: "audio/jingle_bell_rock.mp3" },
+                { id: 7, title: "Driving Home for Christmas", artist: "Chris Rea", track: "audio/let_it_snow.mp3" },
+                { id: 8, title: "It's the Most Wonderful Time of the Year", artist: "Andy Williams", track: "audio/driving_home.mp3" },
+                { id: 9, title: "Do They Know It's Christmas?", artist: "Band Aid", track: "audio/do_they_know.mp3" },
+                { id: 10, title: "Have Yourself a Merry Little Christmas", artist: "Frank Sinatra", track: "audio/have_yourself.mp3" },
+            ];
+
+            let gameSongs = [];
+            let currentRound = 0;
+            let score = 0;
+            let currentSong = null;
+            let gameActive = false;
+            const totalRounds = 4;
+
+            const audioPlayer = document.getElementById('audioPlayer');
+            const playSnippetButton = document.getElementById('playSnippetButton');
+            const optionsContainer = document.getElementById('optionsContainer');
+            const skipButton = document.getElementById('skipButton');
+            const feedback = document.getElementById('feedback');
+            const dedicationSection = document.getElementById('dedicationSection');
+            const dedicateSongInput = document.getElementById('dedicateSongInput');
+            const dedicateRecipientInput = document.getElementById('dedicateRecipientInput');
+            const personalMessageInput = document.getElementById('personalMessageInput');
+            const generateShareMessageButton = document.getElementById('generateShareMessageButton');
+            const shareOutput = document.getElementById('shareOutput');
+            const generatedMessageTextarea = document.getElementById('generatedMessageTextarea');
+            const copyMessageButton = document.getElementById('copyMessageButton');
+            const shareWhatsappButton = document.getElementById('shareWhatsappButton');
+            const dedicationMessage = document.getElementById('dedicationMessage');
+            const roundInfo = document.getElementById('roundInfo');
+            const finalScoreDisplay = document.getElementById('finalScore');
+            const playAgainButton = document.getElementById('playAgainButton');
+            const roundProgressBar = document.getElementById('roundProgressBar');
+            const scoreMessage = document.getElementById('scoreMessage');
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            const endGameMusic = document.getElementById('endGameMusic');
+            const introSection = document.getElementById('intro-section');
+            const gameContent = document.getElementById('game-content');
+
+            function createSnowflake() {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.textContent = '❄';
+                snowflake.style.left = Math.random() * 100 + '%';
+                snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+                snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                document.body.appendChild(snowflake);
+                
+                setTimeout(() => snowflake.remove(), 8000);
+            }
+
+            function getRandomSongs(excludeId, count) {
+                const availableSongs = allSongs.filter(song => song.id !== excludeId);
+                const shuffled = availableSongs.sort(() => 0.5 - Math.random());
+                return shuffled.slice(0, count);
+            }
+
+            function updateRoundProgressBar() {
+                roundProgressBar.innerHTML = '';
+                for (let i = 1; i <= totalRounds; i++) {
+                    const step = document.createElement('div');
+                    step.classList.add('round-step');
+                    
+                    if (i <= currentRound) {
+                        step.classList.add('active-step');
+                        step.classList.add(`round-${i}`);
+                        if (i === currentRound && gameActive) {
+                            step.classList.add('pulsing', `speed-${i}`);
+                        }
+                    }
+                    roundProgressBar.appendChild(step);
+                }
+            }
+
+            function startGame() {
+                introSection.style.display = 'none';
+                gameContent.style.display = 'block';
+                
+                backgroundMusic.volume = 0.3;
+                backgroundMusic.play().catch(e => console.error("Autoplay of background music prevented:", e));
+                
+                initializeGameRounds();
+            }
+
+            function initializeGameRounds() {
+                gameSongs = [
+                    allSongs.find(s => s.title === "All I Want for Christmas Is You"), 
+                    allSongs.find(s => s.title === "Feliz Navidad"), 
+                    allSongs.find(s => s.title === "Last Christmas"),
+                    allSongs.find(s => s.title === "White Christmas")
+                ];
+
+                currentRound = 0;
+                score = 0;
+                gameActive = true;
+
+                dedicationSection.style.display = 'none';
+                playAgainButton.style.display = 'none';
+                scoreMessage.textContent = '';
+                shareOutput.style.display = 'none';
+                dedicationMessage.textContent = '';
+                dedicateSongInput.value = '';
+                dedicateRecipientInput.value = '';
+                personalMessageInput.value = '';
+
+                updateRoundProgressBar(); 
+
+                startRound();
+            }
+
+            function initializeGame() {
+                introSection.style.display = 'block';
+                gameContent.style.display = 'none';
+                dedicationSection.style.display = 'none';
+                
+                backgroundMusic.pause();
+                backgroundMusic.currentTime = 0;
+                endGameMusic.pause();
+                endGameMusic.currentTime = 0;
+            }
+
+            function startRound() {
+                audioPlayer.pause();
+                
+                if (currentRound >= totalRounds) {
+                    endGame();
+                    return;
+                }
+
+                currentRound++;
+                roundInfo.textContent = `Round ${currentRound} di ${totalRounds}`;
+                feedback.textContent = '';
+                optionsContainer.innerHTML = '';
+                updateRoundProgressBar();
+                
+                currentSong = gameSongs[currentRound - 1];
+                audioPlayer.src = currentSong.track;
+                audioPlayer.load();
+                
+                playSnippetButton.style.display = 'inline-block';
+                playSnippetButton.textContent = 'Ascolta';
+                playSnippetButton.disabled = false;
+                skipButton.textContent = 'Salta / Rivela';
+                skipButton.style.display = 'inline-block';
+
+                let options = [currentSong.title];
+                const allOtherSongs = allSongs.filter(s => s.title !== currentSong.title && !gameSongs.some(gs => gs.title === s.title));
+                const incorrectSongs = allOtherSongs.sort(() => 0.5 - Math.random()).slice(0, 3);
+                incorrectSongs.forEach(song => options.push(song.title));
+
+                options = options.sort(() => 0.5 - Math.random());
+
+                options.forEach(optionText => {
+                    const button = document.createElement('button');
+                    button.classList.add('btn', 'btn-outline-light', 'btn-lg', 'mb-2');
+                    button.textContent = optionText;
+                    button.setAttribute('data-title', optionText);
+                    button.addEventListener('click', () => checkAnswer(optionText, button));
+                    optionsContainer.appendChild(button);
+                });
+
+                audioPlayer.onended = function() {
+                    if (gameActive) {
+                        playSnippetButton.textContent = 'Ascolta di nuovo';
+                        playSnippetButton.disabled = false;
+                    }
+                };
+            }
+
+            function playSnippet() {
+                if (!gameActive) return;
+
+                audioPlayer.currentTime = 0;
+                audioPlayer.play();
+                playSnippetButton.textContent = 'Riproduzione in corso...';
+                playSnippetButton.disabled = true;
+            }
+
+            function checkAnswer(selectedTitle, clickedButton) {
+                if (!gameActive) return;
+
+                audioPlayer.pause();
+                
+                disableOptionButtons(selectedTitle, clickedButton);
+
+                if (selectedTitle === currentSong.title) {
+                    feedback.textContent = `Corretto! La canzone è "${currentSong.title}" di ${currentSong.artist}.`;
+                    feedback.style.color = 'lightgreen';
+                    score++;
+                } else {
+                    feedback.textContent = `Sbagliato! La risposta corretta era: "${currentSong.title}" di ${currentSong.artist}.`;
+                    feedback.style.color = 'red';
+                }
+
+                gameActive = false;
+                playSnippetButton.style.display = 'none';
+                skipButton.style.display = 'none';
+
+                setTimeout(() => {
+                    gameActive = true;
+                    startRound();
+                }, 3000);
+            }
+
+            function disableOptionButtons(selectedTitle = null, clickedButton = null) {
+                const buttons = optionsContainer.querySelectorAll('button');
+                buttons.forEach(button => {
+                    button.disabled = true;
+                    if (button.getAttribute('data-title') === currentSong.title) {
+                        button.classList.remove('btn-outline-light', 'btn-danger');
+                        button.classList.add('btn-success');
+                    } else if (button === clickedButton && selectedTitle !== currentSong.title) {
+                        button.classList.remove('btn-outline-light');
+                        button.classList.add('btn-danger');
+                    } else {
+                        button.classList.remove('btn-outline-light');
+                        button.classList.add('btn-secondary');
+                    }
+                });
+            }
+
+            function revealAnswer() {
+                if (!gameActive) return;
+
+                audioPlayer.pause();
+
+                feedback.textContent = `La risposta corretta era: "${currentSong.title}" di ${currentSong.artist}.`;
+                feedback.style.color = 'yellow';
+                
+                disableOptionButtons();
+
+                gameActive = false;
+                playSnippetButton.style.display = 'none';
+                skipButton.style.display = 'none';
+
+                setTimeout(() => {
+                    gameActive = true;
+                    startRound();
+                }, 3000);
+            }
+
+            function endGame() {
+                gameActive = false;
+                audioPlayer.pause();
+
+                backgroundMusic.pause();
+                backgroundMusic.currentTime = 0;
+
+                endGameMusic.play().catch(e => console.error("Error playing end game music:", e));
+
+                roundInfo.style.display = 'none';
+                feedback.textContent = '';
+                optionsContainer.innerHTML = '';
+                playSnippetButton.style.display = 'none';
+                skipButton.style.display = 'none';
+                roundProgressBar.style.display = 'none';
+
+                finalScoreDisplay.textContent = score;
+                dedicationSection.style.display = 'block';
+                playAgainButton.style.display = 'inline-block';
+
+                if (score === totalRounds) {
+                    scoreMessage.textContent = "Fantastico! Hai indovinato tutte le canzoni! Sei una vera esperta di Natale!";
+                    scoreMessage.style.color = 'lightgreen';
+                } else if (score >= totalRounds / 2) {
+                    scoreMessage.textContent = "Ottimo lavoro! Hai una buona conoscenza delle canzoni natalizie.";
+                    scoreMessage.style.color = 'yellow';
+                } else {
+                    scoreMessage.textContent = "Non male! Continua ad ascoltare e diventerai una maestra delle canzoni di Natale!";
+                    scoreMessage.style.color = 'red';
+                }
+            }
+
+            function generateShareMessage() {
+                const songToDedicate = dedicateSongInput.value.trim();
+                const recipient = dedicateRecipientInput.value.trim();
+                const personalMessage = personalMessageInput.value.trim();
+
+                let message = `Ciao ${recipient || 'amico/a'}! Ho appena giocato al Quiz delle Canzoni Natalizie e ho pensato a te!`;
+                
+                if (songToDedicate) {
+                    message += ` Ti dedico la canzone "${songToDedicate}"! 🎶`;
+                }
+
+                if (personalMessage) {
+                    message += `\n\nMessaggio personale: "${personalMessage}"`;
+                }
+
+                message += `\n\nSpero ti piaccia! Buon Natale! 🎄`;
+
+                generatedMessageTextarea.value = message;
+                shareOutput.style.display = 'block';
+                dedicationMessage.textContent = '';
+            }
+
+            function copyMessage() {
+                generatedMessageTextarea.select();
+                document.execCommand('copy');
+                dedicationMessage.textContent = 'Messaggio copiato negli appunti!';
+                dedicationMessage.style.color = 'lightgreen';
+            }
+
+            function shareViaWhatsapp() {
+                const message = encodeURIComponent(generatedMessageTextarea.value);
+                window.open(`whatsapp://send?text=${message}`, '_blank');
+                dedicationMessage.textContent = 'Tentativo di condivisione su WhatsApp avviato!';
+                dedicationMessage.style.color = 'lightgreen';
+            }
+
+            function resetGame() {
+                roundInfo.style.display = 'block';
+                roundProgressBar.style.display = 'flex';
+                initializeGame();
+            }
+
+            playSnippetButton.addEventListener('click', playSnippet);
+            skipButton.addEventListener('click', revealAnswer);
+            generateShareMessageButton.addEventListener('click', generateShareMessage);
+            copyMessageButton.addEventListener('click', copyMessage);
+            shareWhatsappButton.addEventListener('click', shareViaWhatsapp);
+            playAgainButton.addEventListener('click', resetGame);
+            document.getElementById('startButton').addEventListener('click', startGame);
+
+
+            initializeGame();
+            setInterval(createSnowflake, 300);
         });
-    };
-
-    backgroundMusic.pause(); backgroundMusic.currentTime = 0;
-    foundSound.pause(); foundSound.currentTime = 0;
-    finalSound.pause(); finalSound.currentTime = 0;
-    introMusic.pause(); introMusic.currentTime = 0;
-  }
-
-  function startGame() {
-    gameActive = true;
-    introMessage.style.display = 'none';
-    startGameButton.style.display = 'none';
-    gameArea.style.display = 'block'; /* Make game area visible */
-    foundCounter.style.display = 'flex'; // Use flex for counter and progress bar
-    
-    // Play intro music (song.mp3)
-    introMusic.volume = 0.6;
-    introMusic.play().then(() => {
-        console.log("Intro music started successfully.");
-    }).catch(e => console.error("Error playing intro music:", e));
-
-    // Start background music (sound-track0.mp3) immediately after intro music attempt
-    backgroundMusic.volume = 0.5;
-    backgroundMusic.play().then(() => {
-        console.log("Background music started successfully.");
-    }).catch(e => console.error("Error playing background music:", e));
-  }
-
-  function handleSpotClick(item, spotDiv) {
-    if (!gameActive || item.found) return;
-
-    item.found = true;
-    foundCount++;
-    currentFoundSpan.textContent = foundCount;
-    updateProgressBar(); // Update progress bar
-    spotDiv.classList.add('found');
-
-    foundSound.pause();
-    foundSound.currentTime = 0;
-    foundSound.play().then(() => {
-        console.log("Found sound started successfully.");
-    }).catch(e => console.error("Error playing found sound:", e));
-
-    revealedPhotos.push(item.revealedPhotoSrc);
-
-    showPhotoModal(item.revealedPhotoSrc);
-  }
-
-  function showPhotoModal(photoSrc) {
-    gameActive = false; // Temporarily disable game interaction
-    modalPhoto.src = photoSrc;
-    photoModal.classList.add('active');
-  }
-
-  function closePhotoModal() {
-    photoModal.classList.remove('active');
-    gameActive = true; // Re-enable game interaction
-    if (foundCount === currentHiddenItems.length) {
-      endGame();
-    }
-  }
-
-  function createCarousel() {
-    carouselInner.innerHTML = '';
-    revealedPhotos.forEach((photoSrc, index) => {
-      const carouselItem = document.createElement('div');
-      carouselItem.classList.add('carousel-item');
-      if (index === 0) {
-        carouselItem.classList.add('active');
-      }
-      
-      const img = document.createElement('img');
-      img.src = photoSrc;
-      img.alt = `Foto ${index + 1}`;
-      
-      carouselItem.appendChild(img);
-      carouselInner.appendChild(carouselItem);
-    });
-    // Inizializza il carosello di Bootstrap dopo aver aggiunto gli elementi
-    new bootstrap.Carousel(document.getElementById('finalCarousel'), {
-        interval: 3000 // Cambia immagine ogni 3 secondi
-    });
-  }
-
-  function endGame() {
-    gameActive = false;
-    backgroundMusic.pause();
-    backgroundMusic.currentTime = 0;
-    introMusic.pause(); introMusic.currentTime = 0;
-    
-    finalSound.volume = 0.7;
-    finalSound.play().then(() => {
-        console.log("Final sound started successfully.");
-    }).catch(e => console.error("Error playing final sound:", e));
-    
-    gameArea.style.display = 'none';
-    foundCounter.style.display = 'none';
-    
-    createCarousel(); 
-    carouselContainer.classList.add('active'); 
-    
-    backButton.style.display = 'inline-block';
-    
-    document.querySelectorAll('.clickable-spot').forEach(spot => spot.style.pointerEvents = 'none');
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    initializeGame();
-    setInterval(createSnowflake, 300);
-  });
-  startGameButton.addEventListener('click', startGame);
-  closePhotoModalButton.addEventListener('click', closePhotoModal);
-
-  document.body.addEventListener('click', () => {
-    // Questo listener è un fallback generale per sbloccare l'audio in alcuni browser
-    // se le policy di autoplay sono molto restrittive e i .play() diretti vengono bloccati.
-    // Le musiche specifiche vengono gestite nelle rispettive funzioni.
-  }, { once: true });
-
- </script>
-
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+    </script>
 </body>
 </html>

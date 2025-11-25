@@ -9,7 +9,6 @@
  <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&family=Press+Start+2P&display=swap" rel="stylesheet">
 
  <style>
-  /* Stili globali basati su giorno01.html e giorno08.html */
   * {
    margin: 0;
    padding: 0;
@@ -56,7 +55,6 @@
    50% { transform: translateY(-20px); }
   }
 
-  /* New: Animated snowflakes CSS (from giorno01) */
   .snowflake {
    position: fixed;
    top: -10px;
@@ -291,7 +289,7 @@
  </audio>
  <!-- Changed win-sound to win3.mp3 -->
  <audio id="win-sound" preload="auto">
-  <source src="audio/pipi.mp3" type="audio/mpeg">
+  <source src="audio/canederli.mp3" type="audio/mpeg">
  </audio>
 
  <!-- Loading Screen -->
@@ -309,9 +307,9 @@
   
   <div class="message-container" id="intro-message">
    <p>
-    Ciao Mapi! (o Bibi, se preferisci 😉) Preparati per una scalata epica sulle Alpi Trentine!
+    Buondì o buonasera... Preparati per una scalata epica sulle Alpi Trentine!
     Il tuo obiettivo è raggiungere la cima della montagna, evitando i massi che cadono.
-    Riuscirai a raggiungere il Rifugio Lago di Tovel?
+    Riuscirai a raggiungere il Rifugio Lago di Braies?
     Usa le frecce ← → (o A/D) per muoverti.
    </p>
   </div>
@@ -329,9 +327,9 @@
   </div>
   
   <div id="gameWinMessage" class="game-message">
-    Ce l'hai fatta! Hai raggiunto il Rifugio Lago di Tovel ❤️
+    Ce l'hai fatta! Hai raggiunto il Rifugio Lago di Braies ❤️
     <!-- Changed image src to lago.png -->
-    <img src="images/lago.png" alt="Lago di Tovel" style="max-width: 100%; height: auto; margin-top: 1rem; image-rendering: pixelated; border: 2px solid gold;">
+    <img src="images/lago.png" alt="Lago di Braies" style="max-width: 100%; height: auto; margin-top: 1rem; image-rendering: pixelated; border: 2px solid gold;">
     <p style="font-family: 'Mountains of Christmas', cursive; font-size: 1.2rem; margin-top: 1rem;">
       Qui ti aspetta una cioccolata calda e un abbraccio ❤️
     </p>
@@ -348,7 +346,6 @@
  </div>
 
  <script>
-  // Funzione per creare fiocchi di neve (from giorno01)
   function createSnowflake() {
       const snowflake = document.createElement('div');
       snowflake.classList.add('snowflake');

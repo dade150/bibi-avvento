@@ -8,368 +8,392 @@
  <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
  <style>
-  /* Stili globali dal giorno 2/3 */
   * {
    margin: 0;
    padding: 0;
    box-sizing: border-box;
   }
-  
-  body {
-   font-family: 'Mountains of Christmas', cursive;
-   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
-   color: #fff;
-   min-height: 100vh;
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-   align-items: center;
-   padding: 2rem;
-   position: relative;
-   overflow-x: hidden; /* Added to prevent horizontal scroll from snowflakes */
-   overflow-y: auto;
-  }
-  
-  /* Existing floating particles background */
-  body::before {
-   content: '';
-   position: fixed; /* Changed to fixed to cover the whole viewport */
-   width: 100%;
-   height: 100%;
-   background-image: 
-    radial-gradient(2px 2px at 20% 30%, white, transparent),
-    radial-gradient(2px 2px at 60% 70%, white, transparent),
-    radial-gradient(1px 1px at 50% 50%, white, transparent),
-    radial-gradient(1px 1px at 80% 10%, white, transparent),
-    radial-gradient(2px 2px at 90% 60%, white, transparent),
-    radial-gradient(1px 1px at 33% 80%, white, transparent),
-    radial-gradient(1px 1px at 75% 40%, white, transparent);
-   background-size: 200% 200%;
-   animation: float 20s ease-in-out infinite;
-   opacity: 0.3;
-   z-index: 0; /* Ensures it stays behind game content */
-  }
-  
-  @keyframes float {
-   0%, 100% { transform: translateY(0); }
-   50% { transform: translateY(-20px); }
-  }
+body {
+font-family: 'Mountains of Christmas', cursive;
+background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+color: #fff;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+padding: 2rem;
+position: relative;
+overflow-x: hidden;
+overflow-y: auto;
+}
+body::before {
+content: '';
+position: fixed;
+width: 100%;
+height: 100%;
+background-image:
+radial-gradient(2px 2px at 20% 30%, white, transparent),
+radial-gradient(2px 2px at 60% 70%, white, transparent),
+radial-gradient(1px 1px at 50% 50%, white, transparent),
+radial-gradient(1px 1px at 80% 10%, white, transparent),
+radial-gradient(2px 2px at 90% 60%, white, transparent),
+radial-gradient(1px 1px at 33% 80%, white, transparent),
+radial-gradient(1px 1px at 75% 40%, white, transparent);
+background-size: 200% 200%;
+animation: float 20s ease-in-out infinite;
+opacity: 0.3;
+z-index: 0;
+}
+@keyframes float {
+0%, 100% { transform: translateY(0); }
+50% { transform: translateY(-20px); }
+}
+.snowflake {
+position: fixed;
+top: -10px;
+color: white;
+font-size: 1em;
+font-family: Arial, sans-serif;
+text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+z-index: 0;
+user-select: none;
+pointer-events: none;
+animation: fall linear infinite;
+}
+@keyframes fall {
+to {
+transform: translateY(100vh) translateX(100px);
+opacity: 0;
+}
+}
+/* Disco lights effect - LUCI PIÙ FORTI */
+@keyframes discoLights {
+ 0% { background: radial-gradient(circle at 20% 30%, rgba(255, 0, 0, 1), transparent); }
+ 14% { background: radial-gradient(circle at 80% 20%, rgba(0, 255, 0, 1), transparent); }
+ 28% { background: radial-gradient(circle at 50% 70%, rgba(0, 0, 255, 1), transparent); }
+ 42% { background: radial-gradient(circle at 10% 80%, rgba(255, 255, 0, 1), transparent); }
+ 56% { background: radial-gradient(circle at 90% 60%, rgba(255, 0, 255, 2), transparent); }
+ 70% { background: radial-gradient(circle at 30% 40%, rgba(0, 255, 255, 2), transparent); }
+ 84% { background: radial-gradient(circle at 70% 90%, rgba(255, 128, 0, 1), transparent); }
+ 100% { background: radial-gradient(circle at 40% 10%, rgba(128, 0, 255, 1), transparent); }
+}
 
-  /* New: Animated snowflakes CSS from giorno01 */
-  .snowflake {
-   position: fixed;
-   top: -10px;
-   color: white;
-   font-size: 1em;
-   font-family: Arial, sans-serif;
-   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-   z-index: 0; /* Stays behind game content */
-   user-select: none;
-   pointer-events: none;
-   animation: fall linear infinite;
-  }
-  
-  @keyframes fall {
-   to {
-    transform: translateY(100vh) translateX(100px);
-    opacity: 0;
-   }
-  }
+body.disco-mode::after {
+ content: '';
+ position: fixed;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ z-index: 99;
+ pointer-events: none;
+ animation: discoLights 0.3s infinite; /* Anche più veloce per più impatto */
+ opacity: 0.9; /* Aggiunto per rendere l'effetto più visibile */
+}
 
-  .hidden-objects-game-container {
-   flex: 1;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   justify-content: center;
-   width: 100%;
-   max-width: 1000px; /* Larghezza massima del gioco */
-   z-index: 1; /* Ensures game content is above snow */
-   padding: 2rem;
-   background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
-   border: 5px solid;
-   border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
-   border-radius: 25px;
-   box-shadow: 
-    0 0 30px rgba(255, 215, 0, 0.3),
-    0 0 60px rgba(255, 215, 0, 0.2),
-    inset 0 0 50px rgba(0, 0, 0, 0.5);
-   animation: glow-pulse 3s ease-in-out infinite;
-  }
-  
-  @keyframes glow-pulse {
-   0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
-   50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
-  }
-
-  .game-header {
-   text-align: center;
-   margin-bottom: 2rem;
-  }
-
-  .game-header h1 {
-   color: gold;
-   font-size: 2.8rem;
-   text-shadow: 
-    2px 2px 4px black,
-    0 0 20px rgba(255, 215, 0, 0.5),
-    0 0 30px rgba(255, 215, 0, 0.3);
-   margin-bottom: 1rem;
-   animation: title-glow 2s ease-in-out infinite alternate;
-  }
-  
-  @keyframes title-glow {
-   from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
-   to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
-  }
-
-  .game-content {
-   display: flex;
-   flex-direction: column; /* Cambiato in colonna per layout mobile */
-   gap: 1.5rem;
-   width: 100%;
-   align-items: center;
-  }
-
-  .game-scene-wrapper {
-   position: relative;
-   width: 100%;
-   max-width: 700px; /* Larghezza massima dell'immagine di gioco */
-   border: 3px solid gold;
-   border-radius: 10px;
-   overflow: hidden;
-   cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewport="0 0 100 100" style="fill:black;font-size:18px;"><text y="50%">🔍</text></svg>') 15 15, auto; /* Cursore a lente */
-  }
-
-  .game-scene-wrapper img {
-   width: 100%;
-   height: auto;
-   display: block;
-  }
-
-  .hidden-object-highlight {
-   position: absolute;
-   border: 2px solid #00ff00; /* Bordo verde per oggetti trovati */
-   background-color: rgba(0, 255, 0, 0.2); /* Sfondo semi-trasparente */
-   border-radius: 5px;
-   pointer-events: none; /* Non blocca il clic sull'immagine sottostante */
-   opacity: 0; /* Inizialmente invisibile */
-   transition: opacity 0.3s ease;
-  }
-
-  .hidden-object-highlight.found {
-   opacity: 1; /* Rendi visibile quando trovato */
-  }
-
-  .object-list-container {
-   width: 100%;
-   max-width: 300px; /* Larghezza della lista oggetti */
-   background: rgba(0, 0, 0, 0.4);
-   border: 2px solid rgba(255, 215, 0, 0.3);
-   border-radius: 15px;
-   padding: 1rem;
-   text-align: center;
-  }
-
-  .object-list-container h3 {
-   color: gold;
-   font-size: 1.5rem;
-   margin-bottom: 1rem;
-   text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-  }
-
-  #objects-to-find {
-   list-style: none;
-   padding: 0;
-   margin: 0;
-  }
-
-  #objects-to-find li {
-   font-size: 1.1rem;
-   color: #fff;
-   padding: 0.5rem 0;
-   border-bottom: 1px dashed rgba(255, 215, 0, 0.2);
-   transition: color 0.3s ease, text-decoration 0.3s ease;
-   display: flex; /* Added for icon alignment */
-   align-items: center; /* Added for icon alignment */
-   justify-content: center; /* Added for icon alignment */
-  }
-
-  #objects-to-find li img {
-    height: 24px; /* Adjust icon size as needed */
-    width: 24px;
-    margin-right: 8px; /* Space between icon and text */
-    vertical-align: middle;
-  }
-
-  #objects-to-find li:last-child {
-   border-bottom: none;
-  }
-
-  #objects-to-find li.found {
-   color: #00ff00; /* Verde per oggetti trovati */
-   text-decoration: line-through;
-   opacity: 0.7;
-  }
-
-  .game-info {
-   margin-top: 1.5rem;
-   font-size: 1.2rem;
-   color: gold;
-   text-align: center;
-  }
-  .game-info span {
-    font-weight: bold;
-  }
-
-  .game-buttons {
-   margin-top: 2rem;
-   display: flex;
-   gap: 1rem;
-   justify-content: center;
-   flex-wrap: wrap; /* Per layout responsivo */
-  }
-
-  .game-button {
-   padding: 1rem 2rem;
-   font-size: 1.2rem;
-   font-family: 'Mountains of Christmas', cursive;
-   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
-   color: darkred;
-   border: 2px solid rgba(139, 0, 0, 0.5);
-   border-radius: 50px;
-   cursor: pointer;
-   transition: all 0.3s ease;
-   font-weight: bold;
-   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-  }
-
-  .game-button:hover {
-   transform: translateY(-3px) scale(1.05);
-   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
-   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
-  }
-
-  /* Game Over/Win Modal */
-  .game-modal {
-   display: none; /* Hidden by default */
-   position: fixed; /* Stay in place */
-   z-index: 100; /* Sit on top */
-   left: 0;
-   top: 0;
-   width: 100%; /* Full width */
-   height: 100%; /* Full height */
-   overflow: auto; /* Enable scroll if needed */
-   background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
-   justify-content: center;
-   align-items: center;
-   flex-direction: column;
-  }
-
-  .game-modal-content {
-   background-color: #0a0a0a;
-   margin: auto;
-   padding: 20px;
-   border: 5px solid gold;
-   border-radius: 20px;
-   width: 80%;
-   max-width: 600px;
-   text-align: center;
-   box-shadow: 0 0 40px rgba(255, 215, 0, 0.7);
-  }
-
-  .game-modal-content h2 {
-   color: gold;
-   font-size: 2.5rem;
-   margin-bottom: 1rem;
-   text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5);
-  }
-
-  .game-modal-content p {
-   font-size: 1.3rem;
-   color: #fff;
-   margin-bottom: 1.5rem;
-  }
-
-  /* Responsive adjustments */
-  @media (min-width: 768px) {
-    .game-content {
-        flex-direction: row; /* Torna a riga su schermi più grandi */
-        justify-content: center;
-    }
-    .object-list-container {
-        max-width: 250px; /* Riduci larghezza lista su desktop */
-        align-self: flex-start; /* Allinea in alto */
-    }
-    .game-scene-wrapper {
-        max-width: 600px; /* Larghezza massima dell'immagine di gioco su desktop */
-    }
-  }
-
-  @media (max-width: 768px) {
-   .game-header h1 {
-    font-size: 2rem;
-   }
-   .object-list-container {
-    max-width: 90%; /* Più largo su mobile */
-   }
-   .game-button {
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-   }
-  }
-
-  @media (max-width: 480px) {
-   .game-header h1 {
-    font-size: 1.5rem;
-   }
-   .object-list-container h3 {
-    font-size: 1.2rem;
-   }
-   #objects-to-find li {
-    font-size: 0.9rem;
-   }
-  }
- </style>
+.hidden-objects-game-container {
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+width: 100%;
+max-width: 1000px;
+z-index: 1;
+padding: 2rem;
+background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+border: 5px solid;
+border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
+border-radius: 25px;
+box-shadow:
+0 0 30px rgba(255, 215, 0, 0.3),
+0 0 60px rgba(255, 215, 0, 0.2),
+inset 0 0 50px rgba(0, 0, 0, 0.5);
+animation: glow-pulse 3s ease-in-out infinite;
+}
+@keyframes glow-pulse {
+0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+}
+.game-header {
+text-align: center;
+margin-bottom: 2rem;
+}
+.game-header h1 {
+color: gold;
+font-size: 2.8rem;
+text-shadow:
+2px 2px 4px black,
+0 0 20px rgba(255, 215, 0, 0.5),
+0 0 30px rgba(255, 215, 0, 0.3);
+margin-bottom: 1rem;
+animation: title-glow 2s ease-in-out infinite alternate;
+}
+@keyframes title-glow {
+from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
+to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
+}
+.intro-section {
+text-align: center;
+}
+.intro-section p {
+font-size: 1.4rem;
+line-height: 1.8;
+min-height: 100px;
+margin-bottom: 1.5rem;
+}
+.btn-choice {
+margin: 0.5rem;
+background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+color: darkred;
+border: 2px solid rgba(139, 0, 0, 0.5);
+font-weight: bold;
+font-size: 1.2rem;
+padding: 0.7rem 2rem;
+border-radius: 50px;
+transition: all 0.3s ease;
+box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+cursor: pointer;
+}
+.btn-choice:hover {
+transform: translateY(-3px) scale(1.05);
+box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+}
+.game-content {
+display: flex;
+flex-direction: column;
+gap: 1.5rem;
+width: 100%;
+align-items: center;
+}
+.game-scene-wrapper {
+position: relative;
+width: 100%;
+max-width: 700px;
+border: 3px solid gold;
+border-radius: 10px;
+overflow: hidden;
+cursor: auto;
+}
+.game-scene-wrapper.active {
+cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewport="0 0 100 100" style="fill:black;font-size:18px;"><text y="50%">🔍</text></svg>') 15 15, auto;
+}
+.game-scene-wrapper img {
+width: 100%;
+height: auto;
+display: block;
+}
+.hidden-object-highlight {
+position: absolute;
+border: 2px solid #00ff00;
+background-color: rgba(0, 255, 0, 0.2);
+border-radius: 5px;
+pointer-events: none;
+opacity: 0;
+transition: opacity 0.3s ease;
+}
+.hidden-object-highlight.found {
+opacity: 1;
+}
+.object-list-container {
+width: 100%;
+max-width: 300px;
+background: rgba(0, 0, 0, 0.4);
+border: 2px solid rgba(255, 215, 0, 0.3);
+border-radius: 15px;
+padding: 1rem;
+text-align: center;
+}
+.object-list-container h3 {
+color: gold;
+font-size: 1.5rem;
+margin-bottom: 1rem;
+text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+#objects-to-find {
+list-style: none;
+padding: 0;
+margin: 0;
+}
+#objects-to-find li {
+font-size: 1.1rem;
+color: #fff;
+padding: 0.5rem 0;
+border-bottom: 1px dashed rgba(255, 215, 0, 0.2);
+transition: color 0.3s ease, text-decoration 0.3s ease;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+#objects-to-find li img {
+height: 24px;
+width: 24px;
+margin-right: 8px;
+vertical-align: middle;
+}
+#objects-to-find li:last-child {
+border-bottom: none;
+}
+#objects-to-find li.found {
+color: #00ff00;
+text-decoration: line-through;
+opacity: 0.7;
+}
+.game-info {
+margin-top: 1.5rem;
+font-size: 1.2rem;
+color: gold;
+text-align: center;
+}
+.game-info span {
+font-weight: bold;
+}
+.game-buttons {
+margin-top: 2rem;
+display: flex;
+gap: 1rem;
+justify-content: center;
+flex-wrap: wrap;
+}
+.game-button {
+padding: 1rem 2rem;
+font-size: 1.2rem;
+font-family: 'Mountains of Christmas', cursive;
+background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+color: darkred;
+border: 2px solid rgba(139, 0, 0, 0.5);
+border-radius: 50px;
+cursor: pointer;
+transition: all 0.3s ease;
+font-weight: bold;
+box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+}
+.game-button:hover {
+transform: translateY(-3px) scale(1.05);
+box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+}
+.game-modal {
+display: none;
+position: fixed;
+z-index: 100;
+left: 0;
+top: 0;
+width: 100%;
+height: 100%;
+overflow: auto;
+background-color: rgba(0,0,0,0.8);
+justify-content: center;
+align-items: center;
+flex-direction: column;
+}
+.game-modal-content {
+background-color: #0a0a0a;
+margin: auto;
+padding: 20px;
+border: 5px solid gold;
+border-radius: 20px;
+width: 80%;
+max-width: 600px;
+text-align: center;
+box-shadow: 0 0 40px rgba(255, 215, 0, 0.7);
+}
+.game-modal-content h2 {
+color: gold;
+font-size: 2.5rem;
+margin-bottom: 1rem;
+text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5);
+}
+.game-modal-content p {
+font-size: 1.3rem;
+color: #fff;
+margin-bottom: 1.5rem;
+}
+@media (min-width: 768px) {
+.game-content {
+flex-direction: row;
+justify-content: center;
+}
+.object-list-container {
+max-width: 250px;
+align-self: flex-start;
+}
+.game-scene-wrapper {
+max-width: 600px;
+}
+}
+@media (max-width: 768px) {
+.game-header h1 {
+font-size: 2rem;
+}
+.object-list-container {
+max-width: 90%;
+}
+.game-button {
+padding: 0.8rem 1.5rem;
+font-size: 1rem;
+}
+}
+@media (max-width: 480px) {
+.game-header h1 {
+font-size: 1.5rem;
+}
+.object-list-container h3 {
+font-size: 1.2rem;
+}
+#objects-to-find li {
+font-size: 0.9rem;
+}
+}
+</style>
 </head>
-
 <body>
  <!-- Audio elements -->
- <audio id="tranquiMusic" src="audio/tranqui.mp3" preload="auto"></audio>
+ <audio id="tranquiMusic" src="audio/rockin.mp3" preload="auto"></audio>
  <audio id="sbustoSound" src="audio/sbusto.mp3" preload="auto"></audio>
 
  <div class="hidden-objects-game-container">
   <div class="game-header">
    <h1>
     <span class="emoji-sparkle">🔍</span>
-    Trova gli Oggetti Natalizi!
+    Giorno 5 - Trova gli Oggetti Natalizi!
     <span class="emoji-sparkle">🎄</span>
    </h1>
   </div>
 
-  <div class="game-buttons">
-   <button class="game-button" id="start-game-btn" onclick="startGame()">Inizia il Gioco</button>
-   <button class="game-button" onclick="resetGame()">Ricomincia</button>
-   <button class="game-button" onclick="window.location.href='index.html'">
-    🎄 Torna al Calendario
-   </button>
+  <!-- Intro Section -->
+  <div class="intro-section" id="intro-section">
+   <p id="intro-text">Benvenuta al quinto giorno del Lab dell'Avvento! Oggi ti aspetta una sfida di osservazione: trova tutti gli 8 oggetti natalizi nascosti nella scena. Sei pronta? 🎄🔍</p>
+   <button id="startButton" class="btn btn-choice" onclick="startGame()">Inizia il Gioco! ✨</button>
   </div>
 
-  <div class="game-info">
-    Oggetti trovati: <span id="found-count">0</span> / <span id="total-objects">0</span>
-  </div>
-
-  <div class="game-content">
-   <div class="game-scene-wrapper" id="game-scene-wrapper">
-    <img src="images/christmas-scene.jpg" alt="Scena Natalizia" id="christmas-scene-img">
-    <!-- Qui verranno aggiunti dinamicamente gli highlight degli oggetti -->
+  <!-- Game Content (hidden initially) -->
+  <div id="game-content" style="display: none;">
+   <div class="game-info">
+     Oggetti trovati: <span id="found-count">0</span> / <span id="total-objects">0</span>
    </div>
 
-   <div class="object-list-container">
-    <h3>Oggetti da trovare:</h3>
-    <ul id="objects-to-find">
-        <!-- Icons and object names will be dynamically inserted here -->
-    </ul>
+   <div class="game-content">
+    <div class="game-scene-wrapper" id="game-scene-wrapper">
+     <img src="images/christmas-scene.jpg" alt="Scena Natalizia" id="christmas-scene-img">
+     <!-- Qui verranno aggiunti dinamicamente gli highlight degli oggetti -->
+    </div>
+
+    <div class="object-list-container">
+     <h3>Oggetti da trovare:</h3>
+     <ul id="objects-to-find">
+         <!-- Icons and object names will be dynamically inserted here -->
+     </ul>
+    </div>
+   </div>
+
+   <div class="game-buttons">
+    <button class="game-button" onclick="resetGame()">Ricomincia</button>
+    <button class="game-button" onclick="window.location.href='index.html'">
+     🎄 Torna al Calendario
+    </button>
    </div>
   </div>
 
@@ -400,7 +424,7 @@
    { id: 'oggetto8', name: 'Pallina', icon: 'images/hidden_object_icons/oggetto8.png', x: 155, y: 915, width: 50, height: 50, found: false },
   ];
 
-  let currentObjects = []; // Copia degli oggetti per il gioco attuale
+  let currentObjects = [];
   let objectsFoundCount = 0;
   let gameActive = false;
 
@@ -409,7 +433,8 @@
   const objectsToFindList = document.getElementById('objects-to-find');
   const foundCountSpan = document.getElementById('found-count');
   const totalObjectsSpan = document.getElementById('total-objects');
-  const startGameBtn = document.getElementById('start-game-btn');
+  const introSection = document.getElementById('intro-section');
+  const gameContent = document.getElementById('game-content');
   const gameEndModal = document.getElementById('gameEndModal');
   const modalTitle = document.getElementById('modalTitle');
   const modalMessage = document.getElementById('modalMessage');
@@ -418,8 +443,6 @@
   const tranquiMusic = document.getElementById('tranquiMusic');
   const sbustoSound = document.getElementById('sbustoSound');
 
-
-  // Funzione per creare fiocchi di neve (from giorno01)
   function createSnowflake() {
     const snowflake = document.createElement('div');
     snowflake.classList.add('snowflake');
@@ -433,9 +456,8 @@
     setTimeout(() => snowflake.remove(), 8000);
   }
 
-
   function initializeGame() {
-   currentObjects = JSON.parse(JSON.stringify(hiddenObjectsData)); // Crea una copia profonda
+   currentObjects = JSON.parse(JSON.stringify(hiddenObjectsData));
    objectsFoundCount = 0;
    gameActive = false;
 
@@ -446,36 +468,37 @@
    currentObjects.forEach(obj => {
     const listItem = document.createElement('li');
     listItem.id = `object-item-${obj.id}`;
-    // Add icon next to the text
     listItem.innerHTML = `<img src="${obj.icon}" alt="${obj.name} icon"> ${obj.name}`;
     objectsToFindList.appendChild(listItem);
    });
 
-   // Rimuovi tutti gli highlight esistenti
    document.querySelectorAll('.hidden-object-highlight').forEach(el => el.remove());
    
-   startGameBtn.style.display = 'block'; // Mostra il pulsante "Inizia il Gioco"
-   gameSceneWrapper.style.cursor = 'auto'; // Cursore normale prima dell'inizio
-   christmasSceneImg.removeEventListener('click', handleSceneClick); // Rimuovi listener se presente
-   closeGameEndModal(); // Assicurati che il modal sia chiuso
+   gameSceneWrapper.classList.remove('active');
+   christmasSceneImg.removeEventListener('click', handleSceneClick);
+   closeGameEndModal();
 
    // Stop and reset audio
    tranquiMusic.pause();
    tranquiMusic.currentTime = 0;
    sbustoSound.pause();
    sbustoSound.currentTime = 0;
+
+   // Remove disco mode
+   document.body.classList.remove('disco-mode');
   }
 
-  // Funzione per avviare il gioco
   function startGame() {
+   introSection.style.display = 'none';
+   gameContent.style.display = 'block';
+   
    gameActive = true;
-   startGameBtn.style.display = 'none'; // Nascondi il pulsante "Inizia il Gioco"
-   gameSceneWrapper.style.cursor = 'url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewport="0 0 100 100" style="fill:black;font-size:18px;"><text y="50%">🔍</text></svg>\') 15 15, auto'; // Cursore a lente
+   gameSceneWrapper.classList.add('active');
    christmasSceneImg.addEventListener('click', handleSceneClick);
-   tranquiMusic.play().catch(e => console.error("Error playing tranqui music:", e)); // Play tranqui.mp3
+   tranquiMusic.volume = 0.3;
+   tranquiMusic.play().catch(e => console.error("Error playing tranqui music:", e));
   }
 
-  // Gestisce il clic sulla scena del gioco
   function handleSceneClick(event) {
    if (!gameActive) return;
 
@@ -483,7 +506,6 @@
    const scaleX = christmasSceneImg.naturalWidth / imgRect.width;
    const scaleY = christmasSceneImg.naturalHeight / imgRect.height;
 
-   // Coordinate del clic relative all'immagine originale (senza scaling)
    const clickX = (event.clientX - imgRect.left) * scaleX;
    const clickY = (event.clientY - imgRect.top) * scaleY;
 
@@ -500,19 +522,15 @@
         objectsFoundCount++;
         foundCountSpan.textContent = objectsFoundCount;
         
-        // Aggiorna la lista
         const listItem = document.getElementById(`object-item-${obj.id}`);
         if (listItem) {
             listItem.classList.add('found');
         }
 
-        // Aggiungi l'highlight visivo
         const highlightDiv = document.createElement('div');
         highlightDiv.classList.add('hidden-object-highlight');
-        highlightDiv.classList.add('found'); // Rendi visibile subito
+        highlightDiv.classList.add('found');
         
-        // Calcola la posizione dell'highlight in percentuale o in pixel scalati
-        // È più robusto usare percentuali se l'immagine può ridimensionarsi
         highlightDiv.style.left = `${(obj.x / christmasSceneImg.naturalWidth) * 100}%`;
         highlightDiv.style.top = `${(obj.y / christmasSceneImg.naturalHeight) * 100}%`;
         highlightDiv.style.width = `${(obj.width / christmasSceneImg.naturalWidth) * 100}%`;
@@ -525,55 +543,53 @@
    });
 
    if (objectsFoundCount === currentObjects.length) {
-    endGame(true); // Tutti gli oggetti trovati, l'utente ha vinto
+    endGame(true);
    }
   }
 
-  // Funzione per terminare il gioco (vittoria/sconfitta)
   function endGame(win) {
    gameActive = false;
    christmasSceneImg.removeEventListener('click', handleSceneClick);
-   gameSceneWrapper.style.cursor = 'auto'; // Ripristina il cursore normale
+   gameSceneWrapper.classList.remove('active');
 
-   tranquiMusic.pause(); // Stop background music
-   tranquiMusic.currentTime = 0; // Reset background music
+   tranquiMusic.pause();
+   tranquiMusic.currentTime = 0;
 
-   sbustoSound.play().catch(e => console.error("Error playing sbusto sound:", e)); // Play end game sound
+   // Start disco lights effect
+   document.body.classList.add('disco-mode');
+
+   sbustoSound.play().catch(e => console.error("Error playing sbusto sound:", e));
 
    gameEndModal.style.display = 'flex';
    if (win) {
     modalTitle.innerHTML = '<span class="emoji-sparkle">🎉</span> HAI VINTO! <span class="emoji-sparkle">🎉</span>';
     modalMessage.textContent = 'Complimenti! Hai trovato tutti gli oggetti natalizi nascosti!';
    } else {
-    // Questo caso non dovrebbe accadere in un gioco a oggetti nascosti senza timer o errori
     modalTitle.innerHTML = '<span class="emoji-sparkle">Game Over</span>';
     modalMessage.textContent = 'Non hai trovato tutti gli oggetti. Riprova!';
    }
   }
 
-  // Funzione per resettare il gioco
   function resetGame() {
    initializeGame();
+   introSection.style.display = 'block';
+   gameContent.style.display = 'none';
   }
 
-  // Funzione per chiudere il modal di fine gioco
   function closeGameEndModal() {
    gameEndModal.style.display = 'none';
-   sbustoSound.pause(); // Stop end game sound if modal is closed
-   sbustoSound.currentTime = 0; // Reset end game sound
+   sbustoSound.pause();
+   sbustoSound.currentTime = 0;
+   document.body.classList.remove('disco-mode');
   }
 
-  // Inizializza il gioco al caricamento della pagina
   document.addEventListener('DOMContentLoaded', () => {
     initializeGame();
-    // Start the actual falling snowflakes
     setInterval(createSnowflake, 300);
   });
 
-  // Assicurati che la funzione di gestione del clic sia registrata solo quando il gioco inizia
-  // e che le dimensioni dell'immagine siano caricate per calcolare correttamente le posizioni
   christmasSceneImg.onload = () => {
-    // initializeGame(); // Già chiamato al DOMContentLoaded, ma può essere utile se l'immagine carica lentamente
+    // Image loaded
   };
  </script>
 

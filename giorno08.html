@@ -4,10 +4,8 @@
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1">
  <title>Giorno 8 - Cruciverba Grey's Anatomy</title>
-
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
  <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
-
  <style>
   * {
    margin: 0;
@@ -26,14 +24,13 @@
    align-items: center;
    padding: 2rem;
    position: relative;
-   overflow-x: hidden; /* Added for snowflakes */
-   overflow-y: auto; /* Added for snowflakes */
+   overflow-x: hidden;
+   overflow-y: auto;
   }
   
-  /* Particelle fluttuanti di sfondo (esistente) */
   body::before {
    content: '';
-   position: fixed; /* Changed to fixed to cover the whole viewport */
+   position: fixed;
    width: 100%;
    height: 100%;
    background-image: 
@@ -47,7 +44,7 @@
    background-size: 200% 200%;
    animation: float 20s ease-in-out infinite;
    opacity: 0.3;
-   z-index: 0; /* Ensures it stays behind game content */
+   z-index: 0;
   }
   
   @keyframes float {
@@ -55,7 +52,6 @@
    50% { transform: translateY(-20px); }
   }
 
-  /* New: Animated snowflakes CSS (from giorno01) */
   .snowflake {
    position: fixed;
    top: -10px;
@@ -63,7 +59,7 @@
    font-size: 1em;
    font-family: Arial, sans-serif;
    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-   z-index: 0; /* Stays behind game content */
+   z-index: 0;
    user-select: none;
    pointer-events: none;
    animation: fall linear infinite;
@@ -82,14 +78,14 @@
    border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
    border-radius: 25px;
    padding: 3rem;
-   max-width: 900px; /* Increased max-width for crossword */
+   max-width: 900px;
    text-align: center;
    box-shadow: 
     0 0 30px rgba(255, 215, 0, 0.3),
     0 0 60px rgba(255, 215, 0, 0.2),
     inset 0 0 50px rgba(0, 0, 0, 0.5);
    position: relative;
-   z-index: 1; /* Ensure content is above snow */
+   z-index: 1;
    animation: glow-pulse 3s ease-in-out infinite;
   }
   
@@ -202,48 +198,44 @@
    50% { transform: translateY(-10px); }
   }
 
-  /* Crossword Specific Styles */
   .crossword-container {
       margin-top: 2rem;
-      display: none; /* Hidden until game starts */
+      display: none;
       width: 100%;
-      max-width: 700px; /* Adjust as needed for grid size */
-      margin-left: auto; /* Center the container */
-      margin-right: auto; /* Center the container */
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
   }
 
   .crossword-grid {
       display: grid;
-      /* GRID_ROWS and GRID_COLS will be set dynamically by JS for exact fit */
       gap: 1px;
       border: 2px solid gold;
-      margin: 1rem auto; /* Center the grid */
+      margin: 1rem auto;
       background-color: rgba(0, 0, 0, 0.7);
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
   }
 
   .grid-cell {
       position: relative;
-      width: 40px; /* Fixed cell size */
-      height: 40px; /* Fixed cell size */
-      background-color: transparent; /* Default for empty cells */
+      width: 40px;
+      height: 40px;
+      background-color: transparent;
       display: flex;
       justify-content: center;
       align-items: center;
   }
 
-  /* Style for cells that are part of a word */
   .grid-cell.active-cell {
       background-color: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 215, 0, 0.3);
   }
 
-  /* Style for empty cells (not part of any word) */
   .grid-cell.empty-cell {
-      background-color: transparent !important; /* Force transparent */
-      border: none !important; /* Remove border */
-      box-shadow: none !important; /* Remove shadow */
-      pointer-events: none; /* Make them non-interactive */
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      pointer-events: none;
   }
 
   .grid-cell input {
@@ -264,12 +256,11 @@
       background-color: rgba(255, 255, 255, 0.2);
   }
 
-  /* Style for correct input cells */
   .grid-cell input.correct {
-      background-color: rgba(144, 238, 144, 0.3) !important; /* Light green */
+      background-color: rgba(144, 238, 144, 0.3) !important;
       color: #90EE90 !important;
   }
-  /* Style for disabled input cells (after correct answer) */
+
   .grid-cell input:disabled {
       cursor: not-allowed;
   }
@@ -318,41 +309,55 @@
       flex-wrap: wrap;
       gap: 1rem;
   }
+
+  #videoOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1500;
+  }
+
+  #videoPlayer {
+    max-width: 90vw;
+    max-height: 90vh;
+    border: 5px solid gold;
+    border-radius: 10px;
+  }
  </style>
 </head>
-
 <body>
  <!-- Audio elements -->
  <audio id="sound-track" loop preload="auto">
-  <source src="audio/sound-track0.mp3" type="audio/mpeg"> 
+  <source src="audio/greys.mp3" type="audio/mpeg"> 
  </audio>
- 
- <!-- Changed sound-win to win1.mp3 -->
- <audio id="sound-win" preload="auto">
-  <source src="audio/win1.mp3" type="audio/mpeg">
- </audio>
-
+ <div id="videoOverlay">
+    <video id="videoPlayer" controls preload="auto">
+        Il tuo browser non supporta il tag video.
+    </video>
+ </div>
  <div class="content-box">
   <h1>
    <span class="emoji-sparkle">🩺</span> 
-   Cruciverba Grey's Anatomy 
+   Giorno 8 - Cruciverba Grey's Anatomy 
    <span class="emoji-sparkle">🏥</span>
   </h1>
-  
   <div class="message-container" id="intro-message">
    <p>
-    Benvenuta, Mapi! (o Bibi, se preferisci 😉) nel cruciverba a tema Grey's Anatomy! Metti alla prova la tua conoscenza del Grey Sloan Memorial e dei suoi dottori.
-    Quando sei pronta, clicca su "Inizia il Gioco" e risolvi le 12 domande. In bocca al lupo! ❤️
+    Benvenuta, Bibi nel cruciverba a tema Grey's Anatomy! Metti alla prova la tua conoscenza del Grey Sloan Memorial e dei suoi dottori.
+    Quando sei pronta, clicca su "Inizia il Gioco" e risolvi le domande. In bocca al lupo! ❤️
    </p>
   </div>
-
-  <button class="btn btn-game" id="startGameButton">Inizia il Gioco ✨</button>
-
+<button class="btn btn-game" id="startGameButton">Inizia il Gioco ✨</button>
   <div class="crossword-container" id="crosswordGame">
    <div class="crossword-grid" id="crosswordGrid">
     <!-- Crossword grid cells will be inserted here by JavaScript -->
    </div>
-   
    <div class="clues-section">
     <div>
         <h3>Orizzontale</h3>
@@ -367,22 +372,17 @@
         </ul>
     </div>
    </div>
-
    <div class="crossword-buttons">
     <button class="btn btn-game" id="checkAnswersButton">Controlla Risposte ✅</button>
     <button class="btn btn-game" id="resetGameButton">Resetta Gioco 🔄</button>
    </div>
   </div>
-
   <div id="result-area"></div>
-
-  <a href="index.html" class="btn back-button" id="back-to-calendar" style="display: none;">
-   🎄 Torna al Calendario
-  </a>
+  <a href="index.html" class="btn back-button" id="back-to-calendar" style="display: none;">🎄 Torna al Calendario
+</a>
  </div>
-
  <script>
-  // Funzione per creare fiocchi di neve (from giorno01)
+  // Funzione per creare fiocchi di neve
   function createSnowflake() {
       const snowflake = document.createElement('div');
       snowflake.classList.add('snowflake');
@@ -397,7 +397,11 @@
   }
 
   const soundtrack = document.getElementById('sound-track');
-  const soundwin = document.getElementById('sound-win'); // Now refers to win1.mp3
+  const videoPlayer = document.getElementById('videoPlayer');
+  const videoOverlay = document.getElementById('videoOverlay');
+  const introVideoSrc = 'video/video.mp4';
+  const winVideoSrc = 'video/video1.mp4';
+  
   const startGameButton = document.getElementById('startGameButton');
   const crosswordGame = document.getElementById('crosswordGame');
   const crosswordGridElement = document.getElementById('crosswordGrid');
@@ -409,17 +413,16 @@
   const backButton = document.getElementById('back-to-calendar');
   const introMessage = document.getElementById('intro-message');
 
-  // Dati per le parole del cruciverba, allineati all'immagine e con incroci consistenti
-  // (startRow, startCol sono 0-indexed)
+  // Dati per le parole del cruciverba
   const wordsData = [
-    // Orizzontali (come da immagine, con risposte e incroci consistenti)
+    // Orizzontali
     { clue: "5. La neurochirurga, sorella di Derek, con un passato difficile e un'iconica frase 'It's a beautiful day to save lives'.", answer: "AMELIA", startRow: 2, startCol: 0, direction: "H", clueNum: 5 },
     { clue: "7. La specializzazione della dottoressa Callie Torres, spesso coinvolta in casi complessi di ossa e protesi.", answer: "ORTOPEDIA", startRow: 6, startCol: 1, direction: "H", clueNum: 7 },
     { clue: "9. Il cognome della dottoressa che Meredith definisce 'la sua persona', una cardiologa di talento e cinica, con cui ha un legame profondo.", answer: "YANG", startRow: 8, startCol: 9, direction: "H", clueNum: 9 },
     { clue: "11. Il chirurgo cardiotoracico dal carattere difficile, ex mentore e primo marito di Cristina, famoso per la sua perfezione.", answer: "BURKE", startRow: 9, startCol: 2, direction: "H", clueNum: 11 },
     { clue: "12. La primogenita adottiva di Meredith e Derek, un nome di origine africana che significa 'essere speciale'.", answer: "ZOLA", startRow: 12, startCol: 8, direction: "H", clueNum: 12 },
 
-    // Verticali (come da immagine, con risposte e incroci consistenti)
+    // Verticali
     { clue: "1. Il cognome del neurochirurgo 'McDreamy', amore di Meredith, il cui destino ha spezzato molti cuori e ha ispirato un soprannome iconico.", answer: "SHEPHERD", startRow: 0, startCol: 2, direction: "V", clueNum: 1 },
     { clue: "2. Il nome dell'ospedale prima di essere rinominato Grey Sloan ______ Memorial, in onore di due medici tragicamente scomparsi.", answer: "GRACE", startRow: 0, startCol: 5, direction: "V", clueNum: 2 },
     { clue: "3. Il cognome del dottore pediatrico, poi capo di chirurgia, marito di Jo, con un passato difficile e un'evoluzione sorprendente.", answer: "KAREV", startRow: 1, startCol: 0, direction: "V", clueNum: 3 },
@@ -429,9 +432,8 @@
     { clue: "10. La dottoressa specializzata in chirurgia plastica, ex moglie di Jackson Avery, nota per la sua fede e le sue lotte personali.", answer: "APRIL", startRow: 8, startCol: 10, direction: "V", clueNum: 10 }
   ];
 
-
-  const GRID_ROWS = 13; // 13 righe per adattarsi all'immagine
-  const GRID_COLS = 13; // 13 colonne per adattarsi all'immagine
+  const GRID_ROWS = 13;
+  const GRID_COLS = 13;
 
   // Inizializza la griglia con null per le celle vuote
   const gridData = Array(GRID_ROWS).fill(null).map(() => Array(GRID_COLS).fill(null));
@@ -443,19 +445,16 @@
           let c = wordObj.startCol;
           if (wordObj.direction === "H") {
               c += i;
-          } else { // V
+          } else {
               r += i;
           }
 
-          // Controllo per evitare di andare fuori dalla griglia
           if (r >= 0 && r < GRID_ROWS && c >= 0 && c < GRID_COLS) {
               if (!gridData[r][c]) {
-                  gridData[r][c] = { letter: '', clueH: null, clueV: null }; // Inizializza l'oggetto cella
+                  gridData[r][c] = { letter: '', clueH: null, clueV: null };
               }
-              // Assegna la lettera corretta della parola
               gridData[r][c].letter = wordObj.answer[i];
 
-              // Assegna il numerino della definizione solo alla prima lettera della parola
               if (i === 0) {
                   if (wordObj.direction === "H") {
                       gridData[r][c].clueH = wordObj.clueNum;
@@ -473,7 +472,6 @@
       horizontalCluesElement.innerHTML = '';
       verticalCluesElement.innerHTML = '';
 
-      // Ordina le definizioni per numero di indizio prima di renderle
       wordsData.filter(w => w.direction === "H").sort((a, b) => a.clueNum - b.clueNum).forEach(w => {
           const li = document.createElement('li');
           li.textContent = w.clue;
@@ -499,14 +497,12 @@
 
             const cellData = gridData[r][c];
 
-            // Se la cella non ha dati (non fa parte di nessuna parola), la stilizziamo come vuota
             if (!cellData || cellData.letter === '') {
                 cellDiv.classList.add('empty-cell');
                 crosswordGridElement.appendChild(cellDiv);
-                continue; // Passa alla prossima cella
+                continue;
             }
 
-            // Altrimenti, è una cella attiva del cruciverba
             cellDiv.classList.add('active-cell');
 
             const input = document.createElement('input');
@@ -516,14 +512,8 @@
             input.dataset.row = r;
             input.dataset.col = c;
             
-            // NON pre-compilare e NON disabilitare all'inizio
-            // input.value = cellData.letter; 
-            // input.classList.add('correct');
-            // input.disabled = true;
-            
             cellDiv.appendChild(input);
 
-            // Inserisci il numerino della definizione
             if (cellData.clueH !== null || cellData.clueV !== null) {
                 const clueSpan = document.createElement('span');
                 clueSpan.classList.add('clue-number');
@@ -534,43 +524,80 @@
             crosswordGridElement.appendChild(cellDiv);
         }
     }
-}
-
+  }
 
   function startGame() {
     introMessage.style.display = 'none';
     startGameButton.style.display = 'none';
+    
+    // Ferma e resetta la musica
+    soundtrack.pause();
+    soundtrack.currentTime = 0;
+    
+    // Mostra video introduttivo
+    videoOverlay.style.display = 'flex';
+    videoPlayer.src = introVideoSrc;
+    videoPlayer.load();
+    
+    // Flag per avviare la musica una sola volta
+    let musicStarted = false;
+    
+    // Listener per controllare il tempo del video
+    videoPlayer.addEventListener('timeupdate', function checkTime() {
+        if (!musicStarted && videoPlayer.currentTime >= 25) {
+            musicStarted = true;
+            soundtrack.volume = 0.3;
+            soundtrack.play().catch(e => console.log("Audio play prevented:", e));
+            videoPlayer.removeEventListener('timeupdate', checkTime);
+        }
+    });
+    
+    videoPlayer.play().catch(e => console.error("Error playing intro video:", e));
+
+    videoPlayer.onended = () => {
+        videoOverlay.style.display = 'none';
+        startActualGame();
+    };
+}
+
+function startActualGame() {
     crosswordGame.style.display = 'block';
-    renderCrosswordGrid(); // Grid first
-    renderClues();        // Clues after
-    soundtrack.volume = 0.5; // Adjust volume if needed
-    soundtrack.play().catch(e => console.log("Audio play prevented:", e));
-  }
+    renderCrosswordGrid();
+    renderClues();
+    
+    // La musica è già partita dopo 25 secondi, quindi non serve riavviarla
+    // Se per qualche motivo non sta suonando, riavviala
+    if (soundtrack.paused) {
+        soundtrack.volume = 0.3;
+        soundtrack.play().catch(e => console.log("Audio play prevented:", e));
+    }
+}
+
+
 
   function checkAnswers() {
     let correctCellsCount = 0;
     let totalExpectedCells = 0;
-    resultArea.innerHTML = ''; // Clear previous messages
+    resultArea.innerHTML = '';
 
     const inputCells = document.querySelectorAll('.crossword-grid input');
     inputCells.forEach(input => {
       const r = parseInt(input.dataset.row);
       const c = parseInt(input.dataset.col);
       
-      const cellData = gridData[r][c]; // Ottieni i dati della cella dalla nostra mappa
+      const cellData = gridData[r][c];
       
-      if (cellData && cellData.letter !== '') { // Se la cella fa parte di una parola
+      if (cellData && cellData.letter !== '') {
           totalExpectedCells++;
           if (input.value.toUpperCase().trim() === cellData.letter) {
-            input.classList.add('correct'); // Aggiungi classe per stile corretto
-            input.disabled = true; // Disabilita le celle corrette
+            input.classList.add('correct');
+            input.disabled = true;
             correctCellsCount++;
           } else {
-            // Se la risposta è sbagliata e la cella non era già corretta, svuotala
             if (!input.classList.contains('correct')) { 
                 input.classList.remove('correct'); 
-                input.value = ''; // Cancella le risposte sbagliate per permettere di riprovare
-                input.disabled = false; // Assicurati che l'input sia abilitato per la correzione
+                input.value = '';
+                input.disabled = false;
             }
           }
       }
@@ -579,18 +606,26 @@
     if (correctCellsCount === totalExpectedCells) {
       soundtrack.pause();
       soundtrack.currentTime = 0;
-      soundwin.volume = 0.7; // Adjust volume
-      soundwin.play().catch(e => console.log("Win audio play prevented:", e));
-      resultArea.innerHTML = `
-        <div class="result-message success-message">
-         <span class="lab-icon">🎉</span>
-         Complimenti Mapi! Hai completato il cruciverba a tema Grey's Anatomy!
-         <span class="lab-icon">🥳</span>
-        </div>
-      `;
-      backButton.style.display = 'inline-block';
-      checkAnswersButton.style.display = 'none';
-      resetGameButton.style.display = 'none';
+      
+      // Mostra video finale (video1.mp4)
+      videoOverlay.style.display = 'flex';
+      videoPlayer.src = winVideoSrc;
+      videoPlayer.load();
+      videoPlayer.play().catch(e => console.error("Error playing win video:", e));
+
+      videoPlayer.onended = () => {
+        videoOverlay.style.display = 'none';
+        resultArea.innerHTML = `
+          <div class="result-message success-message">
+           <span class="lab-icon">🎉</span>
+           Complimenti Mapi! Hai completato il cruciverba a tema Grey's Anatomy!
+           <span class="lab-icon">🥳</span>
+          </div>
+        `;
+        backButton.style.display = 'inline-block';
+        checkAnswersButton.style.display = 'none';
+        resetGameButton.style.display = 'none';
+      };
     } else {
       resultArea.innerHTML = `
         <div class="result-message punch-message">
@@ -603,9 +638,8 @@
   }
 
   function resetGame() {
-    // Re-render the grid to reset all inputs to their initial (empty and enabled) state
     renderCrosswordGrid(); 
-    resultArea.innerHTML = ''; // Clear result message
+    resultArea.innerHTML = '';
     soundtrack.currentTime = 0;
     soundtrack.play().catch(e => console.log("Audio play prevented:", e));
     checkAnswersButton.style.display = 'inline-block';
@@ -617,21 +651,13 @@
   checkAnswersButton.addEventListener('click', checkAnswers);
   resetGameButton.addEventListener('click', resetGame);
 
-  // Fallback: try to start audio on first user interaction for browsers that block autoplay
-  document.body.addEventListener('click', () => {
-    if (soundtrack.paused) {
-      soundtrack.play().catch(e => console.log("Audio play prevented:", e));
-    }
-  }, { once: true });
 
-  // Initialize snow and game on page load
+
   document.addEventListener('DOMContentLoaded', () => {
-    setInterval(createSnowflake, 300); // Start snow
+    setInterval(createSnowflake, 300);
   });
 
  </script>
-
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

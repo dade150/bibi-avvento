@@ -4,11 +4,9 @@
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1">
  <title>Giorno 3 - Memory Video Play</title>
-
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
  <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
  <style>
   * {
    margin: 0;
@@ -27,14 +25,13 @@
    align-items: center;
    padding: 2rem;
    position: relative;
-   overflow-x: hidden; /* Added to prevent horizontal scroll from snowflakes */
+   overflow-x: hidden;
    overflow-y: auto;
   }
   
-  /* Existing floating particles background */
   body::before {
    content: '';
-   position: fixed; /* Changed to fixed to cover the whole viewport */
+   position: fixed;
    width: 100%;
    height: 100%;
    background-image: 
@@ -48,7 +45,7 @@
    background-size: 200% 200%;
    animation: float 20s ease-in-out infinite;
    opacity: 0.3;
-   z-index: 0; /* Ensures it stays behind game content */
+   z-index: 0;
   }
   
   @keyframes float {
@@ -56,7 +53,6 @@
    50% { transform: translateY(-20px); }
   }
 
-  /* New: Animated snowflakes CSS from giorno01 */
   .snowflake {
    position: fixed;
    top: -10px;
@@ -64,7 +60,7 @@
    font-size: 1em;
    font-family: Arial, sans-serif;
    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-   z-index: 0; /* Stays behind game content */
+   z-index: 0;
    user-select: none;
    pointer-events: none;
    animation: fall linear infinite;
@@ -84,8 +80,8 @@
    align-items: center;
    justify-content: center;
    width: 100%;
-   max-width: 1000px; /* Adjust as needed */
-   z-index: 1; /* Ensures game content is above snow */
+   max-width: 1000px;
+   z-index: 1;
    padding: 2rem;
    background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
    border: 5px solid;
@@ -124,18 +120,49 @@
    to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
   }
 
+  .intro-section {
+   text-align: center;
+  }
+
+  .intro-section p {
+   font-size: 1.4rem;
+   line-height: 1.8;
+   min-height: 100px;
+   margin-bottom: 1.5rem;
+  }
+
+  .btn-choice {
+   margin: 0.5rem;
+   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+   color: darkred;
+   border: 2px solid rgba(139, 0, 0, 0.5);
+   font-weight: bold;
+   font-size: 1.2rem;
+   padding: 0.7rem 2rem;
+   border-radius: 50px;
+   transition: all 0.3s ease;
+   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+   cursor: pointer;
+  }
+  
+  .btn-choice:hover {
+   transform: translateY(-3px) scale(1.05);
+   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+  }
+
   .memory-grid {
    display: grid;
    grid-template-columns: repeat(4, 1fr);
    gap: 1rem;
    width: 100%;
    justify-content: center;
-   perspective: 1000px; /* For 3D flip effect */
+   perspective: 1000px;
   }
 
   .memory-card {
    width: 100%;
-   height: 180px; /* Fixed height for cards */
+   height: 180px;
    position: relative;
    cursor: pointer;
    transform-style: preserve-3d;
@@ -188,14 +215,14 @@
    position: relative;
    display: flex;
    flex-direction: column;
-   justify-content: center; /* Center content vertically */
-   align-items: center; /* Center content horizontally */
+   justify-content: center;
+   align-items: center;
   }
 
   .play-button-overlay {
    font-size: 3rem;
    color: rgba(255, 255, 255, 0.8);
-   pointer-events: none; /* Not clickable directly */
+   pointer-events: none;
    z-index: 10;
   }
 
@@ -204,21 +231,19 @@
    margin-top: 0.5rem;
    text-align: center;
    color: gold;
-   /* Adjusted to fit below the play icon */
    padding-bottom: 0.5rem; 
   }
 
-  /* Bonus Video Modal */
   .bonus-video-modal {
-   display: none; /* Hidden by default */
-   position: fixed; /* Stay in place */
-   z-index: 100; /* Sit on top */
+   display: none;
+   position: fixed;
+   z-index: 100;
    left: 0;
    top: 0;
-   width: 100%; /* Full width */
-   height: 100%; /* Full height */
-   overflow: auto; /* Enable scroll if needed */
-   background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+   width: 100%;
+   height: 100%;
+   overflow: auto;
+   background-color: rgba(0,0,0,0.8);
    justify-content: center;
    align-items: center;
    flex-direction: column;
@@ -271,10 +296,9 @@
    background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
   }
 
-  /* Responsive adjustments */
   @media (max-width: 768px) {
    .memory-grid {
-    grid-template-columns: repeat(3, 1fr); /* 3 cards per row on smaller screens */
+    grid-template-columns: repeat(3, 1fr);
    }
    .memory-card {
     height: 150px;
@@ -300,7 +324,7 @@
 
   @media (max-width: 480px) {
    .memory-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 cards per row on very small screens */
+    grid-template-columns: repeat(2, 1fr);
    }
    .memory-card {
     height: 120px;
@@ -315,28 +339,32 @@
 
  </style>
 </head>
-
 <body>
-
+ <audio id="song-sound" loop preload="none">
+  <source src="audio/wonderfultime.mp3" type="audio/mpeg">
+ </audio>
  <div class="memory-game-container">
   <div class="game-header">
    <h1>
     <span class="emoji-sparkle">🧠</span>
-    Memory Video Play
+    Giorno 3 - Memory Video Play
     <span class="emoji-sparkle">🎬</span>
    </h1>
   </div>
-
-  <div class="memory-grid" id="memory-grid">
+  <!-- Intro Section -->
+  <div class="intro-section" id="intro-section">
+   <p id="intro-text">Benvenuta al terzo giorno del Lab dell'Avvento! Oggi ti aspetta un gioco speciale: trova tutte le coppie di video dei nostri momenti più belli insieme. Alla fine ti aspetta una sorpresa! 🎄❤️</p>
+   <button id="startButton" class="btn btn-choice" onclick="startGame()">Inizia il Gioco! ✨</button>
+  </div>
+  <div class="memory-grid" id="memory-grid" style="display: none;">
    <!-- Memory cards will be dynamically inserted here by JavaScript -->
   </div>
  </div>
-
  <!-- Bonus Video Modal -->
  <div id="bonusVideoModal" class="bonus-video-modal">
   <div class="bonus-video-content">
    <h2>🎉 Complimenti! Hai completato il gioco! 🎉</h2>
-   <video id="bonusVideoPlayer" controls autoplay loop>
+   <video id="bonusVideoPlayer" controls preload="none">
     <source src="video-memory/video9.mp4" type="video/mp4">
     Il tuo browser non supporta il tag video.
    </video>
@@ -345,7 +373,6 @@
    </button>
   </div>
  </div>
-
  <script>
   const videoData = [
    { id: 1, title: 'Burger Dance 🍔', src: 'video-memory/video1.mp4', thumbnail: 'video-memory/thumbnail1.jpg' },
@@ -366,10 +393,27 @@
   const memoryGrid = document.getElementById('memory-grid');
   const bonusVideoModal = document.getElementById('bonusVideoModal');
   const bonusVideoPlayer = document.getElementById('bonusVideoPlayer');
+  const introSection = document.getElementById('intro-section');
+  const songSound = document.getElementById('song-sound');
 
   // Audio elements
   const audioUp = new Audio('audio/up.mp3');
   const audioDown = new Audio('audio/down.mp3');
+
+  function startGame() {
+   // Hide intro and show game
+   introSection.style.display = 'none';
+   memoryGrid.style.display = 'grid';
+   
+   // Start background music with lower volume
+   if (songSound) {
+    songSound.volume = 0.2; // Volume più basso
+    songSound.currentTime = 0;
+    songSound.play().catch(e => console.error("Error playing song:", e));
+   }
+   
+   initializeGame();
+  }
 
   function initializeGame() {
    // Duplicate video data for pairs and shuffle
@@ -458,9 +502,12 @@
     const videoInfo = videoData.find(video => video.id == videoId);
     if (!videoInfo) return;
 
+    // Pause background music when video starts
+    if (songSound) {
+      songSound.pause();
+    }
+
     // Create a temporary video element or use a modal to play the video
-    // For simplicity, let's create a temporary modal-like overlay to play the video.
-    // In a real scenario, you might have a dedicated video player modal.
     const videoPlayerOverlay = document.createElement('div');
     videoPlayerOverlay.style.position = 'fixed';
     videoPlayerOverlay.style.top = '0';
@@ -490,6 +537,10 @@
     closeButton.onclick = () => {
         videoElement.pause();
         videoPlayerOverlay.remove();
+        // Resume background music when video is closed
+        if (songSound && matchedPairs < videoData.length) {
+          songSound.play().catch(e => console.error("Error resuming song:", e));
+        }
     };
 
     videoPlayerOverlay.appendChild(videoElement);
@@ -498,15 +549,25 @@
 
     videoElement.addEventListener('ended', () => {
         videoPlayerOverlay.remove();
+        // Resume background music when video ends
+        if (songSound && matchedPairs < videoData.length) {
+          songSound.play().catch(e => console.error("Error resuming song:", e));
+        }
     });
   }
 
   function showBonusVideo() {
+   // Stop background music
+   if (songSound) {
+    songSound.pause();
+    songSound.currentTime = 0;
+   }
+   
    bonusVideoModal.style.display = 'flex'; // Show the modal
+   bonusVideoPlayer.load(); // Load the video
    bonusVideoPlayer.play().catch(e => console.error("Error playing bonus video:", e));
   }
 
-  /* New: Snowflake generation JavaScript from giorno01 */
   function createSnowflake() {
     const snowflake = document.createElement('div');
     snowflake.classList.add('snowflake');
@@ -520,9 +581,8 @@
     setTimeout(() => snowflake.remove(), 8000);
   }
 
-  // Initialize the game when the page loads
+  // Initialize snowflakes when the page loads
   document.addEventListener('DOMContentLoaded', () => {
-    initializeGame();
     // Start the actual falling snowflakes
     setInterval(createSnowflake, 300);
   });

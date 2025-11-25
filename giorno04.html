@@ -13,255 +13,259 @@
    padding: 0;
    box-sizing: border-box;
   }
-  
-  body {
-   font-family: 'Mountains of Christmas', cursive;
-   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
-   color: #fff;
-   min-height: 100vh;
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-   align-items: center;
-   padding: 2rem;
-   position: relative;
-   overflow-x: hidden; /* Added to prevent horizontal scroll from snowflakes */
-   overflow-y: auto;
-  }
-  
-  /* Existing snow effect (floating particles) - as requested, keeping it */
-  body::before {
-   content: '';
-   position: fixed; /* Changed to fixed to cover the whole viewport */
-   width: 100%;
-   height: 100%;
-   background-image: 
-    radial-gradient(2px 2px at 20% 30%, white, transparent),
-    radial-gradient(2px 2px at 60% 70%, white, transparent),
-    radial-gradient(1px 1px at 50% 50%, white, transparent),
-    radial-gradient(1px 1px at 80% 10%, white, transparent),
-    radial-gradient(2px 2px at 90% 60%, white, transparent),
-    radial-gradient(1px 1px at 33% 80%, white, transparent),
-    radial-gradient(1px 1px at 75% 40%, white, transparent);
-   background-size: 200% 200%;
-   animation: float 20s ease-in-out infinite;
-   opacity: 0.3;
-   z-index: 0; /* Ensures it stays behind game content */
-  }
-  
-  @keyframes float {
-   0%, 100% { transform: translateY(0); }
-   50% { transform: translateY(-20px); }
-  }
-
-  /* New: Animated snowflakes CSS from giorno01 */
-  .snowflake {
-   position: fixed;
-   top: -10px;
-   color: white;
-   font-size: 1em;
-   font-family: Arial, sans-serif;
-   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-   z-index: 0; /* Stays behind game content */
-   user-select: none;
-   pointer-events: none;
-   animation: fall linear infinite;
-  }
-  
-  @keyframes fall {
-   to {
-    transform: translateY(100vh) translateX(100px);
-    opacity: 0;
-   }
-  }
-
-  .game-container {
-   flex: 1;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   justify-content: center;
-   width: 100%;
-   max-width: 800px; /* Adjust as needed */
-   z-index: 1; /* Ensures game content is above snow */
-   padding: 2rem;
-   background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
-   border: 5px solid;
-   border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
-   border-radius: 25px;
-   box-shadow: 
-    0 0 30px rgba(255, 215, 0, 0.3),
-    0 0 60px rgba(255, 215, 0, 0.2),
-    inset 0 0 50px rgba(0, 0, 0, 0.5);
-   animation: glow-pulse 3s ease-in-out infinite;
-  }
-  
-  @keyframes glow-pulse {
-   0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
-   50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
-  }
-
-  .game-header {
-   text-align: center;
-   margin-bottom: 2rem;
-  }
-
-  .game-header h1 {
-   color: gold;
-   font-size: 2.8rem;
-   text-shadow: 
-    2px 2px 4px black,
-    0 0 20px rgba(255, 215, 0, 0.5),
-    0 0 30px rgba(255, 215, 0, 0.3);
-   margin-bottom: 1rem;
-   animation: title-glow 2s ease-in-out infinite alternate;
-  }
-  
-  @keyframes title-glow {
-   from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
-   to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
-  }
-
-  canvas {
-   background-color: #000; /* Will be overridden by JS drawing campo.jpg */
-   border: 3px solid gold;
-   border-radius: 10px;
-   box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
-   margin-bottom: 1.5rem;
-  }
-
-  .score-display {
-   font-size: 1.5rem;
-   color: gold;
-   margin-bottom: 1.5rem;
-   text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-  }
-
-  .start-message {
-    font-size: 1.2rem;
-    color: #ccc;
-    margin-bottom: 1rem;
-  }
-
-  /* Game Over/Win Modal */
-  .game-modal {
-   display: none; /* Hidden by default */
-   position: fixed; /* Stay in place */
-   z-index: 100; /* Sit on top */
-   left: 0;
-   top: 0;
-   width: 100%; /* Full width */
-   height: 100%; /* Full height */
-   overflow: auto; /* Enable scroll if needed */
-   background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
-   justify-content: center;
-   align-items: center;
-   flex-direction: column;
-  }
-
-  .game-modal-content {
-   background-color: #0a0a0a;
-   margin: auto;
-   padding: 20px;
-   border: 5px solid gold;
-   border-radius: 20px;
-   width: 80%;
-   max-width: 600px;
-   text-align: center;
-   box-shadow: 0 0 40px rgba(255, 215, 0, 0.7);
-  }
-
-  .game-modal-content h2 {
-   color: gold;
-   font-size: 2.5rem;
-   margin-bottom: 1rem;
-   text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5);
-  }
-
-  .game-modal-content p {
-   font-size: 1.3rem;
-   color: #fff;
-   margin-bottom: 1.5rem;
-  }
-
-  .game-button {
-   padding: 1rem 2rem;
-   font-size: 1.2rem;
-   font-family: 'Mountains of Christmas', cursive;
-   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
-   color: darkred;
-   border: 2px solid rgba(139, 0, 0, 0.5);
-   border-radius: 50px;
-   cursor: pointer;
-   transition: all 0.3s ease;
-   font-weight: bold;
-   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-   margin: 0.5rem;
-  }
-
-  .game-button:hover {
-   transform: translateY(-3px) scale(1.05);
-   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
-   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-   .game-header h1 {
-    font-size: 2rem;
-   }
-   .score-display {
-    font-size: 1.2rem;
-   }
-   .game-modal-content h2 {
-    font-size: 1.8rem;
-   }
-   .game-modal-content p {
-    font-size: 1rem;
-   }
-   .game-button {
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-   }
-  }
-
-  @media (max-width: 480px) {
-   .game-header h1 {
-    font-size: 1.5rem;
-   }
-   canvas {
-    width: 90%;
-    height: auto;
-   }
-  }
- </style>
+body {
+font-family: 'Mountains of Christmas', cursive;
+background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+color: #fff;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+padding: 2rem;
+position: relative;
+overflow-x: hidden;
+overflow-y: auto;
+}
+body::before {
+content: '';
+position: fixed;
+width: 100%;
+height: 100%;
+background-image:
+radial-gradient(2px 2px at 20% 30%, white, transparent),
+radial-gradient(2px 2px at 60% 70%, white, transparent),
+radial-gradient(1px 1px at 50% 50%, white, transparent),
+radial-gradient(1px 1px at 80% 10%, white, transparent),
+radial-gradient(2px 2px at 90% 60%, white, transparent),
+radial-gradient(1px 1px at 33% 80%, white, transparent),
+radial-gradient(1px 1px at 75% 40%, white, transparent);
+background-size: 200% 200%;
+animation: float 20s ease-in-out infinite;
+opacity: 0.3;
+z-index: 0;
+}
+@keyframes float {
+0%, 100% { transform: translateY(0); }
+50% { transform: translateY(-20px); }
+}
+.snowflake {
+position: fixed;
+top: -10px;
+color: white;
+font-size: 1em;
+font-family: Arial, sans-serif;
+text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+z-index: 0;
+user-select: none;
+pointer-events: none;
+animation: fall linear infinite;
+}
+@keyframes fall {
+to {
+transform: translateY(100vh) translateX(100px);
+opacity: 0;
+}
+}
+.game-container {
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+width: 100%;
+max-width: 800px;
+z-index: 1;
+padding: 2rem;
+background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+border: 5px solid;
+border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
+border-radius: 25px;
+box-shadow:
+0 0 30px rgba(255, 215, 0, 0.3),
+0 0 60px rgba(255, 215, 0, 0.2),
+inset 0 0 50px rgba(0, 0, 0, 0.5);
+animation: glow-pulse 3s ease-in-out infinite;
+}
+@keyframes glow-pulse {
+0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+}
+.game-header {
+text-align: center;
+margin-bottom: 2rem;
+}
+.game-header h1 {
+color: gold;
+font-size: 2.8rem;
+text-shadow:
+2px 2px 4px black,
+0 0 20px rgba(255, 215, 0, 0.5),
+0 0 30px rgba(255, 215, 0, 0.3);
+margin-bottom: 1rem;
+animation: title-glow 2s ease-in-out infinite alternate;
+}
+@keyframes title-glow {
+from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
+to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
+}
+.intro-section {
+text-align: center;
+}
+.intro-section p {
+font-size: 1.4rem;
+line-height: 1.8;
+min-height: 100px;
+margin-bottom: 1.5rem;
+}
+.btn-choice {
+margin: 0.5rem;
+background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+color: darkred;
+border: 2px solid rgba(139, 0, 0, 0.5);
+font-weight: bold;
+font-size: 1.2rem;
+padding: 0.7rem 2rem;
+border-radius: 50px;
+transition: all 0.3s ease;
+box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+cursor: pointer;
+}
+.btn-choice:hover {
+transform: translateY(-3px) scale(1.05);
+box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+}
+canvas {
+background-color: #000;
+border: 3px solid gold;
+border-radius: 10px;
+box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+margin-bottom: 1.5rem;
+}
+.score-display {
+font-size: 1.5rem;
+color: gold;
+margin-bottom: 1.5rem;
+text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+.start-message {
+font-size: 1.2rem;
+color: #ccc;
+margin-bottom: 1rem;
+}
+.game-modal {
+display: none;
+position: fixed;
+z-index: 100;
+left: 0;
+top: 0;
+width: 100%;
+height: 100%;
+overflow: auto;
+background-color: rgba(0,0,0,0.8);
+justify-content: center;
+align-items: center;
+flex-direction: column;
+}
+.game-modal-content {
+background-color: #0a0a0a;
+margin: auto;
+padding: 20px;
+border: 5px solid gold;
+border-radius: 20px;
+width: 80%;
+max-width: 600px;
+text-align: center;
+box-shadow: 0 0 40px rgba(255, 215, 0, 0.7);
+}
+.game-modal-content h2 {
+color: gold;
+font-size: 2.5rem;
+margin-bottom: 1rem;
+text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5);
+}
+.game-modal-content p {
+font-size: 1.3rem;
+color: #fff;
+margin-bottom: 1.5rem;
+}
+.game-button {
+padding: 1rem 2rem;
+font-size: 1.2rem;
+font-family: 'Mountains of Christmas', cursive;
+background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+color: darkred;
+border: 2px solid rgba(139, 0, 0, 0.5);
+border-radius: 50px;
+cursor: pointer;
+transition: all 0.3s ease;
+font-weight: bold;
+box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+margin: 0.5rem;
+}
+.game-button:hover {
+transform: translateY(-3px) scale(1.05);
+box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+}
+@media (max-width: 768px) {
+.game-header h1 {
+font-size: 2rem;
+}
+.score-display {
+font-size: 1.2rem;
+}
+.game-modal-content h2 {
+font-size: 1.8rem;
+}
+.game-modal-content p {
+font-size: 1rem;
+}
+.game-button {
+padding: 0.8rem 1.5rem;
+font-size: 1rem;
+}
+}
+@media (max-width: 480px) {
+.game-header h1 {
+font-size: 1.5rem;
+}
+canvas {
+width: 90%;
+height: auto;
+}
+}
+</style>
 </head>
-
 <body>
  <!-- Background music -->
- <audio id="backgroundMusic" src="audio/tranqui.mp3" loop autoplay></audio>
+ <audio id="backgroundMusic" src="audio/tranqui.mp3" loop preload="none"></audio>
  <!-- Win sound -->
  <audio id="winSound" src="audio/inter1.mp3"></audio>
  <!-- Lose sound -->
  <audio id="loseSound" src="audio/juve.mp3"></audio>
-
  <div class="game-container">
   <div class="game-header">
    <h1>
     <span class="emoji-sparkle">🐍</span>
-    Snake Inter Edition
+    Giorno 4 - Snake Inter Edition
     <span class="emoji-sparkle">⚽</span>
    </h1>
   </div>
-
-  <div class="score-display">
-   Palloni Inter mangiati: <span id="score">0</span> / 20
+  <!-- Intro Section -->
+  <div class="intro-section" id="intro-section">
+   <p id="intro-text">Benvenuta al quarto giorno del Lab dell'Avvento! Oggi ti aspetta una sfida speciale: guida il serpente nerazzurro e mangia tutti i 20 palloni per vincere! Attenta però se sbagli potrebbe partire qualcosa di inaspettato... Ci vediamo in campo 🎄⚽</p>
+   <button id="startButton" class="btn btn-choice" onclick="startGame()">Inizia il Gioco! ✨</button>
   </div>
-  <div class="start-message" id="start-message">Premi una freccia o WASD per iniziare!</div>
-
-  <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <div id="game-content" style="display: none;">
+   <div class="score-display">
+    Palloni Inter mangiati: <span id="score">0</span> / 20
+   </div>
+   <div class="start-message" id="start-message">Premi una freccia o WASD per iniziare!</div>
+<canvas id="gameCanvas" width="400" height="400"></canvas>
+  </div>
  </div>
-
  <!-- Game Over/Win Modal -->
  <div id="gameOverModal" class="game-modal">
   <div class="game-modal-content">
@@ -273,7 +277,6 @@
    </button>
   </div>
  </div>
-
  <script>
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
@@ -285,6 +288,8 @@
   const backgroundMusic = document.getElementById('backgroundMusic');
   const winSound = document.getElementById('winSound');
   const loseSound = document.getElementById('loseSound');
+  const introSection = document.getElementById('intro-section');
+  const gameContent = document.getElementById('game-content');
 
   const gridSize = 20;
   let snake = [{ x: 10 * gridSize, y: 10 * gridSize }];
@@ -296,7 +301,7 @@
   let changingDirection = false;
   let gameInterval;
   const requiredBalls = 20;
-  const gameSpeed = 150; // Milliseconds per frame
+  const gameSpeed = 150;
 
   // Load images
   const interBallImage = new Image();
@@ -304,10 +309,19 @@
   const campoImage = new Image();
   campoImage.src = 'images/campo.png';
 
-  // Function to draw an image covering the target area while maintaining aspect ratio
+  function startGame() {
+   introSection.style.display = 'none';
+   gameContent.style.display = 'block';
+   
+   // Setup initial game state
+   clearCanvas();
+   generateFood();
+   drawSnake();
+   drawFood();
+  }
+
   function drawCover(ctx, img, x, y, w, h) {
       if (!img.complete || img.naturalWidth === 0) {
-          // Fallback if image not loaded or invalid
           ctx.fillStyle = 'black';
           ctx.fillRect(x, y, w, h);
           return;
@@ -317,13 +331,11 @@
       var sx, sy, sWidth, sHeight;
 
       if (imageAspect > canvasAspect) {
-          // Image is wider than canvas, crop left/right
           sHeight = img.height;
           sWidth = sHeight * canvasAspect;
           sx = (img.width - sWidth) / 2;
           sy = 0;
       } else {
-          // Image is taller than canvas, crop top/bottom
           sWidth = img.width;
           sHeight = sWidth / canvasAspect;
           sy = (img.height - sHeight) / 2;
@@ -333,13 +345,12 @@
   }
 
   function drawSnakePart(snakePart) {
-   // Gradient for a more dynamic "nero azzurro" look
    const gradient = ctx.createLinearGradient(snakePart.x, snakePart.y, snakePart.x + gridSize, snakePart.y + gridSize);
-   gradient.addColorStop(0, '#000000'); // Black
-   gradient.addColorStop(1, '#000080'); // Inter Blue
+   gradient.addColorStop(0, '#000000');
+   gradient.addColorStop(1, '#000080');
    ctx.fillStyle = gradient;
-   ctx.strokeStyle = '#FFD700'; // Gold border for contrast
-   ctx.lineWidth = 1; // Thinner border for a cleaner look
+   ctx.strokeStyle = '#FFD700';
+   ctx.lineWidth = 1;
    ctx.fillRect(snakePart.x, snakePart.y, gridSize, gridSize);
    ctx.strokeRect(snakePart.x, snakePart.y, gridSize, gridSize);
   }
@@ -352,16 +363,15 @@
    if (interBallImage.complete && interBallImage.naturalWidth > 0) {
     ctx.drawImage(interBallImage, food.x, food.y, gridSize, gridSize);
    } else {
-    // Fallback if image not loaded
     ctx.beginPath();
     ctx.arc(food.x + gridSize / 2, food.y + gridSize / 2, gridSize / 2, 0, Math.PI * 2);
     const gradient = ctx.createLinearGradient(food.x, food.y, food.x + gridSize, food.y + gridSize);
-    gradient.addColorStop(0, '#000080'); // Dark blue
-    gradient.addColorStop(0.5, '#000000'); // Black
-    gradient.addColorStop(1, '#000080'); // Dark blue
+    gradient.addColorStop(0, '#000080');
+    gradient.addColorStop(0.5, '#000000');
+    gradient.addColorStop(1, '#000080');
     ctx.fillStyle = gradient;
     ctx.fill();
-    ctx.strokeStyle = '#FFD700'; // Gold border for visibility
+    ctx.strokeStyle = '#FFD700';
     ctx.lineWidth = 2;
     ctx.stroke();
     ctx.closePath();
@@ -370,7 +380,7 @@
 
   function clearCanvas() {
    drawCover(ctx, campoImage, 0, 0, canvas.width, canvas.height);
-   ctx.strokeStyle = 'black'; // Keep border if any
+   ctx.strokeStyle = 'black';
    ctx.strokeRect(0, 0, canvas.width, canvas.height);
   }
 
@@ -397,26 +407,25 @@
    if (!gameStarted) return;
 
    const head = { x: snake[0].x + dx, y: snake[0].y + dy };
-   snake.unshift(head); // Add new head
+   snake.unshift(head);
 
    const didEatFood = head.x === food.x && head.y === food.y;
    if (didEatFood) {
     score++;
     scoreDisplay.textContent = score;
     if (score >= requiredBalls) {
-     endGame(true); // Win condition
+     endGame(true);
     } else {
      generateFood();
     }
    } else {
-    snake.pop(); // Remove tail if no food eaten
+    snake.pop();
    }
 
-   changingDirection = false; // Allow direction change again
+   changingDirection = false;
   }
 
   function checkCollision() {
-   // Check wall collision
    const hitLeftWall = snake[0].x < 0;
    const hitRightWall = snake[0].x >= canvas.width;
    const hitTopWall = snake[0].y < 0;
@@ -426,7 +435,6 @@
     return true;
    }
 
-   // Check self collision (start from 4th segment to avoid head-neck collision)
    for (let i = 4; i < snake.length; i++) {
     if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
      return true;
@@ -437,7 +445,7 @@
 
   function mainLoop() {
    if (checkCollision()) {
-    endGame(false); // Lose condition
+    endGame(false);
     return;
    }
 
@@ -448,7 +456,7 @@
   }
 
   function changeDirection(event) {
-   if (changingDirection && gameStarted) return; // Prevent multiple direction changes per frame
+   if (changingDirection && gameStarted) return;
 
    const keyPressed = event.key;
    const goingUp = dy === -gridSize;
@@ -456,7 +464,6 @@
    const goingLeft = dx === -gridSize;
    const goingRight = dx === gridSize;
 
-   // Start the game on the first valid key press
    if (!gameStarted && (keyPressed === 'ArrowUp' || keyPressed === 'w' ||
                         keyPressed === 'ArrowDown' || keyPressed === 's' ||
                         keyPressed === 'ArrowLeft' || keyPressed === 'a' ||
@@ -464,10 +471,11 @@
     gameStarted = true;
     startMessage.style.display = 'none';
     gameInterval = setInterval(mainLoop, gameSpeed);
-    backgroundMusic.play(); // Start music on game start
+    backgroundMusic.volume = 0.3;
+    backgroundMusic.play();
    }
 
-   if (!gameStarted) return; // Don't allow direction changes before game starts
+   if (!gameStarted) return;
 
    changingDirection = true;
 
@@ -489,17 +497,17 @@
   function endGame(win) {
    clearInterval(gameInterval);
    gameOverModal.style.display = 'flex';
-   backgroundMusic.pause(); // Pause background music on game over
-   backgroundMusic.currentTime = 0; // Reset background music
+   backgroundMusic.pause();
+   backgroundMusic.currentTime = 0;
 
    if (win) {
     modalTitle.innerHTML = '<span class="emoji-sparkle">🏆</span> HAI VINTO! <span class="emoji-sparkle">🏆</span>';
     modalMessage.textContent = `Complimenti! Hai mangiato tutti i ${requiredBalls} palloni dell'Inter!`;
-    winSound.play(); // Play win sound
+    winSound.play();
    } else {
     modalTitle.innerHTML = '<span class="emoji-sparkle">Game Over</span>';
     modalMessage.textContent = `Hai mangiato ${score} palloni dell'Inter. Hai perso! Riprova!`;
-    loseSound.play(); // Play lose sound
+    loseSound.play();
    }
   }
 
@@ -515,22 +523,20 @@
    startMessage.style.display = 'block';
    gameOverModal.style.display = 'none';
    clearCanvas();
-   generateFood(); // Generate food for the new game
+   generateFood();
    drawSnake();
    drawFood();
    
-   // Stop and reset end game sounds
    winSound.pause();
    winSound.currentTime = 0;
    loseSound.pause();
    loseSound.currentTime = 0;
    
-   backgroundMusic.currentTime = 0; // Reset background music
+   backgroundMusic.currentTime = 0;
   }
 
   document.addEventListener('keydown', changeDirection);
 
-  /* New: Snowflake generation JavaScript from giorno01 */
   function createSnowflake() {
     const snowflake = document.createElement('div');
     snowflake.classList.add('snowflake');
@@ -544,37 +550,23 @@
     setTimeout(() => snowflake.remove(), 8000);
   }
 
-  // Initial setup when the page loads
   document.addEventListener('DOMContentLoaded', () => {
-   // Ensure images are loaded before initial drawing
    let imagesLoaded = 0;
    const totalImages = 2;
 
    const imageLoaded = () => {
     imagesLoaded++;
     if (imagesLoaded === totalImages) {
-     clearCanvas();
-     generateFood();
-     drawSnake();
-     drawFood();
+     // Images ready but don't start game yet
     }
    };
 
    interBallImage.onload = imageLoaded;
    campoImage.onload = imageLoaded;
 
-   // If images are already in cache, onload might not fire, check naturalWidth
    if (interBallImage.complete && interBallImage.naturalWidth > 0) imageLoaded();
    if (campoImage.complete && campoImage.naturalWidth > 0) imageLoaded();
 
-   // Attempt to play music automatically (might be blocked by browsers)
-   backgroundMusic.volume = 0.3; // Adjust volume as needed
-   backgroundMusic.play().catch(error => {
-    console.log("Autoplay of background music was prevented. User interaction is needed to play music.", error);
-    // Optionally, show a message to the user to click to enable sound
-   });
-
-   // Start the actual falling snowflakes
    setInterval(createSnowflake, 300);
   });
  </script>

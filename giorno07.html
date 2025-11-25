@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giorno 23 - Babbo Natale in Letargo! 😴🎅</title>
+    <title>Giorno 7 - Babbo Natale in Letargo! 😴🎅</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
     <style>
@@ -107,6 +107,37 @@
             to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
         }
 
+        .intro-section {
+            text-align: center;
+        }
+
+        .intro-section p {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            min-height: 100px;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-choice {
+            margin: 0.5rem;
+            background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+            color: darkred;
+            border: 2px solid rgba(139, 0, 0, 0.5);
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding: 0.7rem 2rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            cursor: pointer;
+        }
+        
+        .btn-choice:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+            background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+        }
+
         .message-box {
             display: flex;
             flex-direction: column;
@@ -126,11 +157,11 @@
         }
 
         .santa-image {
-            max-width: 250px; /* Increased size for impact */
+            max-width: 250px;
             height: auto;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7); /* Stronger shadow */
-            animation: float-sleep 4s infinite ease-in-out; /* Gentle floating animation */
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+            animation: float-sleep 4s infinite ease-in-out;
         }
 
         @keyframes float-sleep {
@@ -153,6 +184,8 @@
             font-weight: bold;
             box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
             margin-top: 2rem;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .back-button:hover {
@@ -204,33 +237,42 @@
     </style>
 </head>
 <body>
-    <audio id="backgroundMusic" src="audio/lullaby.mp3" loop autoplay preload="auto"></audio>
+    <audio id="backgroundMusic" src="audio/nanna.mp3" loop preload="auto"></audio>
 
     <div class="content-container">
-        <h1>Giorno 23 - Babbo Natale in Letargo! 😴🎅</h1>
+        <h1>Giorno 7 - Babbo Natale in Letargo! 😴🎅</h1>
         
-        <div class="message-box">
-            <div class="message-text">
-                Ciao amore mio! ❤️
-                <br><br>
-                Oggi c'è stato un piccolo, tenero intoppo qui al Polo Nord... Babbo Natale, dopo aver controllato la lista dei 'buoni e cattivi' per la millesima volta e aver assaggiato troppi biscotti, si è addormentato profondamente! 🍪🥛
-                <br><br>
-                Sì, proprio così! È crollato sul divano con la sua coperta preferita e ora russa come un orsetto polare. Gli elfi hanno provato a svegliarlo, ma è nel suo 'sonno pre-consegna regali', un momento sacro in cui ricarica le batterie per la grande notte.
-                <br><br>
-                Quindi, per oggi, non siamo riusciti a preparare un'attività speciale. Non vogliamo assolutamente disturbarlo, altrimenti chi ci porterà i regali?! 🤫
-                <br><br>
-                Spero tu possa perdonare questa piccola pausa natalizia. Ti mando un abbraccio enorme e un bacio virtuale. Riposati anche tu, che il Natale è quasi qui!
-                <br><br>
-                Con tanto amore e un pizzico di magia assonnata,
-                <br>
-                Il tuo Babbo Natale (in incognito... e sveglio!) 😉
-            </div>
-            <img src="images/santa-claus.png" alt="Babbo Natale che dorme" class="santa-image">
+        <!-- Intro Section -->
+        <div class="intro-section" id="intro-section">
+            <p id="intro-text">Benvenuta al settimo giorno del Lab dell'Avvento! Oggi c'è una sorpresa speciale... o meglio, un piccolo imprevisto al Polo Nord. Scopri cosa è successo! 🎄✨</p>
+            <button id="startButton" class="btn btn-choice">Scopri la Sorpresa! 🎁</button>
         </div>
 
-        <a href="index.html" class="btn back-button">
-            🎄 Torna al Calendario
-        </a>
+        <!-- Main Content (hidden initially) -->
+        <div id="main-content" style="display: none;">
+            <div class="message-box">
+                <div class="message-text">
+                    Ciao amore mio! ❤️
+                    <br><br>
+                    Oggi c'è stato un piccolo, tenero intoppo qui al Polo Nord... Babbo Natale, dopo aver controllato la lista dei 'buoni e cattivi' per la millesima volta e aver assaggiato troppi biscotti, si è addormentato profondamente! 🍪🥛
+                    <br><br>
+                    Sì, proprio così! È crollato sul divano con la sua coperta preferita e ora russa come un orsetto polare. Gli elfi hanno provato a svegliarlo, ma è nel suo 'sonno pre-consegna regali', un momento sacro in cui ricarica le batterie per la grande notte.
+                    <br><br>
+                    Quindi, per oggi, non siamo riusciti a preparare un'attività speciale. Non vogliamo assolutamente disturbarlo, altrimenti chi ci porterà i regali?! 🤫
+                    <br><br>
+                    Spero tu possa perdonare questa piccola pausa natalizia. Ti mando un abbraccio enorme e un bacio virtuale. Riposati anche tu, che il Natale è quasi qui!
+                    <br><br>
+                    Con tanto amore e un pizzico di magia assonnata,
+                    <br>
+                    Il tuo Babbo Natale (in incognito... e sveglio!) 😉
+                </div>
+                <img src="images/santa-claus.png" alt="Babbo Natale che dorme" class="santa-image">
+            </div>
+
+            <a href="index.html" class="back-button">
+                🎄 Torna al Calendario
+            </a>
+        </div>
     </div>
 
     <script>
@@ -249,12 +291,25 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Avvia la riproduzione della musica di sottofondo
             const backgroundMusic = document.getElementById('backgroundMusic');
-            backgroundMusic.volume = 0.3; // Regola il volume
-            backgroundMusic.play().catch(error => {
-                console.log("Autoplay della musica di sottofondo bloccato. Interazione utente necessaria.", error);
-            });
+            const introSection = document.getElementById('intro-section');
+            const mainContent = document.getElementById('main-content');
+            const startButton = document.getElementById('startButton');
+
+            // Funzione per mostrare il contenuto principale
+            function showMainContent() {
+                introSection.style.display = 'none';
+                mainContent.style.display = 'block';
+                
+                // Avvia la musica quando l'utente clicca
+                backgroundMusic.volume = 0.3;
+                backgroundMusic.play().catch(error => {
+                    console.log("Errore nella riproduzione della musica:", error);
+                });
+            }
+
+            // Aggiungi event listener al pulsante
+            startButton.addEventListener('click', showMainContent);
 
             // Avvia la creazione dei fiocchi di neve
             setInterval(createSnowflake, 300);
