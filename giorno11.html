@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1">
- <title>Giorno 11 - Ruota della Fortuna! 🎡</title>
+ <title>Giorno 11 - Checco CORE! 🎤</title>
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
  <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
  <style>
@@ -149,68 +149,8 @@
    transform: none;
   }
   
-  .wheel-container {
-   display: none;
-   margin: 2rem auto;
-   position: relative;
-   width: 400px;
-   height: 400px;
-  }
-
-  .wheel-pointer {
-   position: absolute;
-   top: -30px;
-   left: 50%;
-   transform: translateX(-50%);
-   width: 0;
-   height: 0;
-   border-left: 20px solid transparent;
-   border-right: 20px solid transparent;
-   border-top: 40px solid gold;
-   z-index: 10;
-   filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
-  }
-
-  #wheelCanvas {
-   border: 5px solid gold;
-   border-radius: 50%;
-   box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
-   background: #000;
-  }
-
-  .result-display {
-   margin-top: 2rem;
-   padding: 2rem;
-   background: rgba(0, 0, 0, 0.6);
-   border: 3px solid gold;
-   border-radius: 15px;
-   min-height: 150px;
-   display: none;
-  }
-
-  .result-display h2 {
-   color: gold;
-   font-size: 2rem;
-   margin-bottom: 1rem;
-   text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
-  }
-
-  .result-display p {
-   font-size: 1.3rem;
-   color: #fff;
-   line-height: 1.6;
-  }
-
-  .prize-counter {
-   margin-top: 1rem;
-   font-size: 1.5rem;
-   color: gold;
-   text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-  }
-
   .back-button {
    margin-top: 2rem;
-   display: none;
    background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
    color: darkred;
    border: 2px solid rgba(139, 0, 0, 0.5);
@@ -237,44 +177,158 @@
    0%, 100% { transform: scale(1) rotate(0deg); }
    50% { transform: scale(1.2) rotate(180deg); }
   }
+
+  /* New styles for fill-in-the-blanks */
+  .quotes-container {
+    margin-top: 2rem;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.6);
+    border: 3px solid gold;
+    border-radius: 15px;
+    text-align: left;
+    line-height: 2.5;
+    display: none; /* Hidden by default */
+  }
+
+  .quote-item {
+    margin-bottom: 2rem;
+  }
+
+  .quote-item p {
+    margin-bottom: 1rem;
+  }
+
+  .blank-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid gold;
+    border-radius: 5px;
+    color: #fff;
+    font-family: 'Mountains of Christmas', cursive;
+    font-size: 1.3rem;
+    padding: 0.2rem 0.5rem;
+    width: 150px; /* Adjusted width for longer words */
+    text-align: center;
+    margin: 0 5px;
+  }
+
+  .blank-input:focus {
+    outline: none;
+    border-color: #ffed4e;
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+  }
+
+  .blank-input.correct {
+    border-color: #00ff00;
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.6);
+  }
+
+  .blank-input.incorrect {
+    border-color: #ff0000;
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+  }
+
+  .check-button {
+    margin-top: 2rem;
+    background: linear-gradient(135deg, #00BCD4 0%, #2196F3 100%); /* Blueish gradient */
+    color: #fff;
+    border: 2px solid rgba(0, 188, 212, 0.5);
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding: 0.7rem 2rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 188, 212, 0.4);
+    cursor: pointer;
+  }
+
+  .check-button:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 25px rgba(0, 188, 212, 0.6);
+  }
+
+  .message-feedback {
+    margin-top: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: gold;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    min-height: 30px; /* To prevent layout shift */
+  }
+
+  .intro-section {
+    text-align: center;
+  }
+
+  /* Video styles */
+  .video-container {
+    display: none; /* Hidden by default */
+    margin-top: 2rem;
+    max-width: 90%;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+    background: #000;
+    border: 5px solid gold;
+  }
+
+  .video-container video {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .completion-message {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #90EE90;
+    text-shadow: 0 0 20px rgba(144, 238, 144, 0.8);
+    animation: fadeInUp 0.5s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
  </style>
 </head>
 <body>
  <audio id="game-music" loop preload="auto">
-  <source src="audio/blue.mp3" type="audio/mpeg"> 
+  <source src="audio/uomini.mp3" type="audio/mpeg"> 
  </audio>
- <audio id="spin-sound" preload="auto">
-  <source src="audio/up.mp3" type="audio/mpeg">
- </audio>
- <audio id="win-sound" preload="auto">
-  <source src="audio/corretta.mp3" type="audio/mpeg">
- </audio>
+
  <div class="content-box">
   <h1>
-   <span class="emoji-sparkle">🎡</span> 
-   Ruota della Fortuna! 
-   <span class="emoji-sparkle">🎰</span>
+Giorno 11 - Checco CORE! 🎤
   </h1>
-  <div class="message-container" id="intro-message">
-   <p>
-    Benvenuta alla Ruota della Fortuna! 
-    Gira la ruota per scoprire cosa ti aspetta... premi, sfide e qualche sorpresa!
-    Fai 3 giri e vedi cosa ti capita! 🎲
-   </p>
+  
+  <div class="intro-section" id="intro-section">
+    <div class="message-container">
+      <p>
+        Benvenuta al Giorno 11! Oggi mettiamo alla prova la tua conoscenza delle frasi celebri del grande Checco Zalone.
+        Ascolta il sottofondo musicale e completa le citazioni con le parole mancanti. In bocca al lupo! 😉
+      </p>
+    </div>
+    <button class="btn btn-game" id="startButton">Inizia il Gioco! ✨</button>
   </div>
-<button class="btn btn-game" id="startGameButton">Inizia il Gioco! ✨</button>
-  <div class="wheel-container" id="wheelContainer">
-   <div class="wheel-pointer"></div>
-   <canvas id="wheelCanvas" width="400" height="400"></canvas>
+
+  <div class="quotes-container" id="quotesContainer">
+    <!-- Checco Zalone quotes with blanks will be inserted here by JavaScript -->
+    <button class="btn check-button" id="checkBlanksButton">Controlla! ✅</button>
+    <div class="message-feedback" id="feedbackMessage"></div>
   </div>
-<button class="btn btn-game" id="spinButton" style="display: none;">Gira la Ruota! 🎡</button>
-  <div class="prize-counter" id="prizeCounter" style="display: none;">
-   Giri effettuati: <span id="spinCount">0</span> / 3
+
+  <div class="video-container" id="checcoVideoContainer">
+    <video id="checcoVideo" controls>
+      <source src="video/video-checco.mp4" type="video/mp4">
+      Il tuo browser non supporta il tag video.
+    </video>
   </div>
-  <div class="result-display" id="resultDisplay">
-   <h2 id="resultTitle"></h2>
-   <p id="resultMessage"></p>
-  </div>
+
+  <div id="completion-message-area"></div>
+
   <a href="index.html" class="btn back-button" id="backButton">
    🎄 Torna al Calendario
   </a>
@@ -294,203 +348,136 @@
   }
 
   const gameMusic = document.getElementById('game-music');
-  const spinSound = document.getElementById('spin-sound');
-  const winSound = document.getElementById('win-sound');
-  
-  const startGameButton = document.getElementById('startGameButton');
-  const wheelContainer = document.getElementById('wheelContainer');
-  const spinButton = document.getElementById('spinButton');
-  const resultDisplay = document.getElementById('resultDisplay');
-  const resultTitle = document.getElementById('resultTitle');
-  const resultMessage = document.getElementById('resultMessage');
-  const prizeCounter = document.getElementById('prizeCounter');
-  const spinCountDisplay = document.getElementById('spinCount');
+  const introSection = document.getElementById('intro-section');
+  const startButton = document.getElementById('startButton');
+  const quotesContainer = document.getElementById('quotesContainer');
+  const checkBlanksButton = document.getElementById('checkBlanksButton');
+  const feedbackMessage = document.getElementById('feedbackMessage');
   const backButton = document.getElementById('backButton');
-  const introMessage = document.getElementById('intro-message');
+  const checcoVideoContainer = document.getElementById('checcoVideoContainer');
+  const checcoVideo = document.getElementById('checcoVideo');
+  const completionMessageArea = document.getElementById('completion-message-area');
 
-  const canvas = document.getElementById('wheelCanvas');
-  const ctx = canvas.getContext('2d');
-
-  let currentRotation = 0;
-  let isSpinning = false;
-  let spinCount = 0;
-  const maxSpins = 3;
-
-  // Premi della ruota (8 settori)
-  const prizes = [
-    { text: "Pizza insieme", message: "Ti offro una pizza! Scegli tu la pizzeria, ma niente ananas! 🍕", color: "#FF1744" },
-    { text: "Film a scelta", message: "Serata cinema! Tu scegli il film, io porto i popcorn 🍿", color: "#E91E63" },
-    { text: "Pugnetto", message: "Ops! Ti sei beccata un pugnetto affettuoso! 👊 (Non fa male, promesso)", color: "#9C27B0" },
-    { text: "Massaggio", message: "Un massaggio rilassante di 15 minuti! Schiena o piedi? 💆", color: "#673AB7" },
-    { text: "Colazione a letto", message: "Colazione a letto nel weekend! Con caffè e cornetti 🥐☕", color: "#3F51B5" },
-    { text: "Serata gaming", message: "Una serata a giocare insieme! Tu scegli il gioco 🎮", color: "#2196F3" },
-    { text: "Corvée gratis", message: "Ti salvi da una corvée a tua scelta! Valido per 1 volta 🎫", color: "#00BCD4" },
-    { text: "Gelato",message: "Ti offro un gelato! Anche con 2 gusti e panna! 🍦", color: "#009688" }
+  const checcoQuotes = [
+    {
+      text: "_BLANK_. Se il tuo cuore non conosce questa gioia, allora taci, perché le idee ti hanno condannato alla _BLANK_.",
+      blanks: ["Tredicesima", "partita iva"]
+    },
+    {
+      text: "Angela, amore mio, sempre insieme sia nella brutta che nella cattiva sorte amore, pagherò i migliori dottori per _BLANK_ le malattie che ti colpiranno e quand'anche saranno loro ad averla vinta tu non dovrai mai _BLANK_ mai, mai mia bella, la spingo io la _BLANK_, Angela!",
+      blanks: ["curarti", "temerle", "carrozzella"]
+    },
+    {
+      text: "Checco: No senatore, a me avete già sistemato, io sono del paese vostro, voi avete sistemato mio padre al Comune e mio zio alla Regione. - Senatore Binetto: A te dove ti ho messo a non fare nulla? - Checco: Io alla _BLANK_!",
+      blanks: ["Provincia"]
+    },
+    {
+      text: "L' _BLANK_ _BLANK_ non abbandona i suoi posti fissi.",
+      blanks: ["angelo","custode"]
+    },
+    {
+      text: "Ah, i debiti da saldare… domani ti mando il _BLANK_.",
+      blanks: ["fabbro"]
+    },
+    {
+      text: "Scusi, della 'Che Guevara' c'avete anche i _BLANK_?",
+      blanks: ["borselli"]
+    },
+    {
+      text: "Una mattinata come tutte le altre, esco di casa in _BLANK_, una bella _BLANK_ verso l'ufficio, ritiro il badge già timbrato, entro nel bar e lì incontro i miei _BLANK_...",
+      blanks: ["bici", "pedalata", "colleghi"]
+    }
   ];
 
-  function drawWheel() {
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const radius = 180;
-    const sliceAngle = (2 * Math.PI) / prizes.length;
+  function renderCheccoQuotes() {
+    let htmlContent = '';
+    checcoQuotes.forEach((quote, quoteIndex) => {
+      htmlContent += `<div class="quote-item">`;
+      let blankIndex = 0;
+      const parts = quote.text.split('_BLANK_');
+      let quoteHtml = '';
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+      parts.forEach((part, index) => {
+        quoteHtml += part;
+        if (index < parts.length - 1) {
+          quoteHtml += `<input type="text" class="blank-input" data-quote-index="${quoteIndex}" data-blank-index="${blankIndex}" data-correct="${quote.blanks[blankIndex].toLowerCase()}" aria-label="Completa la parola" />`;
+          blankIndex++;
+        }
+      });
+      htmlContent += `<p>${quoteHtml}</p></div>`;
+    });
+    // Insert the quotes before the check button and feedback message
+    quotesContainer.insertBefore(document.createRange().createContextualFragment(htmlContent), checkBlanksButton);
+  }
 
-    // Disegna i settori
-    prizes.forEach((prize, index) => {
-      const startAngle = index * sliceAngle + currentRotation;
-      const endAngle = startAngle + sliceAngle;
+  function checkBlanks() {
+    const inputs = quotesContainer.querySelectorAll('.blank-input');
+    let allQuotesCorrect = true;
 
-      // Settore colorato
-      ctx.beginPath();
-      ctx.moveTo(centerX, centerY);
-      ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-      ctx.closePath();
-      ctx.fillStyle = prize.color;
-      ctx.fill();
-      ctx.strokeStyle = 'gold';
-      ctx.lineWidth = 3;
-      ctx.stroke();
+    inputs.forEach(input => {
+      const userAnswer = input.value.trim().toLowerCase();
+      const correctAnswer = input.dataset.correct.toLowerCase(); // Ensure correct answer is also lowercase
 
-      // Testo
-      ctx.save();
-      ctx.translate(centerX, centerY);
-      ctx.rotate(startAngle + sliceAngle / 2);
-      ctx.textAlign = 'center';
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 16px "Mountains of Christmas"';
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-      ctx.shadowBlur = 4;
-      ctx.fillText(prize.text, radius / 1.5, 10);
-      ctx.restore();
+      if (userAnswer === correctAnswer) {
+        input.classList.remove('incorrect');
+        input.classList.add('correct');
+      } else {
+        input.classList.remove('correct');
+        input.classList.add('incorrect');
+        allQuotesCorrect = false;
+      }
     });
 
-    // Centro della ruota
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, 30, 0, 2 * Math.PI);
-    ctx.fillStyle = 'gold';
-    ctx.fill();
-    ctx.strokeStyle = '#000';
-    ctx.lineWidth = 3;
-    ctx.stroke();
+    if (allQuotesCorrect) {
+      feedbackMessage.style.color = '#00ff00';
+      feedbackMessage.textContent = '🎉 Complimenti! Hai completato tutte le citazioni correttamente! 🎉';
+      
+      // Stop background music
+      gameMusic.pause();
+      gameMusic.currentTime = 0;
+      
+      // Mostra messaggio di completamento
+      completionMessageArea.innerHTML = `
+        <div class="completion-message">
+          🎉 Complimenti! Gioco Completato! 🎉
+        </div>
+      `;
+      
+      // Hide quotes container and show video
+      quotesContainer.style.display = 'none';
+      checcoVideoContainer.style.display = 'block';
+      
+      // Start playing video
+      checcoVideo.play().catch(e => console.error("Error playing video:", e));
+
+      // Hide check button and feedback message
+      checkBlanksButton.style.display = 'none';
+      feedbackMessage.style.display = 'none';
+      backButton.style.display = 'inline-block';
+      
+      checcoVideo.onended = () => {
+        // Video has finished playing
+      };
+
+    } else {
+      feedbackMessage.style.color = '#ff0000';
+      feedbackMessage.textContent = 'Riprova! Ci sono ancora errori. 🤔';
+    }
   }
 
   function startGame() {
-    introMessage.style.display = 'none';
-    startGameButton.style.display = 'none';
-    wheelContainer.style.display = 'block';
-    spinButton.style.display = 'inline-block';
-    prizeCounter.style.display = 'block';
+    introSection.style.display = 'none';
+    quotesContainer.style.display = 'block';
     
     gameMusic.volume = 0.3;
     gameMusic.play().catch(e => console.log("Audio play prevented:", e));
     
-    drawWheel();
+    renderCheccoQuotes();
   }
 
-  function spinWheel() {
-    if (isSpinning) return;
-    
-    isSpinning = true;
-    spinButton.disabled = true;
-    resultDisplay.style.display = 'none';
-
-    spinSound.currentTime = 0;
-    spinSound.play().catch(e => console.log("Spin sound prevented:", e));
-
-    // Rotazione casuale (almeno 5 giri completi + angolo casuale)
-    const spins = 5 + Math.random() * 3;
-    const extraDegrees = Math.random() * 360;
-    const totalRotation = (spins * 360 + extraDegrees) * Math.PI / 180;
-    
-    const duration = 4000; // 4 secondi
-    const startTime = Date.now();
-    const startRotation = currentRotation;
-
-    function animate() {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      
-      // Easing per rallentamento
-      const easeOut = 1 - Math.pow(1 - progress, 3);
-      
-      currentRotation = startRotation + totalRotation * easeOut;
-      drawWheel();
-
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        finishSpin();
-      }
-    }
-
-    animate();
-  }
-
-  function finishSpin() {
-    isSpinning = false;
-    
-    // Normalizza la rotazione
-    currentRotation = currentRotation % (2 * Math.PI);
-    
-    // CORREZIONE: Calcola quale premio è sotto la freccia (che punta in alto)
-    const sliceAngle = (2 * Math.PI) / prizes.length;
-    
-    // La freccia punta verso l'alto (angolo -Math.PI/2 o 3*Math.PI/2)
-    // Dobbiamo trovare quale settore si trova in quella posizione
-    let pointerAngle = Math.PI / 2; // 90 gradi = parte superiore
-    
-    // Sottrai la rotazione corrente per trovare la posizione relativa
-    let relativeAngle = pointerAngle - currentRotation;
-    
-    // Normalizza l'angolo tra 0 e 2*PI
-    while (relativeAngle < 0) relativeAngle += 2 * Math.PI;
-    relativeAngle = relativeAngle % (2 * Math.PI);
-    
-    // Calcola quale settore corrisponde a questo angolo
-    const prizeIndex = Math.floor(relativeAngle / sliceAngle) % prizes.length;
-    
-    const wonPrize = prizes[prizeIndex];
-
-    winSound.currentTime = 0;
-    winSound.play().catch(e => console.log("Win sound prevented:", e));
-
-    // Mostra risultato
-    resultDisplay.style.display = 'block';
-    resultTitle.textContent = `🎉 ${wonPrize.text}! 🎉`;
-    resultMessage.textContent = wonPrize.message;
-
-    spinCount++;
-    spinCountDisplay.textContent = spinCount;
-
-    if (spinCount >= maxSpins) {
-      endGame();
-    } else {
-      setTimeout(() => {
-        spinButton.disabled = false;
-      }, 2000);
-    }
-  }
-
-  function endGame() {
-    spinButton.style.display = 'none';
-    gameMusic.pause();
-    gameMusic.currentTime = 0;
-
-    resultDisplay.style.display = 'block';
-    resultTitle.textContent = '🎊 Hai completato tutti i giri! 🎊';
-    resultMessage.innerHTML = `
-      Bene! Hai finito i giri della ruota! 
-      <br><br>
-      Spero ti siano piaciuti i premi... alcuni più di altri! 😄
-      <br>
-      Ricordati che devi riscuoterli tutti! 🎁
-    `;
-    backButton.style.display = 'inline-block';
-  }
-
-  startGameButton.addEventListener('click', startGame);
-  spinButton.addEventListener('click', spinWheel);
+  // Event Listeners
+  startButton.addEventListener('click', startGame);
+  checkBlanksButton.addEventListener('click', checkBlanks);
 
   document.addEventListener('DOMContentLoaded', () => {
     setInterval(createSnowflake, 300);
