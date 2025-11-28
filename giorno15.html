@@ -1,5 +1,3 @@
-<!--Indovina il film natalizio con emoji-->
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -9,12 +7,69 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
   <style>
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: "Mountains of Christmas", cursive;
       background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
-      text-align: center;
-      padding: 40px;
       color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      position: relative;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(2px 2px at 20% 30%, white, transparent),
+        radial-gradient(2px 2px at 60% 70%, white, transparent),
+        radial-gradient(1px 1px at 50% 50%, white, transparent),
+        radial-gradient(1px 1px at 80% 10%, white, transparent),
+        radial-gradient(2px 2px at 90% 60%, white, transparent),
+        radial-gradient(1px 1px at 33% 80%, white, transparent),
+        radial-gradient(1px 1px at 75% 40%, white, transparent);
+      background-size: 200% 200%;
+      animation: float 20s ease-in-out infinite;
+      opacity: 0.3;
+      z-index: 0;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: white;
+      font-size: 1em;
+      font-family: Arial, sans-serif;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+      z-index: 0;
+      user-select: none;
+      pointer-events: none;
+      animation: fall linear infinite;
+    }
+    
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) translateX(100px);
+        opacity: 0;
+      }
     }
 
     .content-box {
@@ -25,7 +80,7 @@
       padding: 3rem;
       max-width: 900px;
       margin: 0 auto;
-      text-align: center;
+      /* text-align: center; */ /* Rimosso per allineamento flexbox */
       box-shadow: 
         0 0 30px rgba(255, 215, 0, 0.3),
         0 0 60px rgba(255, 215, 0, 0.2),
@@ -33,6 +88,10 @@
       position: relative;
       z-index: 1;
       animation: glow-pulse 3s ease-in-out infinite;
+      
+      display: flex; /* Aggiunto per centrare il contenuto */
+      flex-direction: column;
+      align-items: center;
     }
 
     @keyframes glow-pulse {
@@ -42,7 +101,10 @@
 
     h1 {
       color: gold;
-      text-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3);
+      text-shadow: 
+        2px 2px 4px black,
+        0 0 20px rgba(255, 215, 0, 0.5),
+        0 0 30px rgba(255, 215, 0, 0.3);
       margin-bottom: 10px;
       font-size: 2.8rem;
     }
@@ -50,11 +112,13 @@
     p {
       margin-bottom: 30px;
       font-size: 1.4rem;
+      line-height: 1.8; /* Aggiunto per migliore leggibilità */
     }
 
     #gameArea {
       display: none; /* Hidden until game starts */
       margin-top: 2rem;
+      text-align: center; /* Per centrare gli elementi all'interno */
     }
 
     #emojiClue {
@@ -122,6 +186,7 @@
       display: none;
       font-size: 1.8rem;
       text-shadow: 2px 2px 0px #000;
+      text-align: center; /* Per centrare il testo nel messaggio di vittoria */
     }
 
     .game-win-message h2 {
@@ -153,43 +218,20 @@
       box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
       background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
     }
-
-    body::before {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        radial-gradient(2px 2px at 20% 30%, white, transparent),
-        radial-gradient(2px 2px at 60% 70%, white, transparent),
-        radial-gradient(1px 1px at 50% 50%, white, transparent),
-        radial-gradient(1px 1px at 80% 10%, white, transparent),
-        radial-gradient(2px 2px at 90% 60%, white, transparent),
-        radial-gradient(1px 1px at 33% 80%, white, transparent),
-        radial-gradient(1px 1px at 75% 40%, white, transparent);
-      background-size: 200% 200%;
-      animation: float 20s ease-in-out infinite;
-      opacity: 0.3;
-      z-index: 0;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-    }
   </style>
 </head>
 <body>
   <audio id="game-music" loop>
-    <source src="audio/game_music.mp3" type="audio/mpeg"> 
+    <source src="audio/mammaaereo.mp3" type="audio/mpeg"> 
   </audio>
   <audio id="correct-sound">
-    <source src="audio/correct.mp3" type="audio/mpeg">
+    <source src="audio/corretta.mp3" type="audio/mpeg">
   </audio>
   <audio id="incorrect-sound">
-    <source src="audio/incorrect.mp3" type="audio/mpeg">
+    <source src="audio/down.mp3" type="audio/mpeg">
   </audio>
   <audio id="win-sound">
-    <source src="audio/win.mp3" type="audio/mpeg">
+    <source src="audio/champion.mp3" type="audio/mpeg">
   </audio>
 
   <div class="content-box">
@@ -211,7 +253,7 @@
 
     <div class="game-win-message" id="gameWinMessage">
       <h2>🎉 Complimenti! Hai indovinato tutti i film!</h2>
-      <p>Sei un vero esperto di film natalizi! 🎅</p>
+      <p>Sei una vera esperta di film natalizi! 🎅</p>
       <button class="btn-game" id="playAgainButton">Gioca Ancora</button>
     </div>
 
@@ -221,6 +263,19 @@
   </div>
 
   <script>
+    function createSnowflake() {
+      const snowflake = document.createElement('div');
+      snowflake.classList.add('snowflake');
+      snowflake.textContent = '❄';
+      snowflake.style.left = Math.random() * 100 + '%';
+      snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+      snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+      snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+      document.body.appendChild(snowflake);
+      
+      setTimeout(() => snowflake.remove(), 8000);
+    }
+
     // Audio elements
     const gameMusic = document.getElementById('game-music');
     const correctSound = document.getElementById('correct-sound');
@@ -243,8 +298,10 @@
     // Game data
     const christmasMovies = [
       { emoji: "🎄🏠👦🛫​", answer: "Mamma ho perso l'aereo" },
-      { emoji: "🎅🎁🌟​🦌", answer: "Miracolo nella 34 strada" },
+      { emoji: "🎅🌟​3️⃣​4️⃣​🛣️​", answer: "Miracolo nella 34 strada" },
       { emoji: "💚😠🎅", answer: "Il Grinch" },
+      { emoji: "❄️🏰👸⛄", answer: "Frozen" },
+      { emoji: "💺❌👨🏻👨🏿", answer: "Una poltrona per due" }
     ];
 
     let shuffledMovies = [];
@@ -367,8 +424,11 @@
       }
     }, { once: true });
 
-    // Initialize game on page load
-    document.addEventListener('DOMContentLoaded', initGame);
+    // Initialize game and snow on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      setInterval(createSnowflake, 300); // Start snow
+      initGame(); // Initialize game logic
+    });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

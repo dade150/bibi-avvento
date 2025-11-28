@@ -405,9 +405,10 @@
   ];
 
   const buttonLightMapping = [
-    [0, 1, 2],       // Il Pulsante 1 (indice 0) altera le Luci 0, 1, 2
-    [0, 1, 3],       // Il Pulsante 2 (indice 1) altera le Luci 0, 1, 3
-    [2, 4, 5] 
+    [1,4],
+    [3,5],
+    [0,4,3], 
+     [2,4,5]
   ];
 
   const loadingScreen = document.getElementById('loadingScreen');
@@ -508,7 +509,7 @@
   }
 
   function createButtons() {
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 4; i++) {
       const button = document.createElement('button');
       button.classList.add('btn-game', 'game-button');
       button.textContent = `Pulsante ${i + 1}`;
