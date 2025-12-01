@@ -608,24 +608,24 @@
 
    if (percentage === 100) {
     resultTitle.innerHTML = '<span class="emoji-sparkle">🏆</span> PERFETTO! <span class="emoji-sparkle">🏆</span>';
-    resultMessage.textContent = `Hai risposto correttamente a tutte le ${correctAnswers} domande! Sei una vera esperta del laboratorio!`;
-    prizeText.innerHTML = '<span class="lab-icon">🌟</span> Una cioccolata calda premium con panna e marshmallow + biscotti natalizi artigianali! <span class="lab-icon">🍪</span>';
+    resultMessage.textContent = `Hai risposto correttamente a tutte le ${correctAnswers} domande! Livello polletta: 2000!`;
+    prizeText.innerHTML = '<span class="lab-icon">🌟</span> Una cioccolata calda premium con panna e marshmallow + biscotti natalizi artigianali! ';
    } else if (percentage >= 80) {
     resultTitle.innerHTML = '<span class="emoji-sparkle">⭐</span> OTTIMO! <span class="emoji-sparkle">⭐</span>';
-    resultMessage.textContent = `Hai risposto correttamente a ${correctAnswers} domande su ${questions.length}! Complimenti, conosci bene il tuo mestiere!`;
-    prizeText.innerHTML = '<span class="lab-icon">☕</span> Una cioccolata calda con panna montata! <span class="lab-icon">✨</span>';
+    resultMessage.textContent = `Hai risposto correttamente a ${correctAnswers} domande su ${questions.length}! Livello polletta: 1000!`;
+    prizeText.innerHTML = '<span class="lab-icon">☕</span> Una cioccolata calda con panna montata!';
    } else if (percentage >= 60) {
     resultTitle.innerHTML = '<span class="emoji-sparkle">👍</span> BUONO! <span class="emoji-sparkle">👍</span>';
-    resultMessage.textContent = `Hai risposto correttamente a ${correctAnswers} domande su ${questions.length}. Non male, continua così!`;
-    prizeText.innerHTML = '<span class="lab-icon">🍪</span> Un pacchetto di biscotti natalizi! <span class="lab-icon">🎄</span>';
+    resultMessage.textContent = `Hai risposto correttamente a ${correctAnswers} domande su ${questions.length}. Livello polletta: 100!`;
+    prizeText.innerHTML = '<span class="lab-icon">🍪</span> Un pacchetto di biscotti natalizi! ';
    } else if (percentage >= 40) {
     resultTitle.innerHTML = '<span class="emoji-sparkle">😊</span> DISCRETO! <span class="emoji-sparkle">😊</span>';
-    resultMessage.textContent = `Hai risposto correttamente a ${correctAnswers} domande su ${questions.length}. Forse è ora di ripassare qualche protocollo!`;
-    prizeText.innerHTML = '<span class="lab-icon">🍬</span> Una caramella natalizia! <span class="lab-icon">⚗️</span>';
+    resultMessage.textContent = `Hai risposto correttamente a ${correctAnswers} domande su ${questions.length}. Forse è ora di ripassare qualche protocollo! Livello polletta: 50!`;
+    prizeText.innerHTML = '<span class="lab-icon">🍬</span> Una caramella natalizia! ';
    } else {
     resultTitle.innerHTML = '<span class="emoji-sparkle">😅</span> RITENTA! <span class="emoji-sparkle">😅</span>';
-    resultMessage.textContent = `Hai risposto correttamente solo a ${correctAnswers} domande su ${questions.length}. Meglio tornare in laboratorio a studiare!`;
-    prizeText.innerHTML = '<span class="lab-icon">🎅</span> Un abbraccio virtuale e l\'incoraggiamento a rivedere le procedure di laboratorio! <span class="lab-icon">🔬</span>';
+    resultMessage.textContent = `Hai risposto correttamente solo a ${correctAnswers} domande su ${questions.length}. Meglio tornare in laboratorio a studiare. Livello polletta: 10!`;
+    prizeText.innerHTML = '<span class="lab-icon">🎅</span> Un abbraccio virtuale e l\'incoraggiamento a rivedere le procedure di laboratorio! ';
    }
   }
 
