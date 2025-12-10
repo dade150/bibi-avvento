@@ -540,22 +540,26 @@
 <body>
  <!-- Audio Elements -->
  <audio id="background-music" loop preload="auto">
-  <source src="audio/paccosound.mp3" type="audio/mpeg">
+  <source src="audio/soundpacchi.mp3" type="audio/mpeg">
  </audio>
  <audio id="final-music" preload="auto">
-  <source src="audio/fine.mp3" type="audio/mpeg">
+  <source src="audio/herewego.mp3" type="audio/mpeg">
  </audio>
- <!-- Individual package sounds -->
- <audio id="pacco-sound-1" preload="auto"><source src="audio/pacco1.mp3" type="audio/mpeg"></audio>
- <audio id="pacco-sound-2" preload="auto"><source src="audio/pacco2.mp3" type="audio/mpeg"></audio>
- <audio id="pacco-sound-3" preload="auto"><source src="audio/pacco3.mp3" type="audio/mpeg"></audio>
- <audio id="pacco-sound-4" preload="auto"><source src="audio/pacco4.mp3" type="audio/mpeg"></audio>
- <audio id="pacco-sound-5" preload="auto"><source src="audio/pacco5.mp3" type="audio/mpeg"></audio>
- <audio id="pacco-sound-6" preload="auto"><source src="audio/pacco6.mp3" type="audio/mpeg"></audio>
- <audio id="pacco-sound-7" preload="auto"><source src="audio/pacco7.mp3" type="audio/mpeg"></audio>
- <audio id="pacco-sound-8" preload="auto"><source src="audio/pacco8.mp3" type="audio/mpeg"></audio>
- <audio id="pacco-sound-9" preload="auto"><source src="audio/pacco9.mp3" type="audio/mpeg"></audio>
- <audio id="pacco-sound-10" preload="auto"><source src="audio/pacco10.mp3" type="audio/mpeg"></audio>
+ <audio id="dottore-sound" preload="auto">
+  <source src="audio/dottore.mp3" type="audio/mpeg">
+ </audio>
+ <!-- Prize sounds -->
+ <audio id="prize-sound-1" preload="auto"><source src="audio/pacco1.mp3" type="audio/mpeg"></audio>
+ <audio id="prize-sound-2" preload="auto"><source src="audio/pacco2.mp3" type="audio/mpeg"></audio>
+ <audio id="prize-sound-3" preload="auto"><source src="audio/pacco3.mp3" type="audio/mpeg"></audio>
+ <audio id="prize-sound-4" preload="auto"><source src="audio/pacco4.mp3" type="audio/mpeg"></audio>
+ <audio id="prize-sound-5" preload="auto"><source src="audio/pacco5.mp3" type="audio/mpeg"></audio>
+ <audio id="prize-sound-6" preload="auto"><source src="audio/pacco6.mp3" type="audio/mpeg"></audio>
+ <audio id="prize-sound-7" preload="auto"><source src="audio/pacco7.mp3" type="audio/mpeg"></audio>
+ <audio id="prize-sound-8" preload="auto"><source src="audio/pacco8.mp3" type="audio/mpeg"></audio>
+ <audio id="prize-sound-9" preload="auto"><source src="audio/pacco9.mp3" type="audio/mpeg"></audio>
+ <audio id="prize-sound-10" preload="auto"><source src="audio/pacco10.mp3" type="audio/mpeg"></audio>
+ 
  <div class="game-container">
   <div id="splashScreen">
    <div class="game-header">
@@ -574,6 +578,7 @@
      3. Il Dottore ti farà delle offerte... accetti o rifiuti?<br>
      4. Puoi cambiare il tuo pacco alla fine<br>
      5. Scopri quale premio hai vinto! ❤️
+     PS Lo voglio fare con te ihih! 😘
     </p>
     <button class="start-btn" onclick="startGame()">
      🎯 Inizia il Gioco
@@ -646,17 +651,20 @@
   // Audio Elements References
   const backgroundMusic = document.getElementById('background-music');
   const finalMusic = document.getElementById('final-music');
-  const paccoSounds = [];
+  const dottoreSound = document.getElementById('dottore-sound');
+  const prizeSounds = [];
   for (let i = 1; i <= 10; i++) {
-      paccoSounds.push(document.getElementById(`pacco-sound-${i}`));
+      prizeSounds.push(document.getElementById(`prize-sound-${i}`));
   }
+  
+  let isAudioPlaying = false;
 
   const prizes = [
    { id: 1, emoji: '🫠', text: 'Solletico', value: 1 },
    { id: 2, emoji: '🫂', text: '0€', value: 2 },
    { id: 3, emoji: '💋', text: '10 Baci', value: 3 },
-   { id: 4, emoji: '🍪', text: 'Biscotti Fatti in Casa', value: 4 },
-   { id: 5, emoji: '🎨', text: 'Attività Insieme', value: 5 },
+   { id: 4, emoji: '🐶​', text: 'Gennarino', value: 4 },
+   { id: 5, emoji: '🎨', text: 'Attività Insieme (cucina o altro)', value: 5 },
    { id: 6, emoji: '🍿', text: 'Serata Film e Popcorn', value: 6 },
    { id: 7, emoji: '🎬', text: 'Cinema', value: 7 },
    { id: 8, emoji: '☕', text: 'Colazione insieme', value: 8 },
@@ -692,7 +700,7 @@
    renderPackages();
 
    // Start background music
-   backgroundMusic.volume = 0.4; // Adjust volume as needed
+   backgroundMusic.volume = 0.4;
    backgroundMusic.play().catch(e => console.error("Error playing background music:", e));
   }
 
@@ -737,8 +745,10 @@
   }
 
   function handlePackageClick(packageNum) {
-   const pkg = gameState.packagesData.find(p => p.number === packageNum);
+   // Blocca la selezione durante la riproduzione audio
+   if (isAudioPlaying) return;
    
+   const pkg = gameState.packagesData.find(p => p.number === packageNum);
    if (pkg.opened) return;
 
    if (gameState.phase === 'selection') {
@@ -759,10 +769,19 @@
 
    document.getElementById(`prize-${pkg.prize.id}`).classList.add('eliminated');
 
-   // Play specific package sound
-   if (paccoSounds[packageNum - 1]) { // packageNum is 1-indexed, array is 0-indexed
-       paccoSounds[packageNum - 1].currentTime = 0; // Reset sound if it was played before
-       paccoSounds[packageNum - 1].play().catch(e => console.error(`Error playing pacco${packageNum}.mp3:`, e));
+   // Pausa la musica di sottofondo e riproduci l'audio del premio
+   const prizeAudio = prizeSounds[pkg.prize.id - 1];
+   if (prizeAudio) {
+       isAudioPlaying = true;
+       backgroundMusic.pause();
+       
+       prizeAudio.currentTime = 0;
+       prizeAudio.play().catch(e => console.error(`Error playing prize audio:`, e));
+       
+       prizeAudio.onended = () => {
+           isAudioPlaying = false;
+           backgroundMusic.play().catch(e => console.error("Error resuming background music:", e));
+       };
    }
 
    renderPackages();
@@ -787,6 +806,18 @@
    const randomOffer = doctorOffers[Math.floor(Math.random() * doctorOffers.length)];
    gameState.currentOffer = randomOffer;
    gameState.offersGiven++;
+
+   // Pausa la musica di sottofondo e riproduci l'audio del dottore
+   isAudioPlaying = true;
+   backgroundMusic.pause();
+   
+   dottoreSound.currentTime = 0;
+   dottoreSound.play().catch(e => console.error("Error playing dottore audio:", e));
+   
+   dottoreSound.onended = () => {
+       isAudioPlaying = false;
+       backgroundMusic.play().catch(e => console.error("Error resuming background music:", e));
+   };
 
    document.getElementById('doctorText').textContent = 
     gameState.offersGiven === 1 
@@ -851,7 +882,7 @@
    // Stop background music and play final music
    backgroundMusic.pause();
    backgroundMusic.currentTime = 0;
-   finalMusic.volume = 0.6; // Adjust volume as needed
+   finalMusic.volume = 0.6;
    finalMusic.play().catch(e => console.error("Error playing final music:", e));
 
    document.getElementById('finalPrize').innerHTML = `${emoji}<br>${text}`;
@@ -883,4 +914,4 @@
  </script>
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>s
+</html>
