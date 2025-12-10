@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1">
- <title>Giorno X - La Nostra Storia</title>
+ <title>Giorno 23 - La Nostra Storia</title>
 
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
  <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
@@ -335,6 +335,87 @@
    }
   }
 
+  /* New styles for add story section */
+  .add-story-section {
+    background: rgba(0, 0, 0, 0.6);
+    border: 3px solid #ffed4e;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+    width: 100%;
+    max-width: 800px;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    text-align: center;
+}
+
+.add-story-section h2 {
+    color: gold;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    text-shadow: 1px 1px 3px black;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    color: #ffed4e;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 1px 1px 2px black;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.8rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #FFD700;
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Mountains of Christmas', cursive;
+    font-size: 1rem;
+    outline: none;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.form-control:focus {
+    border-color: #ffed4e;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.add-story-section .home-btn {
+    margin-top: 1.5rem;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 10px;
+}
+
+/* Delete button for story items */
+.delete-story-item-btn {
+    background: none;
+    border: none;
+    color: #ff6b6b; /* Reddish color */
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+    position: absolute; /* Position it relative to timeline-content */
+    top: 10px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
+    z-index: 3; /* Ensure it's above other content */
+}
+
+.delete-story-item-btn:hover {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
  </style>
 </head>
 
@@ -350,111 +431,30 @@
    <p class="timeline-subtitle">Il viaggio più bello... insieme a te</p>
   </div>
 
-  <div class="timeline">
-   
-   <!-- Momento 1 - PERSONALIZZA CON LE TUE DATE E RICORDI -->
-   <div class="timeline-item">
-    <div class="timeline-dot"></div>
-    <div class="timeline-content">
-     <span class="timeline-emoji">✨</span>
-     <div class="timeline-date">Gennaio 2023</div>
-     <div class="timeline-title">Il Primo Incontro</div>
-     <div class="timeline-description">
-      Quel giorno in cui i nostri sguardi si sono incrociati per la prima volta. Non sapevo che sarebbe stato l'inizio di qualcosa di speciale.
-     </div>
+  <div class="add-story-section">
+    <h2>Aggiungi un Nuovo Momento alla Nostra Storia</h2>
+    <div class="input-group">
+        <label for="storyDate">Data:</label>
+        <input type="date" id="storyDate" class="form-control">
     </div>
-   </div>
-
-   <!-- Momento 2 -->
-   <div class="timeline-item">
-    <div class="timeline-dot"></div>
-    <div class="timeline-content">
-     <span class="timeline-emoji">❤️</span>
-     <div class="timeline-date">Marzo 2023</div>
-     <div class="timeline-title">Il Primo Bacio</div>
-     <div class="timeline-description">
-      Sotto le stelle, con il cuore che batteva forte. Un momento che non dimenticherò mai.
-     </div>
+    <div class="input-group">
+        <label for="storyTitle">Titolo:</label>
+        <input type="text" id="storyTitle" class="form-control" placeholder="Es: Il nostro primo appuntamento">
     </div>
-   </div>
-
-   <!-- Momento 3 -->
-   <div class="timeline-item">
-    <div class="timeline-dot"></div>
-    <div class="timeline-content">
-     <span class="timeline-emoji">🏔️</span>
-     <div class="timeline-date">Giugno 2023</div>
-     <div class="timeline-title">Primo Viaggio in Trentino</div>
-     <div class="timeline-description">
-      Le montagne, i laghi, e noi due mano nella mano. Il tuo posto del cuore è diventato anche il mio.
-     </div>
+    <div class="input-group">
+        <label for="storyDescription">Descrizione:</label>
+        <textarea id="storyDescription" class="form-control" rows="3" placeholder="Racconta cosa è successo..."></textarea>
     </div>
-   </div>
-
-   <div class="timeline-item">
-    <div class="timeline-dot"></div>
-    <div class="timeline-content">
-     <span class="timeline-emoji">🎬</span>
-     <div class="timeline-date">Agosto 2023</div>
-     <div class="timeline-title">Maratona Grey's Anatomy</div>
-     <div class="timeline-description">
-      Notti sul divano, coperta, popcorn e tu che piangevi ad ogni episodio. Io che ti abbracciavo e ridevo di te (con amore!).
-     </div>
+    <div class="input-group">
+        <label for="storyEmoji">Emoji:</label>
+        <input type="text" id="storyEmoji" class="form-control" placeholder="Es: ❤️, 🍕, ✈️ (un solo emoji)">
     </div>
-   </div>
+    <button id="addStoryBtn" class="home-btn">Aggiungi Momento</button>
+    <button id="clearStoryBtn" class="home-btn" style="background: #dc3545; border-color: #dc3545;">Cancella Tutta la Storia</button>
+</div>
 
-   <!-- Momento 5 -->
-   <div class="timeline-item">
-    <div class="timeline-dot"></div>
-    <div class="timeline-content">
-     <span class="timeline-emoji">🍕</span>
-     <div class="timeline-date">Ottobre 2023</div>
-     <div class="timeline-title">Weekend a Napoli</div>
-     <div class="timeline-description">
-      La pizza più buona del mondo, il mare, e quella passeggiata romantica sul lungomare al tramonto.
-     </div>
-    </div>
-   </div>
-
-   <!-- Momento 6 -->
-   <div class="timeline-item">
-    <div class="timeline-dot"></div>
-    <div class="timeline-content">
-     <span class="timeline-emoji">😂</span>
-     <div class="timeline-date">Novembre 2023</div>
-     <div class="timeline-title">Serata Checco Zalone</div>
-     <div class="timeline-description">
-      Abbiamo riso fino alle lacrime guardando i suoi film. Tu che ripetevi le battute per giorni. "Che bella giornata!"
-     </div>
-    </div>
-   </div>
-
-   <!-- Momento 7 -->
-   <div class="timeline-item">
-    <div class="timeline-dot"></div>
-    <div class="timeline-content">
-     <span class="timeline-emoji">🔬</span>
-     <div class="timeline-date">Febbraio 2024</div>
-     <div class="timeline-title">La Tua Laurea</div>
-     <div class="timeline-description">
-      Così orgoglioso di te, della tua passione per il laboratorio, della tua dedizione. Sei incredibile in tutto quello che fai.
-     </div>
-    </div>
-   </div>
-
-   <!-- Momento 8 -->
-   <div class="timeline-item">
-    <div class="timeline-dot"></div>
-    <div class="timeline-content">
-     <span class="timeline-emoji">🎄</span>
-     <div class="timeline-date">Dicembre 2024</div>
-     <div class="timeline-title">Questo Natale Insieme</div>
-     <div class="timeline-description">
-      Il nostro primo Natale speciale. Ogni giorno di questo calendario è un modo per dirti quanto sei importante per me.
-     </div>
-    </div>
-   </div>
-
+  <div class="timeline" id="dynamicTimeline">
+   <!-- Story items will be dynamically inserted here by JavaScript -->
   </div>
 
   <!-- Messaggio finale -->
@@ -473,6 +473,107 @@
  </div>
 
  <script>
+  // Global array to store story items
+  let ourStory = [];
+  const LOCAL_STORAGE_KEY = 'ourStoryTimeline';
+
+  // Function to save story to localStorage
+  function saveStoryToLocalStorage() {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(ourStory));
+  }
+
+  // Function to load story from localStorage
+  function loadStoryFromLocalStorage() {
+      const storedStory = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (storedStory) {
+          ourStory = JSON.parse(storedStory);
+      }
+  }
+
+  // Function to render the story timeline
+  function renderStoryTimeline() {
+      const dynamicTimeline = document.getElementById('dynamicTimeline');
+      dynamicTimeline.innerHTML = ''; // Clear existing items
+
+      // Sort story by date ascending to keep it chronological
+      ourStory.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      ourStory.forEach((item, index) => {
+          const timelineItem = document.createElement('div');
+          timelineItem.classList.add('timeline-item');
+          // Apply animation delay dynamically
+          timelineItem.style.animationDelay = `${0.2 + (index * 0.2)}s`;
+
+          // Format date for display
+          const displayDate = new Date(item.date).toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' });
+
+          timelineItem.innerHTML = `
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                  <span class="timeline-emoji">${item.emoji}</span>
+                  <div class="timeline-date">${displayDate}</div>
+                  <div class="timeline-title">${item.title}</div>
+                  <div class="timeline-description">${item.description}</div>
+                  <button class="delete-story-item-btn" data-index="${index}">❌</button>
+              </div>
+          `;
+          dynamicTimeline.appendChild(timelineItem);
+      });
+
+      // Add event listeners for delete buttons
+      document.querySelectorAll('.delete-story-item-btn').forEach(button => {
+          button.addEventListener('click', deleteStoryItem);
+      });
+  }
+
+  // Function to add a new story item
+  function addStoryItem() {
+      const storyDateInput = document.getElementById('storyDate');
+      const storyTitleInput = document.getElementById('storyTitle');
+      const storyDescriptionInput = document.getElementById('storyDescription');
+      const storyEmojiInput = document.getElementById('storyEmoji');
+
+      const date = storyDateInput.value;
+      const title = storyTitleInput.value.trim();
+      const description = storyDescriptionInput.value.trim();
+      const emoji = storyEmojiInput.value.trim();
+
+      if (!date || !title || !description || !emoji) {
+          alert('Per favore, compila tutti i campi per aggiungere un momento alla storia!');
+          return;
+      }
+
+      const newStoryItem = { date, title, description, emoji };
+      ourStory.push(newStoryItem);
+      saveStoryToLocalStorage();
+      renderStoryTimeline();
+
+      // Clear form fields
+      storyDateInput.value = '';
+      storyTitleInput.value = '';
+      storyDescriptionInput.value = '';
+      storyEmojiInput.value = '';
+  }
+
+  // Function to delete a story item
+  function deleteStoryItem(event) {
+      const indexToDelete = parseInt(event.target.dataset.index);
+      if (confirm('Sei sicuro di voler cancellare questo momento dalla storia?')) {
+          ourStory.splice(indexToDelete, 1);
+          saveStoryToLocalStorage();
+          renderStoryTimeline();
+      }
+  }
+
+  // Function to clear all story items
+  function clearAllStoryItems() {
+      if (confirm('Sei sicuro di voler cancellare TUTTA la storia? Questa azione non può essere annullata!')) {
+          ourStory = [];
+          saveStoryToLocalStorage();
+          renderStoryTimeline();
+      }
+  }
+
   // Snowflake generation
   function createSnowflake() {
    const snowflake = document.createElement('div');
@@ -487,9 +588,14 @@
    setTimeout(() => snowflake.remove(), 8000);
   }
 
-  // Initialize snowflakes
+  // Initialize snowflakes and story on page load
   document.addEventListener('DOMContentLoaded', () => {
    setInterval(createSnowflake, 300);
+   loadStoryFromLocalStorage();
+   renderStoryTimeline();
+
+   document.getElementById('addStoryBtn').addEventListener('click', addStoryItem);
+   document.getElementById('clearStoryBtn').addEventListener('click', clearAllStoryItems);
   });
 
  </script>
