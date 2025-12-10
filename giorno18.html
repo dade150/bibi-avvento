@@ -278,7 +278,7 @@
   <source src="audio/pacman.mp3" type="audio/mpeg"> 
  </audio>
  <audio id="win-sound" preload="auto">
-  <source src="audio/up.mp3" type="audio/mpeg">
+  <source src="audio/pacmanwin.mp3" type="audio/mpeg">
  </audio>
  <audio id="lose-sound" preload="auto">
   <source src="audio/titanic.mp3" type="audio/mpeg">
@@ -436,6 +436,10 @@
   let animationFrameId;
   let lastTimestamp = 0;
 
+  // Global variables for temporary messages
+  let showCollectStarsMessage = false;
+  let collectStarsMessageTimer = 0;
+
   // Assets
   const playerImage = new Image();
   playerImage.src = 'images/faccia.png';
@@ -554,6 +558,9 @@
     starsCollected = 0;
     wallTimer = 0;
 
+    showCollectStarsMessage = false; // Reset message
+    collectStarsMessageTimer = 0;   // Reset timer
+
     generateStars();
     generateEnemies();
     generateMagicWalls();
@@ -619,6 +626,14 @@
       }
     }
 
+    // Update collect stars message timer
+    if (showCollectStarsMessage) {
+        collectStarsMessageTimer -= deltaTime;
+        if (collectStarsMessageTimer <= 0) {
+            showCollectStarsMessage = false;
+        }
+    }
+
     // Check collisions
     checkStarCollection();
     checkEnemyCollision();
@@ -629,6 +644,11 @@
     drawMagicWalls();
     drawEnemies();
     drawPlayer();
+
+    // Draw collect stars message if active
+    if (showCollectStarsMessage) {
+        drawCollectStarsMessage();
+    }
 
     animationFrameId = requestAnimationFrame(gameLoop);
   }
@@ -839,6 +859,19 @@
     ctx.globalAlpha = 1.0;
   }
 
+  // Draw message to collect all stars
+  function drawCollectStarsMessage() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.fillRect(0, gameCanvas.height / 2 - 30, gameCanvas.width, 60);
+      ctx.font = '20px "Press Start 2P", cursive';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'gold';
+      ctx.shadowColor = 'black';
+      ctx.shadowBlur = 5;
+      ctx.fillText('Raccogli tutte le stelle!', gameCanvas.width / 2, gameCanvas.height / 2 + 8);
+      ctx.shadowBlur = 0;
+  }
+
   // Check for wall collision
   function isCollision(row, col) {
     if (row < 0 || row >= MAZE_GRID.length || col < 0 || col >= MAZE_GRID[0].length) {
@@ -882,7 +915,12 @@
 
       // Check if reached the end
       if (player.row === END_POS.row && player.col === END_POS.col) {
-        endGame(true);
+        if (starsCollected === TOTAL_STARS) {
+            endGame(true);
+        } else {
+            showCollectStarsMessage = true;
+            collectStarsMessageTimer = 2000; // Show message for 2 seconds
+        }
       }
     }
   }
@@ -929,5 +967,3 @@
 
 </body>
 </html>
-
-

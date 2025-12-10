@@ -1,655 +1,761 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1">
- <title>Giorno X - Le Nostre Liste</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giorno 17 - Puzzle Natalizio a Tempo! 🧩</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
- <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        body {
+            font-family: 'Mountains of Christmas', cursive;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%); /* Matched previous style */
+            color: #fff; /* Changed to white for better contrast with gold elements */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
 
- <style>
-  * {
-   margin: 0;
-   padding: 0;
-   box-sizing: border-box;
-  }
-  
-  body {
-   font-family: 'Mountains of Christmas', cursive;
-   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
-   color: #fff;
-   min-height: 100vh;
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-   align-items: center;
-   padding: 2rem;
-   position: relative;
-   overflow-x: hidden;
-   overflow-y: auto;
-  }
-  
-  body::before {
-   content: '';
-   position: fixed;
-   width: 100%;
-   height: 100%;
-   background-image: 
-    radial-gradient(2px 2px at 20% 30%, white, transparent),
-    radial-gradient(2px 2px at 60% 70%, white, transparent),
-    radial-gradient(1px 1px at 50% 50%, white, transparent),
-    radial-gradient(1px 1px at 80% 10%, white, transparent),
-    radial-gradient(2px 2px at 90% 60%, white, transparent),
-    radial-gradient(1px 1px at 33% 80%, white, transparent),
-    radial-gradient(1px 1px at 75% 40%, white, transparent);
-   background-size: 200% 200%;
-   animation: float 20s ease-in-out infinite;
-   opacity: 0.3;
-   z-index: 0;
-  }
-  
-  @keyframes float {
-   0%, 100% { transform: translateY(0); }
-   50% { transform: translateY(-20px); }
-  }
+        /* Floating particles from previous style */
+        body::before {
+            content: '';
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(2px 2px at 60% 70%, white, transparent),
+                radial-gradient(1px 1px at 50% 50%, white, transparent),
+                radial-gradient(1px 1px at 80% 10%, white, transparent),
+                radial-gradient(2px 2px at 90% 60%, white, transparent),
+                radial-gradient(1px 1px at 33% 80%, white, transparent),
+                radial-gradient(1px 1px at 75% 40%, white, transparent);
+            background-size: 200% 200%;
+            animation: float 20s ease-in-out infinite;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
 
-  .snowflake {
-   position: fixed;
-   top: -10px;
-   color: white;
-   font-size: 1em;
-   font-family: Arial, sans-serif;
-   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-   z-index: 0;
-   user-select: none;
-   pointer-events: none;
-   animation: fall linear infinite;
-  }
-  
-  @keyframes fall {
-   to {
-    transform: translateY(100vh) translateX(100px);
-    opacity: 0;
-   }
-  }
+        /* Animated snowflakes CSS */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: white;
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            z-index: 0;
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
 
-  .lists-container {
-   flex: 1;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   width: 100%;
-   max-width: 1200px;
-   z-index: 1;
-   padding: 2rem;
-   background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
-   border: 5px solid;
-   border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
-   border-radius: 25px;
-   box-shadow: 
-    0 0 30px rgba(255, 215, 0, 0.3),
-    0 0 60px rgba(255, 215, 0, 0.2),
-    inset 0 0 50px rgba(0, 0, 0, 0.5);
-   animation: glow-pulse 3s ease-in-out infinite;
-   margin-bottom: 2rem;
-  }
-  
-  @keyframes glow-pulse {
-   0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
-   50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
-  }
+        .game-container {
+            flex: 1; /* Added flex property */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px; /* Increased max-width */
+            z-index: 1;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%); /* Matched previous style */
+            border: 5px solid;
+            border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1; /* Matched previous style */
+            border-radius: 25px; /* Matched previous style */
+            box-shadow: 
+                0 0 30px rgba(255, 215, 0, 0.3),
+                0 0 60px rgba(255, 215, 0, 0.2),
+                inset 0 0 50px rgba(0, 0, 0, 0.5);
+            animation: glow-pulse 3s ease-in-out infinite; /* Matched previous style */
+            margin-bottom: 2rem; /* Matched previous style */
+        }
 
-  .lists-header {
-   text-align: center;
-   margin-bottom: 2rem;
-  }
+        @keyframes glow-pulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+        }
 
-  .lists-header h1 {
-   color: gold;
-   font-size: 2.8rem;
-   text-shadow: 
-    2px 2px 4px black,
-    0 0 20px rgba(255, 215, 0, 0.5),
-    0 0 30px rgba(255, 215, 0, 0.3);
-   margin-bottom: 0.5rem;
-   animation: title-glow 2s ease-in-out infinite alternate;
-  }
-  
-  @keyframes title-glow {
-   from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
-   to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
-  }
+        h1 {
+            color: gold; /* Matched previous style */
+            font-size: 2.8rem; /* Matched previous style */
+            text-shadow: 
+                2px 2px 4px black,
+                0 0 20px rgba(255, 215, 0, 0.5),
+                0 0 30px rgba(255, 215, 0, 0.3);
+            margin-bottom: 0.5rem; /* Matched previous style */
+            animation: title-glow 2s ease-in-out infinite alternate; /* Matched previous style */
+        }
+        
+        @keyframes title-glow {
+            from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
+            to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
+        }
 
-  .lists-subtitle {
-   color: #ffed4e;
-   font-size: 1.3rem;
-   text-shadow: 1px 1px 3px black;
-  }
+        .puzzle-info {
+            color: #ffed4e; /* Matched previous style */
+            font-size: 1.3rem; /* Matched previous style */
+            text-shadow: 1px 1px 3px black; /* Matched previous style */
+            margin-bottom: 20px;
+        }
 
-  /* Splash Screen */
-  #splashScreen {
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   justify-content: center;
-   text-align: center;
-  }
+        #timer {
+            font-size: 2rem;
+            font-weight: bold;
+            color: gold; /* Changed to gold */
+            margin-bottom: 20px;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.7); /* Gold shadow */
+        }
 
-  .splash-content h2 {
-   color: gold;
-   font-size: 2rem;
-   margin-bottom: 1.5rem;
-   text-shadow: 2px 2px 4px black, 0 0 15px rgba(255, 215, 0, 0.5);
-  }
+        .puzzle-board {
+            position: relative;
+            border: 3px solid gold; /* Changed to gold */
+            margin: 0 auto 30px auto;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+            background-color: rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            display: grid;
+            gap: 0;
+        }
 
-  .splash-content p {
-   color: #fff;
-   font-size: 1.3rem;
-   line-height: 1.8;
-   margin-bottom: 2rem;
-   text-shadow: 1px 1px 3px black;
-  }
+        .puzzle-piece {
+            position: absolute;
+            cursor: grab;
+            transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
+            box-sizing: border-box;
+            z-index: 10;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid rgba(255, 215, 0, 0.5); /* Thinner gold border */
+            user-select: none;
+        }
 
-  .start-btn {
-   padding: 1.5rem 3rem;
-   font-size: 1.5rem;
-   font-family: 'Mountains of Christmas', cursive;
-   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
-   color: darkred;
-   border: 2px solid rgba(139, 0, 0, 0.5);
-   border-radius: 50px;
-   cursor: pointer;
-   transition: all 0.3s ease;
-   font-weight: bold;
-   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-   border: none;
-   animation: pulse-btn 2s ease-in-out infinite;
-  }
+        .puzzle-piece:hover {
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.9);
+            transform: scale(1.02);
+        }
 
-  @keyframes pulse-btn {
-   0%, 100% { transform: scale(1); }
-   50% { transform: scale(1.05); }
-  }
+        .puzzle-piece.dragging {
+            cursor: grabbing;
+            z-index: 1000;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 1);
+            transform: scale(1.05);
+        }
 
-  .start-btn:hover {
-   transform: translateY(-3px) scale(1.1);
-   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
-   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
-   animation: none;
-  }
+        .puzzle-piece.snapped {
+            cursor: default;
+            border: 1px solid #28a745; /* Green border for snapped */
+            box-shadow: 0 0 12px rgba(40, 167, 69, 0.7);
+            z-index: 5;
+            transition: all 0.2s ease-out;
+            pointer-events: none;
+        }
 
-  /* Main Content - Hidden Initially */
-  #mainContent {
-   display: none;
-   width: 100%;
-  }
+        /* Button styles adapted from previous .start-btn */
+        .btn-primary {
+            padding: 1.5rem 3rem;
+            font-size: 1.5rem;
+            font-family: 'Mountains of Christmas', cursive;
+            background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+            color: darkred;
+            border: 2px solid rgba(139, 0, 0, 0.5);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            border: none;
+            animation: pulse-btn 2s ease-in-out infinite;
+            margin: 10px; /* Keep margin */
+        }
 
-  /* Categories Grid */
-  .categories-grid {
-   display: grid;
-   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-   gap: 2rem;
-   width: 100%;
-   margin-bottom: 2rem;
-  }
+        @keyframes pulse-btn {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
 
-  .category-card {
-   background: rgba(0, 0, 0, 0.6);
-   border: 3px solid gold;
-   border-radius: 20px;
-   padding: 1.5rem;
-   box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-   transition: all 0.3s ease;
-  }
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+            background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+            animation: none;
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            animation: none; /* Disable pulse animation when disabled */
+        }
 
-  .category-card:hover {
-   transform: translateY(-5px);
-   box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-  }
+        #winMessage, #loseMessage {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-top: 20px;
+            display: none;
+            color: gold; /* Changed to gold */
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8); /* Gold shadow */
+        }
 
-  .category-header {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   margin-bottom: 1rem;
-   gap: 0.5rem;
-  }
+        #winMessage {
+            color: lightgreen; /* Keep lightgreen for win, but blend with gold theme */
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.5);
+        }
 
-  .category-icon {
-   font-size: 2rem;
-  }
+        #loseMessage {
+            color: #dc3545; /* Keep red for lose, but blend with gold theme */
+            text-shadow: 0 0 10px rgba(220, 53, 69, 0.8), 0 0 20px rgba(255, 215, 0, 0.5);
+        }
 
-  .category-title {
-   color: gold;
-   font-size: 1.8rem;
-   text-shadow: 2px 2px 3px black;
-   margin: 0;
-  }
+        .progress-text {
+            font-size: 1.2rem;
+            color: #ffed4e; /* Changed to goldish */
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px black;
+        }
 
-  .category-list {
-   list-style: none;
-   margin-bottom: 1rem;
-  }
+        /* Loading Screen Styles */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95); /* Slightly darker */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: gold;
+            font-size: 2.5rem; /* Slightly larger */
+            z-index: 1000;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.9); /* Stronger gold shadow */
+        }
 
-  .list-item {
-   display: flex;
-   align-items: center;
-   gap: 0.8rem;
-   padding: 0.8rem;
-   background: rgba(139, 0, 0, 0.3);
-   border-radius: 10px;
-   margin-bottom: 0.5rem;
-   transition: all 0.3s ease;
-  }
+        #loadingScreen span {
+            margin-top: 1rem;
+            font-size: 1.5rem; /* Slightly larger */
+            color: #ffed4e; /* Goldish color */
+        }
 
-  .list-item:hover {
-   background: rgba(139, 0, 0, 0.5);
-  }
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 1rem; /* Smaller padding */
+            }
 
-  .list-item.completed {
-   opacity: 0.6;
-   text-decoration: line-through;
-  }
+            h1 {
+                font-size: 2.2rem; /* Adjusted font size */
+            }
 
-  .list-checkbox {
-   width: 24px;
-   height: 24px;
-   cursor: pointer;
-   accent-color: gold;
-  }
+            .puzzle-info {
+                font-size: 1.1rem; /* Adjusted font size */
+            }
 
-  .list-text {
-   flex: 1;
-   color: #fff;
-   font-size: 1.1rem;
-   text-shadow: 1px 1px 2px black;
-  }
+            #timer {
+                font-size: 1.8rem; /* Adjusted font size */
+            }
 
-  .delete-btn {
-   background: none;
-   border: none;
-   color: #ff6b6b;
-   font-size: 1.2rem;
-   cursor: pointer;
-   opacity: 0.6;
-   transition: all 0.3s ease;
-  }
-
-  .delete-btn:hover {
-   opacity: 1;
-   transform: scale(1.2);
-  }
-
-  /* Add Item Form */
-  .add-item-form {
-   display: flex;
-   gap: 0.5rem;
-   margin-top: 1rem;
-  }
-
-  .add-item-input {
-   flex: 1;
-   padding: 0.8rem;
-   font-family: 'Mountains of Christmas', cursive;
-   font-size: 1rem;
-   background: rgba(0, 0, 0, 0.5);
-   border: 2px solid gold;
-   border-radius: 10px;
-   color: #fff;
-   outline: none;
-  }
-
-  .add-item-input::placeholder {
-   color: rgba(255, 255, 255, 0.5);
-  }
-
-  .add-item-input:focus {
-   border-color: #ffed4e;
-   box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-  }
-
-  .add-btn {
-   padding: 0.8rem 1.5rem;
-   font-family: 'Mountains of Christmas', cursive;
-   font-size: 1rem;
-   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
-   color: darkred;
-   border: none;
-   border-radius: 10px;
-   cursor: pointer;
-   font-weight: bold;
-   transition: all 0.3s ease;
-   box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
-  }
-
-  .add-btn:hover {
-   transform: translateY(-2px);
-   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
-  }
-
-  /* Audio Player */
-  .audio-player {
-   width: 100%;
-   max-width: 600px;
-   margin: 2rem auto;
-   padding: 1rem;
-   background: rgba(0, 0, 0, 0.6);
-   border: 3px solid gold;
-   border-radius: 15px;
-   text-align: center;
-  }
-
-  .audio-player p {
-   color: gold;
-   font-size: 1.1rem;
-   margin-bottom: 0.8rem;
-   text-shadow: 1px 1px 2px black;
-  }
-
-  .audio-player audio {
-   width: 100%;
-   outline: none;
-  }
-
-  .home-btn {
-   padding: 1rem 2rem;
-   font-size: 1.2rem;
-   font-family: 'Mountains of Christmas', cursive;
-   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
-   color: darkred;
-   border: 2px solid rgba(139, 0, 0, 0.5);
-   border-radius: 50px;
-   cursor: pointer;
-   transition: all 0.3s ease;
-   font-weight: bold;
-   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-   margin-top: 2rem;
-   border: none;
-  }
-
-  .home-btn:hover {
-   transform: translateY(-3px) scale(1.05);
-   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
-   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
-  }
-
-  @media (max-width: 768px) {
-   .lists-header h1 {
-    font-size: 2rem;
-   }
-   .categories-grid {
-    grid-template-columns: 1fr;
-   }
-   .category-title {
-    font-size: 1.5rem;
-   }
-   .list-text {
-    font-size: 1rem;
-   }
-  }
-
- </style>
+            .btn-primary {
+                padding: 1rem 2rem; /* Smaller padding */
+                font-size: 1.2rem; /* Smaller font size */
+            }
+        }
+    </style>
 </head>
-
 <body>
+    <!-- Audio Elements -->
+    <audio id="gameMusic" loop preload="auto">
+        <source src="audio/mammaaereo.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="winAudio" preload="auto">
+        <source src="audio/canederli.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="loseAudio" preload="auto">
+        <source src="audio/canederli.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="snapAudio" preload="auto">
+        <source src="audio/up.mp3" type="audio/mpeg"> <!-- Optional: add a snap sound -->
+    </audio>
+    <audio id="alertAudio" preload="auto">
+        <source src="audio/allert.mp3" type="audio/mpeg"> <!-- Optional: add an alert sound for timer -->
+    </audio>
 
- <div class="lists-container">
-  
-  <!-- Splash Screen -->
-  <div id="splashScreen">
-   <div class="lists-header">
-    <h1>
-     <span class="emoji-sparkle">📝</span>
-     Le Nostre Liste
-     <span class="emoji-sparkle">✨</span>
-    </h1>
-    <p class="lists-subtitle">Sogni, desideri e progetti da realizzare insieme</p>
-   </div>
 
-   <div class="splash-content">
-    <h2>💕 Un Progetto da Costruire Insieme 💕</h2>
-    <p>
-     Qui possiamo aggiungere tutti i nostri desideri, sogni e progetti.<br>
-     Spuntiamo quelli che realizziamo, aggiungiamone di nuovi...<br>
-     Questa è la nostra lista condivisa che crescerà con noi! ❤️
-    </p>
-    <button class="start-btn" onclick="startActivity()">
-     🎯 Inizia l'Attività
-    </button>
-   </div>
-  </div>
-
-  <!-- Main Content -->
-  <div id="mainContent">
-   <div class="lists-header">
-    <h1>
-     <span class="emoji-sparkle">📝</span>
-     Le Nostre Liste
-     <span class="emoji-sparkle">✨</span>
-    </h1>
-   </div>
-
-   <div class="categories-grid">
-    
-    <!-- Categoria 1: Luoghi da Visitare -->
-    <div class="category-card">
-     <div class="category-header">
-      <span class="category-icon">✈️</span>
-      <h3 class="category-title">Luoghi da Visitare</h3>
-     </div>
-     <ul class="category-list" id="list-viaggi"></ul>
-     <div class="add-item-form">
-      <input type="text" class="add-item-input" id="input-viaggi" placeholder="Aggiungi un luogo...">
-      <button class="add-btn" onclick="addItem('viaggi')">
-       <i class="fas fa-plus"></i>
-      </button>
-     </div>
+    <!-- Loading Screen -->
+    <div id="loadingScreen">
+        Caricamento risorse di gioco...
+        <span id="loadingProgress">0%</span>
     </div>
 
-    <!-- Categoria 2: Ricette da Provare -->
-    <div class="category-card">
-     <div class="category-header">
-      <span class="category-icon">👨‍🍳</span>
-      <h3 class="category-title">Ricette da Provare</h3>
-     </div>
-     <ul class="category-list" id="list-ricette"></ul>
-     <div class="add-item-form">
-      <input type="text" class="add-item-input" id="input-ricette" placeholder="Aggiungi una ricetta...">
-      <button class="add-btn" onclick="addItem('ricette')">
-       <i class="fas fa-plus"></i>
-      </button>
-     </div>
+    <div class="game-container">
+        <h1>🧩 Giorno 17 - Puzzle Natalizio a Tempo! 🧩</h1>
+        <p class="puzzle-info">Riordina i 24 pezzi per completare l'immagine! Sei abbastanza veloce, Mapi? 😉</p>
+        <div id="timer">03:00</div>
+        <div class="progress-text">Pezzi collegati: <span id="snappedCount">0</span>/24</div>
+
+        <div id="puzzleBoard" class="puzzle-board">
+            <!-- Puzzle pieces will be inserted here by JavaScript -->
+        </div>
+
+        <button id="startButton" class="btn btn-primary" disabled>Avvia Puzzle</button>
+        <button id="resetButton" class="btn btn-primary" style="display: none;">Resetta Puzzle</button>
+        <button id="homeBtn" class="btn btn-primary" style="display: none;">🎄 Torna al Calendario</button>
+        
+        <p id="winMessage" style="display: none;">🎉 Complimenti, Mapi! Hai completato il puzzle in tempo! 🎉</p>
+        <p id="loseMessage" style="display: none;">⏰ Tempo scaduto, Bibi! Riprova, non mollare! 💔</p>
     </div>
 
-    <!-- Categoria 3: Regali/Cose da Comprare -->
-    <div class="category-card">
-     <div class="category-header">
-      <span class="category-icon">🎁</span>
-      <h3 class="category-title">Regali & Cose</h3>
-     </div>
-     <ul class="category-list" id="list-regali"></ul>
-     <div class="add-item-form">
-      <input type="text" class="add-item-input" id="input-regali" placeholder="Aggiungi un'idea...">
-      <button class="add-btn" onclick="addItem('regali')">
-       <i class="fas fa-plus"></i>
-      </button>
-     </div>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Funzione per creare fiocchi di neve
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.textContent = '❄';
+            snowflake.style.left = Math.random() * 100 + '%';
+            snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+            snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+            snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            document.body.appendChild(snowflake);
+            
+            setTimeout(() => snowflake.remove(), 8000);
+        }
 
-    <!-- Categoria 4: Film/Serie da Vedere -->
-    <div class="category-card">
-     <div class="category-header">
-      <span class="category-icon">🎬</span>
-      <h3 class="category-title">Film & Serie</h3>
-     </div>
-     <ul class="category-list" id="list-film"></ul>
-     <div class="add-item-form">
-      <input type="text" class="add-item-input" id="input-film" placeholder="Aggiungi un titolo...">
-      <button class="add-btn" onclick="addItem('film')">
-       <i class="fas fa-plus"></i>
-      </button>
-     </div>
-    </div>
+        const rows = 6;
+        const cols = 4;
+        const totalPieces = rows * cols; // 24 pieces
+        const initialTime = 180; // 3 minutes
+        const alertTime = 10; // seconds for alert sound
 
-    <!-- Categoria 5: Esperienze da Fare -->
-    <div class="category-card">
-     <div class="category-header">
-      <span class="category-icon">🌟</span>
-      <h3 class="category-title">Esperienze</h3>
-     </div>
-     <ul class="category-list" id="list-esperienze"></ul>
-     <div class="add-item-form">
-      <input type="text" class="add-item-input" id="input-esperienze" placeholder="Aggiungi un'esperienza...">
-      <button class="add-btn" onclick="addItem('esperienze')">
-       <i class="fas fa-plus"></i>
-      </button>
-     </div>
-    </div>
+        const puzzleBoard = document.getElementById('puzzleBoard');
+        const timerDisplay = document.getElementById('timer');
+        const snappedCountDisplay = document.getElementById('snappedCount');
+        const startButton = document.getElementById('startButton');
+        const resetButton = document.getElementById('resetButton');
+        const homeBtn = document.getElementById('homeBtn');
+        const winMessage = document.getElementById('winMessage');
+        const loseMessage = document.getElementById('loseMessage');
 
-   </div>
+        // Audio elements
+        const gameMusic = document.getElementById('gameMusic');
+        const winAudio = document.getElementById('winAudio');
+        const loseAudio = document.getElementById('loseAudio');
+        const snapAudio = document.getElementById('snapAudio'); // Optional snap sound
+        const alertAudio = document.getElementById('alertAudio'); // Optional alert sound
 
-   <button class="home-btn" onclick="window.location.href='index.html'">
-     🎄 Torna al Calendario
-   </button>
-  </div>
+        // Loading Screen elements
+        const loadingScreen = document.getElementById('loadingScreen');
+        const loadingProgress = document.getElementById('loadingProgress');
 
-</div>
+        let pieces = [];
+        let timerInterval;
+        let timeLeft;
+        let gameStarted = false;
+        let snappedPiecesCount = 0;
+        const snapThreshold = 15; // Pixels distance for snapping
 
-<audio id="bgMusic" loop>
- <source src="audio/bowl.mp3" type="audio/mpeg">
-</audio>
+        let draggedPiece = null;
+        let offsetX, offsetY;
 
-<script>
-  // Categories data structure
-  const categories = ['viaggi', 'ricette', 'regali', 'film', 'esperienze'];
+        // --- NEW: Puzzle board and piece dimensions based on original image ---
+        const originalImageWidth = 1440;
+        const originalImageHeight = 1920;
 
-  // Load data from localStorage
-  function loadLists() {
-   categories.forEach(category => {
-    const listData = JSON.parse(localStorage.getItem(`list-${category}`)) || [];
-    renderList(category, listData);
-   });
-  }
+        const originalPieceWidth = originalImageWidth / cols; // 1440 / 4 = 360px
+        const originalPieceHeight = originalImageHeight / rows; // 1920 / 6 = 320px
 
-  // Render list for a category
-  function renderList(category, items) {
-   const listElement = document.getElementById(`list-${category}`);
-   listElement.innerHTML = '';
+        // Scale factor to make the puzzle board larger (e.g., 2x current size)
+        const scaleFactor = 2; // Make it double the previous rendered size for better visibility
 
-   if (items.length === 0) {
-    listElement.innerHTML = '<li class="list-item" style="justify-content: center; opacity: 0.5;">Nessun elemento ancora...</li>';
-    return;
-   }
+        // Adjusted calculation to maintain aspect ratio and fit within a reasonable size
+        // Max board width for desktop, then scale down for mobile
+        const maxBoardWidth = 800; // Example max width for the puzzle board
+        const maxBoardHeight = (maxBoardWidth / originalImageWidth) * originalImageHeight;
 
-   items.forEach((item, index) => {
-    const li = document.createElement('li');
-    li.className = `list-item ${item.completed ? 'completed' : ''}`;
-    li.innerHTML = `
-     <input type="checkbox" class="list-checkbox" ${item.completed ? 'checked' : ''} 
-            onchange="toggleItem('${category}', ${index})">
-     <span class="list-text">${item.text}</span>
-     <button class="delete-btn" onclick="deleteItem('${category}', ${index})">
-      <i class="fas fa-trash"></i>
-     </button>
-    `;
-    listElement.appendChild(li);
-   });
-  }
+        let boardWidth = maxBoardWidth;
+        let boardHeight = maxBoardHeight;
 
-  // Add new item
-  function addItem(category) {
-   const input = document.getElementById(`input-${category}`);
-   const text = input.value.trim();
+        // Adjust board dimensions if it exceeds viewport height on smaller screens
+        const viewportHeight = window.innerHeight * 0.7; // Use 70% of viewport height
+        if (boardHeight > viewportHeight) {
+            boardHeight = viewportHeight;
+            boardWidth = (boardHeight / originalImageHeight) * originalImageWidth;
+        }
 
-   if (text === '') {
-    alert('Scrivi qualcosa prima di aggiungere!');
-    return;
-   }
+        const renderedPieceWidth = boardWidth / cols;
+        const renderedPieceHeight = boardHeight / rows;
 
-   const listData = JSON.parse(localStorage.getItem(`list-${category}`)) || [];
-   listData.push({ text: text, completed: false });
-   localStorage.setItem(`list-${category}`, JSON.stringify(listData));
+        // --- END NEW ---
 
-   input.value = '';
-   renderList(category, listData);
+        // Asset loading management
+        let assetsLoadedCount = 0;
+        const assetImages = [];
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                const img = new Image();
+                img.src = `images/puzzle-images/piece_${r}_${c}.png`; // New naming convention
+                assetImages.push(img);
+            }
+        }
+        const audioAssets = [gameMusic, winAudio, loseAudio, snapAudio, alertAudio];
+        const totalAssetsToLoad = assetImages.length + audioAssets.length;
 
-   // Play sound effect
-   const audio = new Audio('audio/up.mp3');
-   audio.play().catch(e => console.log('Audio play failed'));
-  }
+        function updateLoadingProgress() {
+            assetsLoadedCount++;
+            const progressPercentage = Math.floor((assetsLoadedCount / totalAssetsToLoad) * 100);
+            loadingProgress.textContent = `${progressPercentage}%`;
 
-  // Toggle item completion
-  function toggleItem(category, index) {
-   const listData = JSON.parse(localStorage.getItem(`list-${category}`)) || [];
-   listData[index].completed = !listData[index].completed;
-   localStorage.setItem(`list-${category}`, JSON.stringify(listData));
-   renderList(category, listData);
+            if (assetsLoadedCount === totalAssetsToLoad) {
+                loadingScreen.style.display = 'none'; // Hide loading screen
+                startButton.disabled = false; // Enable start button
+                console.log("All game assets loaded successfully.");
+            }
+        }
 
-   // Play sound effect
-   const audio = new Audio(listData[index].completed ? 'audio/up.mp3' : 'audio/down.mp3');
-   audio.play().catch(e => console.log('Audio play failed'));
-  }
+        // Attach onload/onerror to all images
+        assetImages.forEach(img => {
+            img.onload = updateLoadingProgress;
+            img.onerror = (e) => { 
+                console.error(`Failed to load puzzle piece: ${img.src}`, e); 
+                updateLoadingProgress(); // Still count as loaded to avoid blocking
+            };
+        });
 
-  // Delete item
-  function deleteItem(category, index) {
-   if (!confirm('Sei sicuro di voler eliminare questo elemento?')) {
-    return;
-   }
+        // Attach canplaythrough/onerror to all audio (more reliable for audio readiness)
+        audioAssets.forEach(audio => {
+            audio.addEventListener('canplaythrough', updateLoadingProgress, { once: true });
+            audio.addEventListener('error', (e) => { 
+                console.error(`Failed to load audio: ${audio.src}`, e); 
+                updateLoadingProgress(); // Still count as loaded
+            }, { once: true });
+            audio.load(); // Start loading audio
+        });
 
-   const listData = JSON.parse(localStorage.getItem(`list-${category}`)) || [];
-   listData.splice(index, 1);
-   localStorage.setItem(`list-${category}`, JSON.stringify(listData));
-   renderList(category, listData);
 
-   // Play sound effect
-   const audio = new Audio('audio/down.mp3');
-   audio.play().catch(e => console.log('Audio play failed'));
-  }
+        function createPuzzlePieces() {
+            puzzleBoard.innerHTML = '';
+            pieces = [];
+            snappedPiecesCount = 0;
+            snappedCountDisplay.textContent = snappedPiecesCount;
 
-  // Start activity
-  function startActivity() {
-   document.getElementById('splashScreen').style.display = 'none';
-   document.getElementById('mainContent').style.display = 'block';
-  }
+            // Set puzzle board dimensions based on calculated values
+            puzzleBoard.style.width = `${boardWidth}px`;
+            puzzleBoard.style.height = `${boardHeight}px`;
+            puzzleBoard.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+            puzzleBoard.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
 
-  // Allow Enter key to add items
-  categories.forEach(category => {
-   document.addEventListener('DOMContentLoaded', () => {
-    const input = document.getElementById(`input-${category}`);
-    if (input) {
-     input.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-       addItem(category);
-      }
-     });
-    }
-   });
-  });
 
-  // Snowflake generation
-  function createSnowflake() {
-   const snowflake = document.createElement('div');
-   snowflake.classList.add('snowflake');
-   snowflake.textContent = '❄';
-   snowflake.style.left = Math.random() * 100 + '%';
-   snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
-   snowflake.style.opacity = Math.random() * 0.5 + 0.5;
-   snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
-   document.body.appendChild(snowflake);
-   
-   setTimeout(() => snowflake.remove(), 8000);
-  }
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const i = r * cols + c; // Linear index
+                    const piece = document.createElement('div');
+                    piece.classList.add('puzzle-piece');
+                    piece.setAttribute('data-id', i);
+                    
+                    // Calculate correct position for snapping using rendered dimensions
+                    piece.setAttribute('data-correct-x', c * renderedPieceWidth);
+                    piece.setAttribute('data-correct-y', r * renderedPieceHeight);
+                    
+                    piece.style.width = `${renderedPieceWidth}px`;
+                    piece.style.height = `${renderedPieceHeight}px`;
+                    piece.style.backgroundImage = `url(images/puzzle-images/piece_${r}_${c}.png)`; // New naming convention
+                    piece.style.backgroundColor = 'transparent'; // Assume image will load
 
-  // Initialize
-  document.addEventListener('DOMContentLoaded', () => {
-   loadLists();
-   setInterval(createSnowflake, 300);
-  });
+                    piece.addEventListener('mousedown', handleMouseDown);
+                    
+                    pieces.push(piece);
+                    puzzleBoard.appendChild(piece);
+                }
+            }
+        }
 
- </script>
+        function placePiecesRandomly() {
+            const shuffledPieces = [...pieces].sort(() => Math.random() - 0.5); // Shuffle pieces
+            
+            // Place pieces randomly without overlap within the board boundaries
+            shuffledPieces.forEach(piece => {
+                if (!piece.classList.contains('snapped')) {
+                    let randomX, randomY;
+                    let overlap;
 
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+                    // Try to find a non-overlapping random position
+                    let attempts = 0;
+                    do {
+                        overlap = false;
+                        randomX = Math.random() * (boardWidth - renderedPieceWidth);
+                        randomY = Math.random() * (boardHeight - renderedPieceHeight);
+
+                        // Check against other pieces already placed or snapped
+                        for (const otherPiece of pieces) {
+                            if (otherPiece === piece || otherPiece.classList.contains('snapped')) continue;
+
+                            const otherX = parseFloat(otherPiece.style.left) || 0;
+                            const otherY = parseFloat(otherPiece.style.top) || 0;
+
+                            // Basic AABB collision detection
+                            if (
+                                randomX < otherX + renderedPieceWidth &&
+                                randomX + renderedPieceWidth > otherX &&
+                                randomY < otherY + renderedPieceHeight &&
+                                randomY + renderedPieceHeight > otherY
+                            ) {
+                                overlap = true;
+                                break;
+                            }
+                        }
+                        attempts++;
+                    } while (overlap && attempts < 100); // Limit attempts to prevent infinite loop
+
+                    piece.style.left = `${randomX}px`;
+                    piece.style.top = `${randomY}px`;
+                }
+            });
+        }
+
+        function handleMouseDown(e) {
+            if (!gameStarted || e.button !== 0 || e.target.classList.contains('snapped')) return;
+
+            draggedPiece = e.target.closest('.puzzle-piece');
+            draggedPiece.classList.add('dragging');
+
+            const pieceRect = draggedPiece.getBoundingClientRect();
+            const boardRect = puzzleBoard.getBoundingClientRect();
+
+            offsetX = e.clientX - pieceRect.left;
+            offsetY = e.clientY - pieceRect.top;
+
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+        }
+
+        function handleMouseMove(e) {
+            if (!draggedPiece) return;
+
+            const boardRect = puzzleBoard.getBoundingClientRect();
+            let newX = e.clientX - boardRect.left - offsetX;
+            let newY = e.clientY - boardRect.top - offsetY;
+
+            // Constrain piece within board boundaries
+            newX = Math.max(0, Math.min(newX, boardRect.width - draggedPiece.offsetWidth));
+            newY = Math.max(0, Math.min(newY, boardRect.height - draggedPiece.offsetHeight));
+
+            draggedPiece.style.left = `${newX}px`;
+            draggedPiece.style.top = `${newY}px`;
+        }
+
+        function handleMouseUp() {
+            if (draggedPiece) {
+                draggedPiece.classList.remove('dragging');
+                checkSnap(draggedPiece);
+                draggedPiece = null;
+            }
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        }
+
+        function checkSnap(droppedPiece) {
+            const correctX = parseFloat(droppedPiece.getAttribute('data-correct-x'));
+            const correctY = parseFloat(droppedPiece.getAttribute('data-correct-y'));
+            const currentX = parseFloat(droppedPiece.style.left) || 0;
+            const currentY = parseFloat(droppedPiece.style.top) || 0;
+
+            if (Math.abs(currentX - correctX) < snapThreshold && Math.abs(currentY - correctY) < snapThreshold) {
+                snapPiece(droppedPiece, correctX, correctY);
+            }
+        }
+
+        function snapPiece(piece, targetX, targetY) {
+            if (!piece.classList.contains('snapped')) {
+                piece.style.left = `${targetX}px`;
+                piece.style.top = `${targetY}px`;
+                piece.classList.add('snapped');
+                snappedPiecesCount++;
+                snappedCountDisplay.textContent = snappedPiecesCount;
+                if (snapAudio) {
+                    snapAudio.currentTime = 0;
+                    snapAudio.play().catch(e => console.error("Snap audio play prevented:", e));
+                }
+                piece.removeEventListener('mousedown', handleMouseDown);
+                checkWin();
+            }
+        }
+
+        function startTimer() {
+            timeLeft = initialTime;
+            updateTimerDisplay();
+            
+            gameMusic.currentTime = 0;
+            gameMusic.loop = true;
+            gameMusic.play().catch(e => console.error("Error playing game music:", e));
+            
+            if (alertAudio) { // Stop alert audio if it was playing
+                alertAudio.pause(); 
+                alertAudio.currentTime = 0;
+                alertAudio.loop = false;
+            }
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft === alertTime && alertAudio) {
+                    gameMusic.pause(); // Pause game music for alert
+                    alertAudio.currentTime = 0;
+                    alertAudio.loop = true;
+                    alertAudio.play().catch(e => console.error("Error playing alert audio:", e));
+                } else if (timeLeft < alertTime && timeLeft > 0 && alertAudio && alertAudio.paused && !alertAudio.loop) {
+                    // Resume alert if user paused it
+                    alertAudio.loop = true;
+                    alertAudio.play().catch(e => console.error("Error resuming alert audio:", e));
+                } else if (timeLeft === 0 && alertAudio && alertAudio.loop) {
+                    alertAudio.pause(); // Stop alert when time runs out
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    if (snappedPiecesCount < totalPieces) {
+                        endGame(false);
+                    } else {
+                        endGame(true); // Should already be won, but as a safeguard
+                    }
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            gameMusic.pause();
+            gameMusic.loop = false;
+            if (alertAudio) {
+                alertAudio.pause();
+                alertAudio.loop = false;
+            }
+        }
+
+        function updateTimerDisplay() {
+            const seconds = timeLeft % 60;
+            const minutes = Math.floor(timeLeft / 60);
+            timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function checkWin() {
+            if (snappedPiecesCount === totalPieces) {
+                stopTimer();
+                endGame(true);
+            }
+        }
+
+        function resetGame() {
+            stopTimer();
+            gameStarted = false;
+            timerDisplay.textContent = `03:00`; /* Reset to initial 3 minutes */
+            snappedCountDisplay.textContent = `0`;
+            winMessage.style.display = 'none';
+            loseMessage.style.display = 'none';
+            startButton.style.display = 'inline-block';
+            resetButton.style.display = 'none';
+            homeBtn.style.display = 'none';
+            
+            createPuzzlePieces(); // Recreate pieces
+            placePiecesRandomly(); // Place them randomly
+        }
+
+        function startGame() {
+            gameStarted = true;
+            startButton.style.display = 'none';
+            resetButton.style.display = 'inline-block';
+            homeBtn.style.display = 'none';
+            winMessage.style.display = 'none';
+            loseMessage.style.display = 'none';
+            
+            // Re-place pieces randomly for a new game
+            placePiecesRandomly(); 
+            startTimer();
+        }
+
+        function endGame(won) {
+            gameStarted = false;
+            stopTimer();
+
+            if (won) {
+                winAudio.currentTime = 0;
+                winAudio.play().catch(e => console.error("Error playing win audio:", e));
+                winMessage.style.display = 'block';
+            } else {
+                loseAudio.currentTime = 0;
+                loseAudio.play().catch(e => console.error("Error playing lose audio:", e));
+                loseMessage.style.display = 'block';
+            }
+            startButton.style.display = 'none'; // Hide start
+            resetButton.style.display = 'inline-block'; // Show reset
+            homeBtn.style.display = 'inline-block'; // Show home
+        }
+
+        startButton.addEventListener('click', startGame);
+        resetButton.addEventListener('click', resetGame);
+        homeBtn.addEventListener('click', () => window.location.href = 'index.html');
+
+        // Initialize snow and puzzle on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setInterval(createSnowflake, 300); // Start snow
+
+            // Initial setup for the puzzle
+            createPuzzlePieces();
+            placePiecesRandomly();
+
+            // Initial check for assets loaded to enable button
+            let assetsLoadedAtInit = 0;
+            const allAssets = [...assetImages, ...audioAssets];
+            allAssets.forEach(asset => {
+                if (asset instanceof HTMLImageElement) {
+                    if (asset.complete) {
+                        assetsLoadedAtInit++;
+                    } else {
+                        asset.onload = () => { assetsLoadedAtInit++; checkAllAssetsLoaded(); };
+                        asset.onerror = () => { console.error(`Failed to load image: ${asset.src}`); assetsLoadedAtInit++; checkAllAssetsLoaded(); };
+                    }
+                } else if (asset instanceof HTMLAudioElement) {
+                    if (asset.readyState >= 3) { // HAVE_FUTURE_DATA or more
+                        assetsLoadedAtInit++;
+                    } else {
+                        asset.addEventListener('canplaythrough', () => { assetsLoadedAtInit++; checkAllAssetsLoaded(); }, { once: true });
+                        asset.addEventListener('error', () => { console.error(`Failed to load audio: ${asset.src}`); assetsLoadedAtInit++; checkAllAssetsLoaded(); }, { once: true });
+                        asset.load(); // Start loading audio
+                    }
+                }
+            });
+
+            function checkAllAssetsLoaded() {
+                loadingProgress.textContent = `${Math.floor((assetsLoadedAtInit / totalAssetsToLoad) * 100)}%`;
+                if (assetsLoadedAtInit === totalAssetsToLoad) {
+                    loadingScreen.style.display = 'none';
+                    startButton.disabled = false;
+                }
+            }
+            checkAllAssetsLoaded(); // Initial check in case all assets are cached
+        });
+    </script>
 </body>
 </html>

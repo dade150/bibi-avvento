@@ -83,21 +83,20 @@
    z-index: 1;
   }
 
-.quiz-card {
-  background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
-  border: 5px solid;
-  border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
-  border-radius: 25px;
-  padding: 3rem;
-  max-width: 850px;
-  width: 100%;
-  box-shadow: 
-   0 0 30px rgba(255, 215, 0, 0.3),
-   0 0 60px rgba(255, 215, 0, 0.2),
-   inset 0 0 50px rgba(0, 0, 0, 0.5);
-  animation: glow-pulse 3s ease-in-out infinite;
-}
-
+  .quiz-card {
+    background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+    border: 5px solid;
+    border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
+    border-radius: 25px;
+    padding: 3rem;
+    max-width: 850px;
+    width: 100%;
+    box-shadow: 
+     0 0 30px rgba(255, 215, 0, 0.3),
+     0 0 60px rgba(255, 215, 0, 0.2),
+     inset 0 0 50px rgba(0, 0, 0, 0.5);
+    animation: glow-pulse 3s ease-in-out infinite;
+  }
   
   @keyframes glow-pulse {
    0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
@@ -262,17 +261,6 @@
 
   .result-section {
    text-align: center;
-   display: none;
-  }
-
-  .result-section.active {
-   display: block;
-   animation: fadeIn 0.5s ease;
-  }
-
-  @keyframes fadeIn {
-   from { opacity: 0; transform: translateY(20px); }
-   to { opacity: 1; transform: translateY(0); }
   }
 
   .result-title {
@@ -298,37 +286,35 @@
   }
 
   .video-container {
-  margin: 2rem auto;
-  border-radius: 15px;
-  overflow: hidden;
-  border: 3px solid #FFD700;
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-  display: inline-block;
-  max-width: 100%;
-}
+    margin: 2rem auto;
+    border-radius: 15px;
+    overflow: hidden;
+    border: 3px solid #FFD700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    max-width: 100%;
+  }
 
-.video-container video {
-  width: 100%;
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-
+  .video-container video {
+    width: 100%;
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
 
   .home-btn {
-  padding: 1rem 3rem;
-  font-size: 1.3rem;
-  font-family: 'Mountains of Christmas', cursive;
-  background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
-  color: darkred;
-  border: 2px solid rgba(139, 0, 0, 0.5);
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: bold;
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-}
-
+    padding: 1rem 3rem;
+    font-size: 1.3rem;
+    font-family: 'Mountains of Christmas', cursive;
+    background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+    color: darkred;
+    border: 2px solid rgba(139, 0, 0, 0.5);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+    margin-top: 1rem;
+  }
 
   .home-btn:hover {
    transform: translateY(-3px) scale(1.05);
@@ -365,6 +351,15 @@
    60% { transform: translate(0, 2px); }
    75%, 95% { transform: translate(0, 0); }
   }
+
+  @keyframes fadeIn {
+   from { opacity: 0; transform: translateY(20px); }
+   to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+   animation: fadeIn 0.5s ease;
+  }
  </style>
 </head>
 
@@ -376,38 +371,55 @@
 
  <div class="quiz-container">
   <div class="quiz-card">
-   <div class="quiz-header">
+   
+   <!-- Intro Section -->
+   <div id="intro-section" class="quiz-header">
     <h1>
-          <span class="emoji-sparkle">🏆</span>
+     <span class="emoji-sparkle">🏆</span>
+     Quiz Tennis: Sei un Vero Campione?
+     <span class="emoji-sparkle">🎾</span>
     </h1>
-    <p class="intro-text">Vediamo quanto hai imparato sul tennis seguendo le mie partite! 💚</p>
+    <p class="intro-text">Ciao Mapi! Benvenuta al Quiz sul Tennis! Vediamo quanto hai imparato sul tennis seguendo le mie partite! Rispondi correttamente alle domande per dimostrare che sei una vera esperta. Buona fortuna! 💚</p>
+    <button class="home-btn" id="startQuizButton">Inizia il Quiz! 🚀</button>
    </div>
 
-   <div class="score-display">
-    <div class="score-item">
-     <div class="label">Domanda</div>
-     <div class="value"><span id="current-question">1</span>/<span id="total-questions">10</span></div>
+   <!-- Quiz Content (initially hidden) -->
+   <div id="quiz-content" style="display: none;">
+    <div class="quiz-header">
+     <h1>
+      <span class="emoji-sparkle">🏆</span>
+      Quiz Tennis
+      <span class="emoji-sparkle">🎾</span>
+     </h1>
     </div>
-    <div class="score-item">
-     <div class="label">✅ Corrette</div>
-     <div class="value" id="correct-count">0</div>
+
+    <div class="score-display">
+     <div class="score-item">
+      <div class="label">Domanda</div>
+      <div class="value"><span id="current-question">1</span>/<span id="total-questions">10</span></div>
+     </div>
+     <div class="score-item">
+      <div class="label">✅ Corrette</div>
+      <div class="value" id="correct-count">0</div>
+     </div>
+     <div class="score-item">
+      <div class="label">❌ Sbagliate</div>
+      <div class="value" id="wrong-count">0</div>
+     </div>
     </div>
-    <div class="score-item">
-     <div class="label">❌ Sbagliate</div>
-     <div class="value" id="wrong-count">0</div>
+
+    <div class="progress-bar-custom">
+     <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+    </div>
+
+    <div class="question-section" id="question-section">
+     <div class="question-text" id="question-text"></div>
+     <div id="answers-container"></div>
     </div>
    </div>
 
-   <div class="progress-bar-custom">
-    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
-   </div>
-
-   <div class="question-section" id="question-section">
-    <div class="question-text" id="question-text"></div>
-    <div id="answers-container"></div>
-   </div>
-
-   <div class="result-section" id="result-section">
+   <!-- Result Section -->
+   <div class="result-section" id="result-section" style="display: none;">
     <div class="result-title" id="result-title"></div>
     <div class="result-message" id="result-message"></div>
     <div class="video-container" id="video-container">
@@ -482,6 +494,10 @@
   let wrongAnswers = 0;
   let isAnswering = false;
 
+  const introSection = document.getElementById('intro-section');
+  const startQuizButton = document.getElementById('startQuizButton');
+  const quizContent = document.getElementById('quiz-content');
+
   const questionText = document.getElementById('question-text');
   const answersContainer = document.getElementById('answers-container');
   const currentQuestionSpan = document.getElementById('current-question');
@@ -498,7 +514,6 @@
 
   totalQuestionsSpan.textContent = questions.length;
 
-  // Mostra warning per ultima domanda
   function checkForWarning() {
    const warningElement = document.querySelector('.warning-text');
    if (currentQuestionIndex === questions.length - 1) {
@@ -535,7 +550,7 @@
    question.answers.forEach((answer, index) => {
     const btn = document.createElement('button');
     btn.className = 'answer-btn';
-    btn.textContent = answer;
+    btn.innerHTML = answer;
     btn.onclick = () => checkAnswer(index, btn);
     answersContainer.appendChild(btn);
    });
@@ -576,8 +591,18 @@
   }
 
   function showResults() {
-   questionSection.style.display = 'none';
-   resultSection.classList.add('active');
+   // Stop background music
+   if (tennisMusic) {
+    tennisMusic.pause();
+    tennisMusic.currentTime = 0;
+   }
+
+   // Hide quiz content
+   quizContent.style.display = 'none';
+   
+   // Show result section with animation
+   resultSection.style.display = 'block';
+   resultSection.classList.add('fade-in');
    
    progressFill.style.width = '100%';
 
@@ -597,6 +622,7 @@
    }
 
    resultVideo.load();
+   resultVideo.play().catch(e => console.error("Error playing video:", e));
   }
 
   function createSnowflake() {
@@ -612,19 +638,33 @@
    setTimeout(() => snowflake.remove(), 8000);
   }
 
+  function initPage() {
+    introSection.style.display = 'block';
+    quizContent.style.display = 'none';
+    resultSection.style.display = 'none';
+
+    if (tennisMusic) {
+        tennisMusic.load();
+    }
+  }
+
+  function startQuiz() {
+    introSection.style.display = 'none';
+    quizContent.style.display = 'block';
+    loadQuestion();
+
+    if (tennisMusic) {
+        tennisMusic.play().catch(e => {
+            console.warn("Autoplay bloccato. La musica non è partita automaticamente.", e);
+        });
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
-   loadQuestion();
+   initPage();
    setInterval(createSnowflake, 300);
    
-   // Avvia la musica
-   if (tennisMusic) {
-    tennisMusic.play().catch(e => {
-     console.log("Autoplay bloccato, la musica partirà con la prima interazione");
-     document.body.addEventListener('click', () => {
-      tennisMusic.play().catch(err => console.error("Error playing music:", err));
-     }, { once: true });
-    });
-   }
+   startQuizButton.addEventListener('click', startQuiz);
   });
  </script>
 
@@ -632,4 +672,3 @@
 
 </body>
 </html>
-
