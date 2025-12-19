@@ -1,673 +1,257 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1">
- <title>Giorno 20 - Sfida di Consegna di Babbo Natale: Segui le Regole! 🎅🗺️</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giorno 20 - Blocco del Programmatore! 🐛💻</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
+    <style>
+        /* Stili globali per lo sfondo e i fiocchi di neve */
+        body {
+            font-family: 'Mountains of Christmas', cursive;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(2px 2px at 60% 70%, white, transparent),
+                radial-gradient(1px 1px at 50% 50%, white, transparent),
+                radial-gradient(1px 1px at 80% 10%, white, transparent),
+                radial-gradient(2px 2px at 90% 60%, white, transparent),
+                radial-gradient(1px 1px at 33% 80%, white, transparent),
+                radial-gradient(1px 1px at 75% 40%, white, transparent);
+            background-size: 200% 200%;
+            animation: float 20s ease-in-out infinite;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
 
- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
- <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: white;
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            z-index: 0;
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
 
- <style>
-  /* Stili globali per l'atmosfera natalizia */
-  * {
-   margin: 0;
-   padding: 0;
-   box-sizing: border-box;
-  }
-  
-  body {
-   font-family: 'Mountains of Christmas', cursive;
-   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
-   color: #fff;
-   min-height: 100vh;
-   display: flex;
-   flex-direction: column;
-   justify-content: center;
-   align-items: center;
-   padding: 2rem;
-   position: relative;
-   overflow-x: hidden;
-   overflow-y: auto;
-  }
-  
-  /* Particelle fluttuanti di sfondo */
-  body::before {
-   content: '';
-   position: fixed;
-   width: 100%;
-   height: 100%;
-   background-image: 
-    radial-gradient(2px 2px at 20% 30%, white, transparent),
-    radial-gradient(2px 2px at 60% 70%, white, transparent),
-    radial-gradient(1px 1px at 50% 50%, white, transparent),
-    radial-gradient(1px 1px at 80% 10%, white, transparent),
-    radial-gradient(2px 2px at 90% 60%, white, transparent),
-    radial-gradient(1px 1px at 33% 80%, white, transparent),
-    radial-gradient(1px 1px at 75% 40%, white, transparent);
-   background-size: 200% 200%;
-   animation: float 20s ease-in-out infinite;
-   opacity: 0.3;
-   z-index: 0;
-  }
-  
-  @keyframes float {
-   0%, 100% { transform: translateY(0); }
-   50% { transform: translateY(-20px); }
-  }
+        /* Stili specifici per il contenuto della pagina */
+        .content-container {
+            background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+            border: 5px solid;
+            border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
+            border-radius: 25px;
+            padding: 3rem;
+            max-width: 850px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 
+                0 0 30px rgba(255, 215, 0, 0.3),
+                0 0 60px rgba(255, 215, 0, 0.2),
+                inset 0 0 50px rgba(0, 0, 0, 0.5);
+            animation: glow-pulse 3s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes glow-pulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
+        }
 
-  .snowflake {
-   position: fixed;
-   top: -10px;
-   color: white;
-   font-size: 1em;
-   font-family: Arial, sans-serif;
-   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-   z-index: 0;
-   user-select: none;
-   pointer-events: none;
-   animation: fall linear infinite;
-  }
-  
-  @keyframes fall {
-   to {
-    transform: translateY(100vh) translateX(100px);
-    opacity: 0;
-   }
-  }
+        h1 {
+            color: gold;
+            font-size: 2.8rem;
+            text-shadow: 
+                2px 2px 4px black,
+                0 0 20px rgba(255, 215, 0, 0.5),
+                0 0 30px rgba(255, 215, 0, 0.3);
+            margin-bottom: 1.5rem;
+            animation: title-glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes title-glow {
+            from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
+            to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
+        }
 
-  /* Stili per il contenitore principale della sfida */
-  .challenge-container {
-   flex: 1;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   width: 100%;
-   z-index: 1;
-  }
+        .message-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
 
-  .challenge-card {
-   background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
-   border: 5px solid;
-   border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
-   border-radius: 25px;
-   padding: 3rem;
-   max-width: 900px; /* Adattato per l'immagine */
-   width: 100%;
-   box-shadow: 
-    0 0 30px rgba(255, 215, 0, 0.3),
-    0 0 60px rgba(255, 215, 0, 0.2),
-    inset 0 0 50px rgba(0, 0, 0, 0.5);
-   animation: glow-pulse 3s ease-in-out infinite;
-   text-align: center;
-  }
-  
-  @keyframes glow-pulse {
-   0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.3), 0 0 60px rgba(255, 215, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.5); }
-   50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
-  }
+        .message-text {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
 
-  .challenge-header h1 {
-   color: gold;
-   font-size: 2.8rem;
-   text-shadow: 
-    2px 2px 4px black,
-    0 0 20px rgba(255, 215, 0, 0.5),
-    0 0 30px rgba(255, 215, 0, 0.3);
-   margin-bottom: 1rem;
-   animation: title-glow 2s ease-in-out infinite alternate;
-  }
-  
-  @keyframes title-glow {
-   from { text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3); }
-   to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
-  }
+        .elf-image {
+            max-width: 200px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            animation: bounce 2s infinite ease-in-out;
+        }
 
-  .intro-text, .game-info-text {
-   font-size: 1.3rem;
-   color: #ffed4e;
-   margin-bottom: 2rem;
-   line-height: 1.6;
-   text-shadow: 1px 1px 3px black;
-  }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
 
-  .btn-challenge {
-   padding: 1rem 2rem;
-   font-size: 1.2rem;
-   font-family: 'Mountains of Christmas', cursive;
-   background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
-   color: darkred;
-   border: 2px solid rgba(139, 0, 0, 0.5);
-   border-radius: 50px;
-   cursor: pointer;
-   transition: all 0.3s ease;
-   font-weight: bold;
-   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-  }
+        .back-button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-family: 'Mountains of Christmas', cursive;
+            background: linear-gradient(135deg, gold 0%, #ffed4e 100%);
+            color: darkred;
+            border: 2px solid rgba(139, 0, 0, 0.5);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            margin-top: 2rem;
+        }
 
-  .btn-challenge:hover {
-   transform: translateY(-3px) scale(1.05);
-   box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
-   background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
-  }
+        .back-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+            background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
+        }
 
-  .btn-challenge:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      box-shadow: none;
-      transform: none;
-      background: linear-gradient(135deg, #888 0%, #aaa 100%);
-      border-color: #666;
-  }
+        /* Responsive adjustments */
+        @media (min-width: 768px) {
+            .message-box {
+                flex-direction: row;
+                justify-content: center;
+            }
+            .message-text {
+                flex: 1;
+                text-align: left;
+            }
+            .elf-image {
+                margin-left: 1.5rem;
+            }
+        }
 
-  /* Game specific styles */
-  .game-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            .message-text {
+                font-size: 1.2rem;
+            }
+            .elf-image {
+                max-width: 150px;
+            }
+            .back-button {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
 
-  .delivery-rules-panel {
-    background: rgba(0, 0, 0, 0.5);
-    border: 2px solid #FFD700;
-    border-radius: 15px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    text-align: left;
-    color: #eee;
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-    width: 100%;
-    max-width: 700px;
-  }
-
-  .delivery-rules-panel h3 {
-    color: gold;
-    font-size: 1.6rem;
-    margin-bottom: 1rem;
-    text-shadow: 1px 1px 2px black;
-  }
-
-  .delivery-rules-panel ol {
-    padding-left: 20px;
-  }
-
-  .delivery-rules-panel li {
-    margin-bottom: 0.5rem;
-    font-size: 1.1rem;
-    color: #ffed4e;
-  }
-
-  .game-stats {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    max-width: 600px;
-    margin-bottom: 1.5rem;
-    background: rgba(0, 0, 0, 0.4);
-    border: 2px solid rgba(255, 215, 0, 0.3);
-    border-radius: 15px;
-    padding: 1rem;
-  }
-
-  .stat-item {
-    text-align: center;
-    color: #fff;
-    font-size: 1.1rem;
-  }
-
-  .stat-item .value {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: gold;
-    text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
-  }
-
-  #current-delivery-status {
-    font-size: 1.6rem;
-    color: #fff;
-    margin-bottom: 1.5rem;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-    padding: 0.8rem 1.5rem;
-    border: 1px solid gold;
-  }
-
-  .image-container {
-    position: relative;
-    max-width: 800px; /* Larghezza dell'immagine di esempio */
-    max-height: 600px; /* Altezza dell'immagine di esempio */
-    overflow: hidden;
-    border: 3px solid gold;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-    cursor: pointer; /* Cambiato a pointer per indicare cliccabilità */
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-  }
-
-  .game-image {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-
-  /* Overlay per le case cliccate */
-  .house-overlay {
-    position: absolute;
-    border: 3px solid #90EE90; /* Verde per le case cliccate correttamente */
-    background-color: rgba(144, 238, 144, 0.3);
-    pointer-events: none; /* Non blocca i click sull'immagine */
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 2rem;
-    font-weight: bold;
-    text-shadow: 2px 2px 4px black;
-  }
-
-  .house-overlay.visible {
-    opacity: 1;
-  }
-
-  .result-section {
-   text-align: center;
-   display: none;
-   margin-top: 2rem;
-  }
-
-  .result-message {
-   font-size: 1.6rem;
-   padding: 1.5rem;
-   border-radius: 15px;
-   margin-top: 1rem;
-   animation: fadeIn 0.5s ease-out;
-   display: none; /* Hidden by default */
-  }
-
-  .result-message.active {
-    display: block;
-  }
-
-  .success {
-   color: #90EE90;
-   text-shadow: 0 0 10px rgba(144, 238, 144, 0.5);
-   background: rgba(0, 128, 0, 0.3);
-   border: 2px solid #90EE90;
-  }
-
-  .failure {
-   color: #FF6347;
-   text-shadow: 0 0 10px rgba(255, 99, 71, 0.5);
-   background: rgba(139, 0, 0, 0.3);
-   border: 2px solid #FF6347;
-  }
-
-  .home-btn {
-   margin-top: 2rem;
-  }
-
-  .emoji-sparkle {
-   display: inline-block;
-   animation: gentle-shake 3s ease-in-out infinite;
-  }
-  
-  @keyframes gentle-shake {
-   0%, 100% { transform: translate(0, 0) rotate(0deg); }
-   10% { transform: translate(-1px, -1px) rotate(-1deg); }
-   20% { transform: translate(1px, 1px) rotate(1deg); }
-   30% { transform: translate(-1px, 1px) rotate(-1deg); }
-   40% { transform: translate(1px, -1px) rotate(1deg); }
-   50%, 90% { transform: translate(0, 0) rotate(0deg); }
-  }
-
- </style>
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            .message-text {
+                font-size: 1rem;
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
-
 <body>
- <audio id="background-music" src="audio/game_music.mp3" preload="auto" loop></audio>
- <audio id="correct-sound" src="audio/correct.mp3" preload="auto"></audio>
- <audio id="wrong-sound" src="audio/wrong.mp3" preload="auto"></audio>
+    <audio id="backgroundMusic" src="audio/song44.mp3" loop autoplay preload="auto"></audio>
 
+    <div class="content-container">
+        <h1>Giorno 20 - Blocco del Programmatore! 🐛💻</h1>
+        
+        <div class="message-box">
+            <div class="message-text">
+                Ciao amore mio! ❤️
+                <br><br>
+                Oggi abbiamo un piccolo "bug" nel sistema del Calendario dell'Avvento! 😅 Il programmatore (sì, proprio Davide!) ha avuto un blocco creativo. 
+                <br><br>
+                Con tantissimo amore e un po di magia elfica riprenderemo lunedì.
+                <br>
+                Il tuo Programmatore (e gli Elfi che lo supportano! 😉)
+            </div>
+            <img src="images/elfi.png" alt="Elfo Indaffarato" class="elf-image">
+        </div>
 
- <div class="challenge-container">
-  <div class="challenge-card">
-   
-   <!-- Sezione Introduttiva -->
-   <div id="intro-section">
-    <div class="challenge-header">
-     <h1>
-      <span class="emoji-sparkle">🔍</span>
-      Sfida di Consegna di Babbo Natale: Segui le Regole!
-      <span class="emoji-sparkle">🗺️</span>
-     </h1>
+        <a href="index.html" class="btn back-button">
+            🎄 Torna al Calendario
+        </a>
     </div>
-    <p class="intro-text">
-     Ciao Davide! Babbo Natale ha bisogno del tuo aiuto per pianificare le consegne in un piccolo villaggio.
-     Non si tratta solo di velocità, ma di rispettare alcune direttive speciali per ogni casa.
-     La tua missione: cliccare sulle case nell'ordine corretto, seguendo le istruzioni di Babbo Natale!
-     Ogni consegna corretta ti avvicina a un Natale perfetto. Sei pronto a dimostrare la tua precisione? 💡✨
-    </p>
-    <button class="btn-challenge" id="startButton">Inizia la Sfida! 🚀</button>
-   </div>
 
-   <!-- Sezione del Gioco (Inizialmente Nascosta) -->
-   <div id="game-section" style="display: none;">
-    <div class="game-area">
-      <div class="delivery-rules-panel">
-          <h3>Lista di Consegna e Regole di Babbo Natale:</h3>
-          <ol id="delivery-rules-list">
-              <!-- Le regole verranno inserite qui da JavaScript -->
-          </ol>
-      </div>
+    <script>
+        // Funzione per creare fiocchi di neve
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.textContent = '❄';
+            snowflake.style.left = Math.random() * 100 + '%';
+            snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+            snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+            snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            document.body.appendChild(snowflake);
+            
+            setTimeout(() => snowflake.remove(), 8000);
+        }
 
-      <div class="game-stats">
-          <div class="stat-item">Consegne Effettuate: <span class="value" id="delivered-count">0</span></div>
-          <div class="stat-item">Totale Consegne: <span class="value" id="total-deliveries">0</span></div>
-      </div>
-      <div id="current-delivery-status">Clicca sulla prima casa per iniziare!</div>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Avvia la riproduzione della musica di sottofondo
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            backgroundMusic.volume = 0.3; // Regola il volume
+            backgroundMusic.play().catch(error => {
+                console.log("Autoplay della musica di sottofondo bloccato. Interazione utente necessaria.", error);
+            });
 
-      <div class="image-container" id="image-container">
-        <img src="images/christmas_village.jpg" alt="Villaggio Natalizio" class="game-image" id="game-image">
-        <!-- Gli overlay per le case verranno aggiunti qui via JS -->
-      </div>
-    </div>
-   </div>
-
-   <!-- Sezione Risultato (Inizialmente Nascosta) -->
-   <div id="result-section" class="result-section">
-    <div id="final-message" class="result-message"></div>
-    <button class="btn-challenge home-btn" onclick="window.location.href='index.html'">
-     🎄 Torna al Calendario
-    </button>
-   </div>
-  </div>
- </div>
-
- <script>
-  // Funzione per creare fiocchi di neve
-  function createSnowflake() {
-      const snowflake = document.createElement('div');
-      snowflake.classList.add('snowflake');
-      snowflake.textContent = '❄';
-      snowflake.style.left = Math.random() * 100 + '%';
-      snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
-      snowflake.style.opacity = Math.random() * 0.5 + 0.5;
-      snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
-      document.body.appendChild(snowflake);
-      
-      setTimeout(() => snowflake.remove(), 8000);
-  }
-
-  // Riferimenti agli elementi HTML
-  const backgroundMusic = document.getElementById('background-music');
-  const correctSound = document.getElementById('correct-sound');
-  const wrongSound = document.getElementById('wrong-sound');
-
-  const startButton = document.getElementById('startButton');
-  const introSection = document.getElementById('intro-section');
-  const gameSection = document.getElementById('game-section');
-  const resultSection = document.getElementById('result-section');
-  const finalMessageDiv = document.getElementById('final-message');
-  const homeButton = document.querySelector('.home-btn');
-
-  const deliveryRulesList = document.getElementById('delivery-rules-list');
-  const deliveredCountDisplay = document.getElementById('delivered-count');
-  const totalDeliveriesDisplay = document.getElementById('total-deliveries');
-  const currentDeliveryStatus = document.getElementById('current-delivery-status');
-  const imageContainer = document.getElementById('image-container');
-  const gameImage = document.getElementById('game-image');
-
-  // Dati del gioco: immagine principale, case e regole
-  const gameData = {
-      mainImage: 'images/christmas_village.png', // ASSICURATI CHE QUESTO PERCORSO SIA CORRETTO E L'IMMAGINE ESISTA
-      
-      // Case con le loro coordinate e indizi visivi
-      // Le coordinate (x, y, width, height) sono relative all'immagine.
-      // Dovrai REGOLARLE in base alla TUA immagine specifica e alla posizione delle case.
-      // x, y sono le coordinate del vertice in alto a sinistra dell'area cliccabile.
-      // width, height sono le dimensioni dell'area cliccabile.
-      houses: [
-          { id: 'house1', name: "Casa 1 (Camino Fumante)", visualCue: "camino fumante", coords: { x: 100, y: 150, width: 100, height: 120 } },
-          { id: 'house2', name: "Casa 2 (Luci Blu)", visualCue: "luci blu", coords: { x: 600, y: 350, width: 120, height: 100 } },
-          { id: 'house3', name: "Casa 3 (Albero più Alto)", visualCue: "albero più alto", coords: { x: 350, y: 200, width: 110, height: 130 } },
-          { id: 'house4', name: "Casa 4 (Più Piccola)", visualCue: "più piccola", coords: { x: 50, y: 400, width: 80, height: 70 } },
-          { id: 'house5', name: "Casa 5 (Stella sul Tetto)", visualCue: "stella sul tetto", coords: { x: 650, y: 100, width: 90, height: 110 } }
-      ],
-
-      // Regole di consegna
-      rules: [
-          "Consegna sempre prima alla casa con il **Camino Fumante**.",
-          "La casa con le **Luci Blu** deve essere visitata subito dopo la casa con l'**Albero più Alto**.",
-          "La casa con la **Stella sul Tetto** deve essere visitata per ultima.",
-          "Non visitare mai la casa **più Piccola** prima della casa con il **Camino Fumante**."
-      ],
-
-      // Sequenza corretta degli ID delle case, derivata dalle regole
-      // Questa è la soluzione che Davide deve trovare applicando le regole.
-      // Esempio basato sulle regole sopra:
-      // 1. Camino Fumante (house1) = prima
-      // 2. Stella sul Tetto (house5) = ultima
-      // 3. Albero più Alto (house3) e poi Luci Blu (house2)
-      // 4. Più Piccola (house4) non prima di Camino Fumante (house1)
-      // Ordine logico: house1, house3, house2, house4, house5
-      correctSequenceIds: ['house1', 'house3', 'house2', 'house4', 'house5']
-  };
-
-  let deliveredCount = 0;
-  let clickedSequence = []; // Memorizza la sequenza di click dell'utente
-  let gameActive = false;
-  let imageNaturalWidth = 0;
-  let imageNaturalHeight = 0;
-
-  // Funzione per precaricare l'immagine e ottenere le dimensioni naturali
-  function preloadImage(url) {
-      return new Promise((resolve, reject) => {
-          const img = new Image();
-          img.src = url;
-          img.onload = () => {
-              imageNaturalWidth = img.naturalWidth;
-              imageNaturalHeight = img.naturalHeight;
-              gameImage.src = url; // Imposta l'immagine nel DOM
-              resolve();
-          };
-          img.onerror = () => reject(new Error(`Impossibile caricare l'immagine: ${url}`));
-      });
-  }
-
-  // Funzione per visualizzare le regole di consegna
-  function displayRules() {
-      deliveryRulesList.innerHTML = '';
-      gameData.rules.forEach(rule => {
-          const li = document.createElement('li');
-          li.innerHTML = rule;
-          deliveryRulesList.appendChild(li);
-      });
-  }
-
-  // Aggiorna lo stato di visualizzazione del gioco
-  function updateGameStatus() {
-      deliveredCountDisplay.textContent = deliveredCount;
-      totalDeliveriesDisplay.textContent = gameData.houses.length;
-      if (deliveredCount === 0) {
-          currentDeliveryStatus.textContent = "Clicca sulla prima casa per iniziare!";
-      } else if (deliveredCount < gameData.houses.length) {
-          currentDeliveryStatus.textContent = `Prossima consegna: ${deliveredCount + 1} di ${gameData.houses.length}`;
-      } else {
-          currentDeliveryStatus.textContent = "Consegne completate! Verifica la sequenza!";
-      }
-  }
-
-  // Gestisce il click su una casa nell'immagine
-  function handleClick(event) {
-      if (!gameActive || deliveredCount === gameData.houses.length) return; // Non cliccabile se gioco finito
-
-      const rect = gameImage.getBoundingClientRect();
-      const scaleX = imageNaturalWidth / rect.width; // Scala orizzontale
-      const scaleY = imageNaturalHeight / rect.height; // Scala verticale
-
-      // Coordinate del click relative all'immagine originale
-      const clickX = (event.clientX - rect.left) * scaleX;
-      const clickY = (event.clientY - rect.top) * scaleY;
-
-      let houseClicked = null;
-      for (const house of gameData.houses) {
-          const { x, y, width, height } = house.coords;
-          if (clickX >= x && clickX <= x + width && clickY >= y && clickY <= y + height) {
-              houseClicked = house;
-              break;
-          }
-      }
-
-      if (houseClicked) {
-          // Impedisce di cliccare la stessa casa due volte
-          if (clickedSequence.includes(houseClicked.id)) {
-              wrongSound.currentTime = 0;
-              wrongSound.play().catch(e => console.error("Errore riproduzione wrong sound:", e));
-              currentDeliveryStatus.textContent = `Casa ${houseClicked.name} già visitata! Clicca un'altra casa.`;
-              return;
-          }
-
-          clickedSequence.push(houseClicked.id);
-          deliveredCount++;
-          updateGameStatus();
-
-          // Mostra l'overlay sulla casa cliccata
-          const overlay = document.getElementById(`overlay-${houseClicked.id}`);
-          if (overlay) {
-              overlay.textContent = deliveredCount; // Mostra il numero della consegna
-              overlay.classList.add('visible');
-          }
-
-          correctSound.currentTime = 0;
-          correctSound.play().catch(e => console.error("Errore riproduzione correct sound:", e));
-
-          if (deliveredCount === gameData.houses.length) {
-              // Tutte le case sono state cliccate, verifica la sequenza
-              setTimeout(checkSequence, 1000); // Dai un attimo per vedere l'ultima overlay
-          }
-      } else {
-          // Click fuori da qualsiasi casa
-          wrongSound.currentTime = 0;
-          wrongSound.play().catch(e => console.error("Errore riproduzione wrong sound:", e));
-          currentDeliveryStatus.textContent = "Ops! Non hai cliccato su una casa. Riprova!";
-      }
-  }
-
-  // Verifica se la sequenza cliccata è corretta
-  function checkSequence() {
-      gameActive = false; // Disabilita ulteriori click
-      const isCorrect = clickedSequence.every((id, index) => id === gameData.correctSequenceIds[index]);
-
-      if (isCorrect) {
-          endGame(true);
-      } else {
-          endGame(false);
-      }
-  }
-
-  // Inizializza il gioco (resetta lo stato, prepara gli overlay)
-  async function initGame() {
-      gameActive = false;
-      deliveredCount = 0;
-      clickedSequence = [];
-      
-      // Nasconde le sezioni e mostra l'intro
-      introSection.style.display = 'block';
-      gameSection.style.display = 'none';
-      resultSection.style.display = 'none';
-      homeButton.style.display = 'none';
-      
-      // Pulisce e ricrea gli overlay per le case
-      imageContainer.querySelectorAll('.house-overlay').forEach(overlay => overlay.remove());
-      
-      // Precarica l'immagine (e ottiene le dimensioni naturali)
-      try {
-          await preloadImage(gameData.mainImage);
-          console.log(`Immagine caricata: ${gameData.mainImage}, dimensioni naturali: ${imageNaturalWidth}x${imageNaturalHeight}`);
-      } catch (error) {
-          console.error(error.message);
-          alert("Errore nel caricamento dell'immagine del gioco. Controlla il percorso.");
-          return;
-      }
-
-      // Crea gli overlay per ogni casa
-      gameData.houses.forEach(house => {
-          const overlayDiv = document.createElement('div');
-          overlayDiv.id = `overlay-${house.id}`;
-          overlayDiv.classList.add('house-overlay');
-          // Posiziona l'overlay in base alle coordinate dell'oggetto, scalate
-          overlayDiv.style.left = `${house.coords.x / imageNaturalWidth * 100}%`;
-          overlayDiv.style.top = `${house.coords.y / imageNaturalHeight * 100}%`;
-          overlayDiv.style.width = `${house.coords.width / imageNaturalWidth * 100}%`;
-          overlayDiv.style.height = `${house.coords.height / imageNaturalHeight * 100}%`;
-          imageContainer.appendChild(overlayDiv);
-      });
-
-      displayRules();
-      updateGameStatus();
-  }
-
-  // Avvia il gioco
-  function startGame() {
-      introSection.style.display = 'none';
-      gameSection.style.display = 'flex';
-      gameActive = true;
-
-      // Avvia la musica di sottofondo
-      if (backgroundMusic) {
-          backgroundMusic.volume = 0.3;
-          backgroundMusic.play().catch(e => {
-              console.warn("Autoplay della musica bloccato. La musica partirà con la prima interazione.", e);
-              document.body.addEventListener('click', () => {
-                  backgroundMusic.play().catch(err => console.error("Errore durante la riproduzione della musica:", err));
-              }, { once: true });
-          });
-      }
-  }
-
-  // Termina il gioco e mostra i risultati
-  function endGame(win) {
-      gameActive = false;
-      gameSection.style.display = 'none';
-      resultSection.style.display = 'block';
-      homeButton.style.display = 'block';
-
-      // Ferma la musica di sottofondo
-      if (backgroundMusic) {
-          backgroundMusic.pause();
-          backgroundMusic.currentTime = 0;
-      }
-
-      finalMessageDiv.classList.add('active');
-      if (win) {
-          finalMessageDiv.classList.remove('failure');
-          finalMessageDiv.classList.add('success');
-          finalMessageDiv.innerHTML = `🎉 Complimenti Davide! Hai seguito alla lettera le regole di Babbo Natale! Il Natale è salvo grazie alla tua precisione! 🎉`;
-      } else {
-          finalMessageDiv.classList.remove('success');
-          finalMessageDiv.classList.add('failure');
-          finalMessageDiv.innerHTML = `💔 Oh no! La sequenza di consegna non era corretta. Babbo Natale è un po' confuso! Riprova per salvare il Natale! 💔`;
-      }
-  }
-
-  // Event Listeners
-  startButton.addEventListener('click', initGame); // Inizializza il gioco al click su Start
-  startButton.addEventListener('click', startGame); // Avvia il gioco dopo l'inizializzazione
-  imageContainer.addEventListener('click', handleClick);
-
-  // Inizializza i fiocchi di neve e il gioco al caricamento della pagina
-  document.addEventListener('DOMContentLoaded', () => {
-   setInterval(createSnowflake, 300);
-   initGame(); // Inizializza il gioco al caricamento della pagina
-  });
- </script>
-
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+            // Avvia la creazione dei fiocchi di neve
+            setInterval(createSnowflake, 300);
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

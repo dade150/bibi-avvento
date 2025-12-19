@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1">
- <title>Giorno 23 - La Nostra Storia</title>
+ <title>Giorno 23 - 4 Immagini 1 Parola! 🧠🔍</title>
 
  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
  <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap" rel="stylesheet">
@@ -74,25 +74,29 @@
    }
   }
 
-  .timeline-container {
+  .challenge-container {
    flex: 1;
    display: flex;
-   flex-direction: column;
    align-items: center;
+   justify-content: center;
    width: 100%;
-   max-width: 1000px;
    z-index: 1;
-   padding: 2rem;
+  }
+
+  .challenge-card {
    background: linear-gradient(135deg, rgba(139, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
    border: 5px solid;
    border-image: linear-gradient(45deg, gold, #ffed4e, gold) 1;
    border-radius: 25px;
+   padding: 3rem;
+   max-width: 900px; 
+   width: 100%;
    box-shadow: 
     0 0 30px rgba(255, 215, 0, 0.3),
     0 0 60px rgba(255, 215, 0, 0.2),
     inset 0 0 50px rgba(0, 0, 0, 0.5);
    animation: glow-pulse 3s ease-in-out infinite;
-   margin-bottom: 2rem;
+   text-align: center;
   }
   
   @keyframes glow-pulse {
@@ -100,19 +104,14 @@
    50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.5); }
   }
 
-  .timeline-header {
-   text-align: center;
-   margin-bottom: 3rem;
-  }
-
-  .timeline-header h1 {
+  .challenge-header h1 {
    color: gold;
    font-size: 2.8rem;
    text-shadow: 
     2px 2px 4px black,
     0 0 20px rgba(255, 215, 0, 0.5),
     0 0 30px rgba(255, 215, 0, 0.3);
-   margin-bottom: 0.5rem;
+   margin-bottom: 1rem;
    animation: title-glow 2s ease-in-out infinite alternate;
   }
   
@@ -121,170 +120,15 @@
    to { text-shadow: 2px 2px 4px black, 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5); }
   }
 
-  .timeline-subtitle {
-   color: #ffed4e;
+  .intro-text, .game-info-text {
    font-size: 1.3rem;
-   text-shadow: 1px 1px 3px black;
-  }
-
-  /* Timeline verticale */
-  .timeline {
-   position: relative;
-   width: 100%;
-   max-width: 800px;
-   margin: 0 auto;
-   padding: 2rem 0;
-  }
-
-  /* Linea centrale */
-  .timeline::before {
-   content: '';
-   position: absolute;
-   left: 50%;
-   transform: translateX(-50%);
-   width: 4px;
-   height: 100%;
-   background: linear-gradient(to bottom, gold, #ffed4e, gold);
-   box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-  }
-
-  /* Ogni momento della timeline */
-  .timeline-item {
-   position: relative;
-   width: 100%;
-   margin-bottom: 3rem;
-   opacity: 0;
-   animation: fadeInUp 0.8s ease forwards;
-  }
-
-  .timeline-item:nth-child(1) { animation-delay: 0.2s; }
-  .timeline-item:nth-child(2) { animation-delay: 0.4s; }
-  .timeline-item:nth-child(3) { animation-delay: 0.6s; }
-  .timeline-item:nth-child(4) { animation-delay: 0.8s; }
-  .timeline-item:nth-child(5) { animation-delay: 1s; }
-  .timeline-item:nth-child(6) { animation-delay: 1.2s; }
-  .timeline-item:nth-child(7) { animation-delay: 1.4s; }
-  .timeline-item:nth-child(8) { animation-delay: 1.6s; }
-
-  @keyframes fadeInUp {
-   from {
-    opacity: 0;
-    transform: translateY(30px);
-   }
-   to {
-    opacity: 1;
-    transform: translateY(0);
-   }
-  }
-
-  /* Contenuto alternato sinistra/destra */
-  .timeline-content {
-   width: 45%;
-   padding: 1.5rem;
-   background: rgba(0, 0, 0, 0.7);
-   border: 3px solid gold;
-   border-radius: 15px;
-   box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-   position: relative;
-   transition: all 0.3s ease;
-  }
-
-  .timeline-content:hover {
-   transform: scale(1.05);
-   box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
-  }
-
-  /* Sinistra */
-  .timeline-item:nth-child(odd) .timeline-content {
-   margin-left: 0;
-   text-align: right;
-  }
-
-  /* Destra */
-  .timeline-item:nth-child(even) .timeline-content {
-   margin-left: 55%;
-   text-align: left;
-  }
-
-  /* Pallino centrale */
-  .timeline-dot {
-   position: absolute;
-   left: 50%;
-   top: 50%;
-   transform: translate(-50%, -50%);
-   width: 30px;
-   height: 30px;
-   background: gold;
-   border: 5px solid darkred;
-   border-radius: 50%;
-   box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
-   z-index: 2;
-   animation: pulse-dot 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse-dot {
-   0%, 100% { transform: translate(-50%, -50%) scale(1); }
-   50% { transform: translate(-50%, -50%) scale(1.2); }
-  }
-
-  /* Data */
-  .timeline-date {
-   font-size: 1.1rem;
    color: #ffed4e;
-   font-weight: bold;
-   margin-bottom: 0.5rem;
-   text-shadow: 1px 1px 2px black;
-  }
-
-  /* Titolo evento */
-  .timeline-title {
-   font-size: 1.5rem;
-   color: gold;
-   margin-bottom: 0.8rem;
-   text-shadow: 2px 2px 3px black;
-  }
-
-  /* Descrizione */
-  .timeline-description {
-   font-size: 1.1rem;
-   color: #fff;
+   margin-bottom: 2rem;
    line-height: 1.6;
-   text-shadow: 1px 1px 2px black;
-  }
-
-  /* Emoji grande */
-  .timeline-emoji {
-   font-size: 2.5rem;
-   margin-bottom: 0.5rem;
-   display: block;
-  }
-
-  /* Finale speciale */
-  .timeline-final {
-   text-align: center;
-   margin-top: 3rem;
-   padding: 2rem;
-   background: rgba(139, 0, 0, 0.8);
-   border: 3px solid gold;
-   border-radius: 20px;
-   box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-  }
-
-  .timeline-final h2 {
-   color: gold;
-   font-size: 2.5rem;
-   margin-bottom: 1rem;
-   text-shadow: 2px 2px 4px black, 0 0 20px rgba(255, 215, 0, 0.5);
-  }
-
-  .timeline-final p {
-   font-size: 1.4rem;
-   color: #fff;
-   line-height: 1.8;
    text-shadow: 1px 1px 3px black;
   }
 
-  .home-btn {
+  .btn-challenge {
    padding: 1rem 2rem;
    font-size: 1.2rem;
    font-family: 'Mountains of Christmas', cursive;
@@ -296,285 +140,210 @@
    transition: all 0.3s ease;
    font-weight: bold;
    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-   margin-top: 2rem;
-   border: none;
   }
 
-  .home-btn:hover {
+  .btn-challenge:hover {
    transform: translateY(-3px) scale(1.05);
    box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
    background: linear-gradient(135deg, #ffed4e 0%, gold 100%);
   }
 
-  /* Responsive */
-  @media (max-width: 768px) {
-   .timeline::before {
-    left: 30px;
-   }
-
-   .timeline-content {
-    width: calc(100% - 80px);
-    margin-left: 60px !important;
-    text-align: left !important;
-   }
-
-   .timeline-dot {
-    left: 30px;
-   }
-
-   .timeline-header h1 {
-    font-size: 2rem;
-   }
-
-   .timeline-title {
-    font-size: 1.3rem;
-   }
-
-   .timeline-description {
-    font-size: 1rem;
-   }
+  .btn-challenge:disabled {
+   opacity: 0.6;
+   cursor: not-allowed;
+   box-shadow: none;
+   transform: none;
+   background: linear-gradient(135deg, #888 0%, #aaa 100%);
+   border-color: #666;
   }
 
-  /* New styles for add story section */
-  .add-story-section {
-    background: rgba(0, 0, 0, 0.6);
-    border: 3px solid #ffed4e;
-    border-radius: 15px;
-    padding: 2rem;
-    margin-bottom: 3rem;
-    width: 100%;
-    max-width: 800px;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-    text-align: center;
-}
+  .game-area {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   width: 100%;
+  }
 
-.add-story-section h2 {
-    color: gold;
-    margin-bottom: 1.5rem;
-    font-size: 2rem;
-    text-shadow: 1px 1px 3px black;
-}
+  .round-info {
+   font-size: 1.8rem;
+   color: gold;
+   text-shadow: 1px 1px 3px black;
+   margin-bottom: 1.5rem;
+  }
 
-.input-group {
-    margin-bottom: 1rem;
-    text-align: left;
-}
+  .image-grid {
+   display: grid;
+   grid-template-columns: repeat(2, 1fr);
+   gap: 15px;
+   width: 100%;
+   max-width: 700px;
+   margin-bottom: 2rem;
+  }
 
-.input-group label {
-    display: block;
-    color: #ffed4e;
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-    text-shadow: 1px 1px 2px black;
-}
+  .image-grid img {
+   width: 100%;
+   height: auto;
+   border: 3px solid #ffed4e;
+   border-radius: 10px;
+   box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+  }
 
-.form-control {
-    width: 100%;
-    padding: 0.8rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid #FFD700;
-    border-radius: 8px;
-    color: #fff;
-    font-family: 'Mountains of Christmas', cursive;
-    font-size: 1rem;
-    outline: none;
-}
+  .guess-section {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 1rem;
+   width: 100%;
+   max-width: 500px;
+  }
 
-.form-control::placeholder {
-    color: rgba(255, 255, 255, 0.6);
-}
+  .guess-section input {
+   width: 100%;
+   padding: 0.8rem 1.2rem;
+   font-size: 1.4rem;
+   text-align: center;
+   border: 2px solid gold;
+   border-radius: 30px;
+   background-color: rgba(0, 0, 0, 0.7);
+   color: white;
+   font-family: 'Mountains of Christmas', cursive;
+   outline: none;
+   transition: border-color 0.3s ease;
+  }
 
-.form-control:focus {
-    border-color: #ffed4e;
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-}
+  .guess-section input:focus {
+   border-color: #ffed4e;
+   box-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+  }
 
-.add-story-section .home-btn {
-    margin-top: 1.5rem;
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    border-radius: 10px;
-}
+  .feedback-message {
+   font-size: 1.2rem;
+   margin-top: 1rem;
+   padding: 0.5rem 1rem;
+   border-radius: 10px;
+   display: none;
+  }
 
-/* Delete button for story items */
-.delete-story-item-btn {
-    background: none;
-    border: none;
-    color: #ff6b6b; /* Reddish color */
-    font-size: 1.2rem;
-    cursor: pointer;
-    opacity: 0.7;
-    transition: all 0.3s ease;
-    position: absolute; /* Position it relative to timeline-content */
-    top: 10px; /* Adjust as needed */
-    right: 10px; /* Adjust as needed */
-    z-index: 3; /* Ensure it's above other content */
-}
+  .feedback-message.active {
+   display: block;
+  }
 
-.delete-story-item-btn:hover {
-    opacity: 1;
-    transform: scale(1.2);
-}
+  .feedback-success {
+   color: #90EE90;
+   background-color: rgba(0, 128, 0, 0.3);
+   border: 1px solid #90EE90;
+  }
 
+  .feedback-failure {
+   color: #FF6347;
+   background-color: rgba(139, 0, 0, 0.3);
+   border: 1px solid #FF6347;
+  }
+
+  .result-section {
+   text-align: center;
+   display: none;
+   margin-top: 2rem;
+  }
+
+  .result-message {
+   font-size: 1.6rem;
+   padding: 1.5rem;
+   border-radius: 15px;
+   margin-top: 1rem;
+   animation: fadeIn 0.5s ease-out;
+   display: none;
+  }
+
+  .result-message.active {
+   display: block;
+  }
+
+  .success {
+   color: #90EE90;
+   text-shadow: 0 0 10px rgba(144, 238, 144, 0.5);
+   background: rgba(0, 128, 0, 0.3);
+   border: 2px solid #90EE90;
+  }
+
+  .failure {
+   color: #FF6347;
+   text-shadow: 0 0 10px rgba(255, 99, 71, 0.5);
+   background: rgba(139, 0, 0, 0.3);
+   border: 2px solid #FF6347;
+  }
+
+  .home-btn {
+   margin-top: 2rem;
+  }
+
+  .emoji-sparkle {
+   display: inline-block;
+   animation: gentle-shake 3s ease-in-out infinite;
+  }
+  
+  @keyframes gentle-shake {
+   0%, 100% { transform: translate(0, 0) rotate(0deg); }
+   10% { transform: translate(-1px, -1px) rotate(-1deg); }
+   20% { transform: translate(1px, 1px) rotate(1deg); }
+   30% { transform: translate(-1px, 1px) rotate(-1deg); }
+   40% { transform: translate(1px, -1px) rotate(1deg); }
+   50%, 90% { transform: translate(0, 0) rotate(0deg); }
+  }
+
+  @keyframes fadeIn {
+   from { opacity: 0; transform: scale(0.9); }
+   to { opacity: 1; transform: scale(1); }
+  }
  </style>
 </head>
 
 <body>
+ <audio id="background-music" src="audio/sleigh.mp3" preload="auto" loop></audio>
+ <audio id="correct-sound" src="audio/corretta.mp3" preload="auto"></audio>
+ <audio id="wrong-sound" src="audio/wrong.mp3" preload="auto"></audio>
 
- <div class="timeline-container">
-  <div class="timeline-header">
-   <h1>
-    <span class="emoji-sparkle">💕</span>
-    La Nostra Storia
-    <span class="emoji-sparkle">💕</span>
-   </h1>
-   <p class="timeline-subtitle">Il viaggio più bello... insieme a te</p>
+ <div class="challenge-container">
+  <div class="challenge-card">
+   
+   <div id="intro-section">
+    <div class="challenge-header">
+     <h1>
+      <span class="emoji-sparkle">🧠</span>
+      Giorno 23 - 4 Immagini 1 Parola!
+      <span class="emoji-sparkle">🔍</span>
+     </h1>
+    </div>
+    <p class="intro-text">
+     Ciao Mapi! Oggi tocca a te mettere alla prova il tuo ingegno con "4 Immagini 1 Parola". Ti mostrerò 4 foto che hanno qualcosa in comune: dovrai indovinare la parola che le collega. Ci sono 3 manche da superare. Pronta? Vediamo quanto sei brava! 😏
+    </p>
+    <button class="btn-challenge" id="startButton">Inizia la Sfida! 🚀</button>
+   </div>
+
+   <div id="game-section" style="display: none;">
+    <div class="game-area">
+     <div class="round-info">Manche <span id="current-round-display">1</span> di <span id="total-rounds-display">3</span></div>
+      
+     <div class="image-grid" id="image-grid"></div>
+
+     <div class="guess-section">
+      <input type="text" id="guess-input" placeholder="Scrivi la tua parola qui..." autocomplete="off">
+      <button class="btn-challenge" id="submit-guess-button">Indovina! ✨</button>
+      <div id="feedback-message" class="feedback-message"></div>
+     </div>
+    </div>
+   </div>
+
+   <div id="result-section" class="result-section">
+    <div id="final-message" class="result-message"></div>
+    <button class="btn-challenge home-btn" onclick="window.location.href='index.html'">
+     🎄 Torna al Calendario
+    </button>
+   </div>
   </div>
-
-  <div class="add-story-section">
-    <h2>Aggiungi un Nuovo Momento alla Nostra Storia</h2>
-    <div class="input-group">
-        <label for="storyDate">Data:</label>
-        <input type="date" id="storyDate" class="form-control">
-    </div>
-    <div class="input-group">
-        <label for="storyTitle">Titolo:</label>
-        <input type="text" id="storyTitle" class="form-control" placeholder="Es: Il nostro primo appuntamento">
-    </div>
-    <div class="input-group">
-        <label for="storyDescription">Descrizione:</label>
-        <textarea id="storyDescription" class="form-control" rows="3" placeholder="Racconta cosa è successo..."></textarea>
-    </div>
-    <div class="input-group">
-        <label for="storyEmoji">Emoji:</label>
-        <input type="text" id="storyEmoji" class="form-control" placeholder="Es: ❤️, 🍕, ✈️ (un solo emoji)">
-    </div>
-    <button id="addStoryBtn" class="home-btn">Aggiungi Momento</button>
-    <button id="clearStoryBtn" class="home-btn" style="background: #dc3545; border-color: #dc3545;">Cancella Tutta la Storia</button>
-</div>
-
-  <div class="timeline" id="dynamicTimeline">
-   <!-- Story items will be dynamically inserted here by JavaScript -->
-  </div>
-
-  <!-- Messaggio finale -->
-  <div class="timeline-final">
-   <h2>...e questa è solo l'inizio 💫</h2>
-   <p>
-    Ogni momento con te è un ricordo prezioso che custodisco nel cuore.<br>
-    Non vedo l'ora di scrivere insieme tutti i capitoli futuri della nostra storia.<br><br>
-    Ti amo ❤️
-   </p>
-  </div>
-
-  <button class="home-btn" onclick="window.location.href='index.html'">
-    🎄 Torna al Calendario
-  </button>
  </div>
 
  <script>
-  // Global array to store story items
-  let ourStory = [];
-  const LOCAL_STORAGE_KEY = 'ourStoryTimeline';
-
-  // Function to save story to localStorage
-  function saveStoryToLocalStorage() {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(ourStory));
-  }
-
-  // Function to load story from localStorage
-  function loadStoryFromLocalStorage() {
-      const storedStory = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (storedStory) {
-          ourStory = JSON.parse(storedStory);
-      }
-  }
-
-  // Function to render the story timeline
-  function renderStoryTimeline() {
-      const dynamicTimeline = document.getElementById('dynamicTimeline');
-      dynamicTimeline.innerHTML = ''; // Clear existing items
-
-      // Sort story by date ascending to keep it chronological
-      ourStory.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-      ourStory.forEach((item, index) => {
-          const timelineItem = document.createElement('div');
-          timelineItem.classList.add('timeline-item');
-          // Apply animation delay dynamically
-          timelineItem.style.animationDelay = `${0.2 + (index * 0.2)}s`;
-
-          // Format date for display
-          const displayDate = new Date(item.date).toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' });
-
-          timelineItem.innerHTML = `
-              <div class="timeline-dot"></div>
-              <div class="timeline-content">
-                  <span class="timeline-emoji">${item.emoji}</span>
-                  <div class="timeline-date">${displayDate}</div>
-                  <div class="timeline-title">${item.title}</div>
-                  <div class="timeline-description">${item.description}</div>
-                  <button class="delete-story-item-btn" data-index="${index}">❌</button>
-              </div>
-          `;
-          dynamicTimeline.appendChild(timelineItem);
-      });
-
-      // Add event listeners for delete buttons
-      document.querySelectorAll('.delete-story-item-btn').forEach(button => {
-          button.addEventListener('click', deleteStoryItem);
-      });
-  }
-
-  // Function to add a new story item
-  function addStoryItem() {
-      const storyDateInput = document.getElementById('storyDate');
-      const storyTitleInput = document.getElementById('storyTitle');
-      const storyDescriptionInput = document.getElementById('storyDescription');
-      const storyEmojiInput = document.getElementById('storyEmoji');
-
-      const date = storyDateInput.value;
-      const title = storyTitleInput.value.trim();
-      const description = storyDescriptionInput.value.trim();
-      const emoji = storyEmojiInput.value.trim();
-
-      if (!date || !title || !description || !emoji) {
-          alert('Per favore, compila tutti i campi per aggiungere un momento alla storia!');
-          return;
-      }
-
-      const newStoryItem = { date, title, description, emoji };
-      ourStory.push(newStoryItem);
-      saveStoryToLocalStorage();
-      renderStoryTimeline();
-
-      // Clear form fields
-      storyDateInput.value = '';
-      storyTitleInput.value = '';
-      storyDescriptionInput.value = '';
-      storyEmojiInput.value = '';
-  }
-
-  // Function to delete a story item
-  function deleteStoryItem(event) {
-      const indexToDelete = parseInt(event.target.dataset.index);
-      if (confirm('Sei sicuro di voler cancellare questo momento dalla storia?')) {
-          ourStory.splice(indexToDelete, 1);
-          saveStoryToLocalStorage();
-          renderStoryTimeline();
-      }
-  }
-
-  // Function to clear all story items
-  function clearAllStoryItems() {
-      if (confirm('Sei sicuro di voler cancellare TUTTA la storia? Questa azione non può essere annullata!')) {
-          ourStory = [];
-          saveStoryToLocalStorage();
-          renderStoryTimeline();
-      }
-  }
-
-  // Snowflake generation
   function createSnowflake() {
    const snowflake = document.createElement('div');
    snowflake.classList.add('snowflake');
@@ -588,16 +357,190 @@
    setTimeout(() => snowflake.remove(), 8000);
   }
 
-  // Initialize snowflakes and story on page load
-  document.addEventListener('DOMContentLoaded', () => {
-   setInterval(createSnowflake, 300);
-   loadStoryFromLocalStorage();
-   renderStoryTimeline();
+  const backgroundMusic = document.getElementById('background-music');
+  const correctSound = document.getElementById('correct-sound');
+  const wrongSound = document.getElementById('wrong-sound');
 
-   document.getElementById('addStoryBtn').addEventListener('click', addStoryItem);
-   document.getElementById('clearStoryBtn').addEventListener('click', clearAllStoryItems);
+  const startButton = document.getElementById('startButton');
+  const introSection = document.getElementById('intro-section');
+  const gameSection = document.getElementById('game-section');
+  const resultSection = document.getElementById('result-section');
+  const finalMessageDiv = document.getElementById('final-message');
+
+  const currentRoundDisplay = document.getElementById('current-round-display');
+  const totalRoundsDisplay = document.getElementById('total-rounds-display');
+  const imageGrid = document.getElementById('image-grid');
+  const guessInput = document.getElementById('guess-input');
+  const submitGuessButton = document.getElementById('submit-guess-button');
+  const feedbackMessage = document.getElementById('feedback-message');
+
+  const gameData = [
+   {
+    round: 1,
+    images: [
+     'images/4images/manche1foto1.jpg',
+     'images/4images/manche1foto2.jpg',
+     'images/4images/manche1foto3.jpg',
+     'images/4images/manche1foto4.jpg'
+    ],
+    answer: 'vito'
+   },
+   {
+    round: 2,
+    images: [
+     'images/4images/manche2foto1.jpg',
+     'images/4images/manche2foto2.jpg',
+     'images/4images/manche2foto3.jpg',
+     'images/4images/manche2foto4.jpg'
+    ],
+    answer: 'giugno'
+   },
+   {
+    round: 3,
+    images: [
+     'images/4images/manche3foto1.jpg',
+     'images/4images/manche3foto2.jpg',
+     'images/4images/manche3foto3.jpg',
+     'images/4images/manche3foto4.jpg'
+    ],
+    answer: 'unicredit'
+   }
+  ];
+
+  let currentRoundIndex = 0;
+  let gameActive = false;
+  let correctGuesses = 0;
+
+  function initGame() {
+   gameActive = false;
+   currentRoundIndex = 0;
+   correctGuesses = 0;
+   
+   introSection.style.display = 'block';
+   gameSection.style.display = 'none';
+   resultSection.style.display = 'none';
+   
+   totalRoundsDisplay.textContent = gameData.length;
+   feedbackMessage.classList.remove('active', 'feedback-success', 'feedback-failure');
+   finalMessageDiv.classList.remove('active', 'success', 'failure');
+  }
+
+  function startGame() {
+   introSection.style.display = 'none';
+   gameSection.style.display = 'flex';
+   gameActive = true;
+
+   if (backgroundMusic) {
+    backgroundMusic.volume = 0.3;
+    backgroundMusic.play().catch(e => {
+     console.warn("Autoplay bloccato:", e);
+     document.body.addEventListener('click', () => {
+      backgroundMusic.play().catch(err => console.error("Errore musica:", err));
+     }, { once: true });
+    });
+   }
+   loadRound(currentRoundIndex);
+  }
+
+  function loadRound(roundIndex) {
+   if (roundIndex >= gameData.length) {
+    endGame(true);
+    return;
+   }
+
+   currentRoundDisplay.textContent = roundIndex + 1;
+   imageGrid.innerHTML = '';
+   guessInput.value = '';
+   feedbackMessage.classList.remove('active', 'feedback-success', 'feedback-failure');
+   submitGuessButton.disabled = false;
+
+   const round = gameData[roundIndex];
+   round.images.forEach(imageSrc => {
+    const img = document.createElement('img');
+    img.src = imageSrc;
+    img.alt = "Immagine del gioco";
+    img.onerror = () => console.error(`Errore caricamento: ${imageSrc}`);
+    imageGrid.appendChild(img);
+   });
+   
+   guessInput.focus();
+  }
+
+  function checkGuess() {
+   if (!gameActive) return;
+
+   const userAnswer = guessInput.value.trim().toLowerCase();
+   if (!userAnswer) return;
+
+   const correctAnswer = gameData[currentRoundIndex].answer.toLowerCase();
+
+   feedbackMessage.classList.remove('feedback-success', 'feedback-failure');
+   feedbackMessage.classList.add('active');
+
+   if (userAnswer === correctAnswer) {
+    if (correctSound) {
+     correctSound.currentTime = 0;
+     correctSound.play().catch(e => console.error("Errore sound:", e));
+    }
+    feedbackMessage.textContent = "Corretto! Ottimo lavoro! 🎉";
+    feedbackMessage.classList.add('feedback-success');
+    correctGuesses++;
+    submitGuessButton.disabled = true;
+
+    setTimeout(() => {
+     currentRoundIndex++;
+     if (currentRoundIndex < gameData.length) {
+      loadRound(currentRoundIndex);
+     } else {
+      endGame(true);
+     }
+    }, 1500);
+   } else {
+    if (wrongSound) {
+     wrongSound.currentTime = 0;
+     wrongSound.play().catch(e => console.error("Errore sound:", e));
+    }
+    feedbackMessage.textContent = "Sbagliato! Riprova. 🤔";
+    feedbackMessage.classList.add('feedback-failure');
+    guessInput.value = '';
+    guessInput.focus();
+   }
+  }
+
+  function endGame(win) {
+   gameActive = false;
+   gameSection.style.display = 'none';
+   resultSection.style.display = 'block';
+
+   if (backgroundMusic) {
+    backgroundMusic.pause();
+    backgroundMusic.currentTime = 0;
+   }
+
+   finalMessageDiv.classList.add('active');
+   if (win) {
+    finalMessageDiv.classList.remove('failure');
+    finalMessageDiv.classList.add('success');
+    finalMessageDiv.innerHTML = `🎉 Complimenti Mapi! Hai indovinato tutte le parole! Sei stata bravissima! 🎉`;
+   } else {
+    finalMessageDiv.classList.remove('success');
+    finalMessageDiv.classList.add('failure');
+    finalMessageDiv.innerHTML = `💔 Non sei riuscita a completare tutte le manche. Riprova! 💔`;
+   }
+  }
+
+  startButton.addEventListener('click', startGame);
+  submitGuessButton.addEventListener('click', checkGuess);
+  guessInput.addEventListener('keypress', (event) => {
+   if (event.key === 'Enter') {
+    checkGuess();
+   }
   });
 
+  document.addEventListener('DOMContentLoaded', () => {
+   setInterval(createSnowflake, 300);
+   initGame(); 
+  });
  </script>
 
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
